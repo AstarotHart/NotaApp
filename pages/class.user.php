@@ -24,26 +24,86 @@ class USER
 		return $stmt;
 	}
 	
-	//Funcion para ingresar un nuevo docente, por defecto es tipo 2 (docente)
-	public function register_docente($cc,$nombre,$prim_apellido,$seg_apellido,$email,$pass)
-	{
+	
+    /**
+     * Funcion para devolver datos de usuario (menu)
+     * @param  [type] $id_user [id usuario a buscar]
+     * @return [type] $data    [description]
+     */
+    public function user_data($user_id)
+    {
+        try 
+        {
+            $stmt = $this->conn->prepare("SELECT id_tipo_usuario,nombres,prim_apellido,email FROM docente WHERE id_docente=:user_id");
+            $stmt->bindparam(":user_id", $user_id);
+            $stmt->execute();
 
-		$id_tipo="2";
+
+            if ($stmt->rowCount() > 0) 
+            {
+
+                return $stmt->fetch(PDO::FETCH_OBJ);
+            }
+
+        } 
+
+        catch (PDOException $e) 
+        {
+            exit($e->getMessage());
+        }
+    }
+
+    /**
+     * [tipo_user description]
+     * @param  [type] $id_user [description]
+     * @return [type]          [description]
+     */
+    public function tipo_user($id_tipo)
+    {
+        try 
+        {
+            $stmt = $this->conn->prepare("SELECT id_tipo_usuario,des_tipo_usuario FROM tipo_usuario WHERE id_tipo_usuario=:id_tipo");
+            $stmt->bindparam(":id_tipo", $id_tipo);
+            $stmt->execute();
+
+
+            if ($stmt->rowCount() > 0) 
+            {
+
+                return $stmt->fetch(PDO::FETCH_OBJ);
+            }
+
+        } 
+
+        catch (PDOException $e) 
+        {
+            exit($e->getMessage());
+        }
+
+    }
+
+
+
+    //Funcion para ingresar un nuevo docente, por defecto es tipo 3 (docente)
+	public function register_docente($cc,$nombre,$prim_apellido,$seg_apellido,$email,$pass,$docentecol)
+	{
+		$id_tipo="3";
 
 		try
 		{
 			$new_password = password_hash($pass, PASSWORD_DEFAULT);
-			
-			$stmt = $this->conn->prepare("INSERT INTO docente(id_docente,nombres,prim_apellido,seg_apellido,email,pass,id_tipo) 
-		                                  VALUES(:cc,:nombre,:prim_ape,:seg_ape,:email,:pass,:id_tipo)");
+
+			$stmt = $this->conn->prepare("INSERT INTO docente(id_docente,id_tipo_usuario,nombres,prim_apellido,seg_apellido,email,pass,docentecol) 
+		                                  VALUES(:cc,:id_tipo,:nombre,:prim_ape,:seg_ape,:email,:new_password,:docentecol)");
 												  
 			$stmt->bindparam(":cc", $cc);
+            $stmt->bindparam(":id_tipo", $id_tipo);
 			$stmt->bindparam(":nombre", $nombre);
 			$stmt->bindparam(":prim_ape", $prim_apellido);
 			$stmt->bindparam(":seg_ape", $seg_apellido);
 			$stmt->bindparam(":email", $email);
-			$stmt->bindparam(":pass", $new_password);
-			$stmt->bindparam(":id_tipo", $id_tipo);										  
+			$stmt->bindparam(":new_password", $new_password);
+            $stmt->bindparam(":docentecol", $docentecol);									  
 				
 			$stmt->execute();	
 			
@@ -119,13 +179,16 @@ class USER
 			$userRow=$stmt->fetch(PDO::FETCH_ASSOC);
 			if($stmt->rowCount() == 1)
 			{
+
 				if(password_verify($u_pass, $userRow['pass']))
 				{
+                    echo "Pass verificado";
 					$_SESSION['user_session'] = $userRow['id_docente'];
 					return true;
 				}
 				else
 				{
+                    echo "pass NO";
 					return false;
 				}
 			}

@@ -3,7 +3,7 @@
 class Database
 {   
     private $host = "localhost";
-    private $db_name = "estrada";
+    private $db_name = "notaapp";
     private $username = "root";
     private $password = "";
     public $conn;

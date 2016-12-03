@@ -3,15 +3,19 @@
     require_once("session.php");
     
     require_once("class.user.php");
-    $auth_user = new USER();
+    $user_app = new USER();
   
     
-    $user_id = $_SESSION['user_session'];
-    
-    $stmt = $auth_user->runQuery("SELECT * FROM docente WHERE id_docente=:user_id");
+   /** $stmt = $auth_user->runQuery("SELECT * FROM docente WHERE id_docente=:user_id");
+
+    $stmt = $auth_user->runQuery("SELECT * FROM docente inner join tipo_usuario on docente.id_tipo_usuario = tipo_usuario.id_tipo_usuario ");
+
     $stmt->execute(array(":user_id"=>$user_id));
     
-    $userRow=$stmt->fetch(PDO::FETCH_ASSOC);
+    $userRow=$stmt->fetch(PDO::FETCH_ASSOC);**/
+
+    $user = $user_app->user_data($_SESSION['user_session']);
+    $user_type = $user_app->tipo_user($user->id_tipo_usuario);
 
 ?>
 <head>
@@ -255,7 +259,14 @@
                         </ul>
                     </li>
                     <!-- #END# Tasks -->
-                    <li class="pull-right"><a href="javascript:void(0);" class="js-right-sidebar" data-close="true"><i class="material-icons">more_vert</i></a></li>
+                    <li class="dropdown">
+                        <a href="javascript:void(0);" class="dropdown-toggle" data-toggle="dropdown" role="button">
+                            <i class="material-icons">more_vert</i>
+                        </a>
+                        <ul class="dropdown-menu pull-right">
+                            <li><a href="logout.php?logout=true"><i class="material-icons">input</i>Salir</a></li>
+                        </ul>
+                    </li>
                 </ul>
             </div>
         </div>

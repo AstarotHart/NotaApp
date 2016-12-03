@@ -8,6 +8,7 @@ if($login->is_loggedin()!="")
 	$login->redirect('pages/index.php');
 }
 
+
 if(isset($_POST['btn-login']))
 {
 	$u_id = strip_tags($_POST['u_id']);
@@ -15,13 +16,10 @@ if(isset($_POST['btn-login']))
 		
 	if($login->doLogin($u_id,$u_pass))
 	{
-        echo "entro en if<br>";
 		$login->redirect('pages/index.php');
-        echo "redirecciono a admin<br>";
 	}
 	else
 	{
-        echo "entro en else<br>";
 		$error = "Datos Incorrectos!";
 	}	
 }
@@ -97,17 +95,13 @@ if(isset($_POST['btn-login']))
                         </div>
                     </div>
                     <div class="row">
-                        <div class="col-xs-8 p-t-5">
-                            <input type="checkbox" name="rememberme" id="rememberme" class="filled-in chk-col-teal">
-                            <label for="rememberme">Recordarme</label>
-                        </div>
                         <div class="col-xs-4">
                             <button class="btn btn-block bg-teal waves-effect" type="submit" name="btn-login">INICIAR</button>
                         </div>
                     </div>
                     <div class="row m-t-15 m-b--20">
                         <div class="col-xs-6">
-                            <a href="sign-up.html">Registrate Ahora!</a>
+                            <a href="sign-up.php">Registrate Ahora!</a>
                         </div>
                         <div class="col-xs-6 align-right">
                             <a href="forgot-password.html">Olvidaste tu clave?</a>

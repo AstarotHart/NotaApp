@@ -1,123 +1,191 @@
 <?php
 session_start();
-require_once('class.user.php');
+require_once('pages/class.user.php');
 $user = new USER();
+$object = new USER();
 
 if($user->is_loggedin()!="")
 {
-	$user->redirect('home.php');
+	$user->redirect('index.php');
 }
+
+$show_mensaje= "none";
+$show_mensaje_err= "none";
 
 if(isset($_POST['btn-signup']))
 {
-	$uname = strip_tags($_POST['txt_uname']);
-	$umail = strip_tags($_POST['txt_umail']);
-	$upass = strip_tags($_POST['txt_upass']);	
-	
-	if($uname=="")	{
-		$error[] = "provide username !";	
-	}
-	else if($umail=="")	{
-		$error[] = "provide email id !";	
-	}
-	else if(!filter_var($umail, FILTER_VALIDATE_EMAIL))	{
-	    $error[] = 'Please enter a valid email address !';
-	}
-	else if($upass=="")	{
-		$error[] = "provide password !";
-	}
-	else if(strlen($upass) < 6){
-		$error[] = "Password must be atleast 6 characters";	
-	}
-	else
-	{
-		try
-		{
-			$stmt = $user->runQuery("SELECT user_name, user_email FROM users WHERE user_name=:uname OR user_email=:umail");
-			$stmt->execute(array(':uname'=>$uname, ':umail'=>$umail));
-			$row=$stmt->fetch(PDO::FETCH_ASSOC);
-				
-			if($row['user_name']==$uname) {
-				$error[] = "sorry username already taken !";
-			}
-			else if($row['user_email']==$umail) {
-				$error[] = "sorry email id already taken !";
-			}
-			else
-			{
-				if($user->register($uname,$umail,$upass)){	
-					$user->redirect('sign-up.php?joined');
-				}
-			}
-		}
-		catch(PDOException $e)
-		{
-			echo $e->getMessage();
-		}
-	}	
+    $cc = strip_tags($_POST['cc']);
+    $nombres = strip_tags($_POST['nombres']);
+    $prim_apellido = strip_tags($_POST['primer_apellido']);
+    $seg_apellido = strip_tags($_POST['segundo_apellido']);   
+    $email = strip_tags($_POST['email']);
+    $pass = strip_tags($_POST['password']);
+    $sede = strip_tags($_POST['sede']);
+
+    try
+    {
+        $stmt = $user->runQuery("SELECT id_docente FROM docente WHERE id_docente=:id_docente");
+        $stmt->execute(array(':id_docente'=>$cc));
+        $row=$stmt->fetch(PDO::FETCH_ASSOC);
+                
+        if($row['id_docente']==$cc) 
+        {
+            $show_mensaje_err= "show";
+        }
+        else
+        {
+            if($user->register_docente($cc,$nombres,$prim_apellido,$seg_apellido,$email,$pass,$sede))
+            {  
+                $user->redirect('index.php');
+            }
+        }
+    }
+    catch(PDOException $e)
+    {
+        $show_mensaje= "show";
+    }
+
 }
 
 ?>
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml">
+<!DOCTYPE html>
+<html>
+
 <head>
-<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-<title>Coding Cage : Sign up</title>
-<link href="bootstrap/css/bootstrap.min.css" rel="stylesheet" media="screen">
-<link href="bootstrap/css/bootstrap-theme.min.css" rel="stylesheet" media="screen">
-<link rel="stylesheet" href="style.css" type="text/css"  />
+    <meta charset="UTF-8">
+    <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
+    <title>NotaApp - Administrador de Calificaciones</title>
+    <!-- Favicon-->
+    <link rel="icon" href="favicon.ico" type="image/x-icon">
+
+    <!-- Google Fonts -->
+    <link href="css/google-fonts.css" rel="stylesheet" type="text/css">
+    <link href="css/google-material-icons.css" rel="stylesheet" type="text/css">
+
+    <!-- Bootstrap Core Css -->
+    <link href="plugins/bootstrap/css/bootstrap.css" rel="stylesheet">
+
+    <!-- Waves Effect Css -->
+    <link href="plugins/node-waves/waves.css" rel="stylesheet" />
+
+    <!-- Animation Css -->
+    <link href="plugins/animate-css/animate.css" rel="stylesheet" />
+
+    <!-- Custom Css -->
+    <link href="css/style.css" rel="stylesheet">
 </head>
-<body>
 
-<div class="signin-form">
+<body class="signup-page">
+    <div class="signup-box">
+        <div class="logo">
+            <a href="javascript:void(0);">NotaAPP</a>
+            <small>Aministrador de Calificaciones</small>
+        </div>
+        <div class="card">
+            <div class="body">
 
-<div class="container">
-    	
-        <form method="post" class="form-signin">
-            <h2 class="form-signin-heading">Sign up.</h2><hr />
-            <?php
-			if(isset($error))
-			{
-			 	foreach($error as $error)
-			 	{
-					 ?>
-                     <div class="alert alert-danger">
-                        <i class="glyphicon glyphicon-warning-sign"></i> &nbsp; <?php echo $error; ?>
-                     </div>
-                     <?php
-				}
-			}
-			else if(isset($_GET['joined']))
-			{
-				 ?>
-                 <div class="alert alert-info">
-                      <i class="glyphicon glyphicon-log-in"></i> &nbsp; Successfully registered <a href='index.php'>login</a> here
-                 </div>
-                 <?php
-			}
-			?>
-            <div class="form-group">
-            <input type="text" class="form-control" name="txt_uname" placeholder="Enter Username" value="<?php if(isset($error)){echo $uname;}?>" />
-            </div>
-            <div class="form-group">
-            <input type="text" class="form-control" name="txt_umail" placeholder="Enter E-Mail ID" value="<?php if(isset($error)){echo $umail;}?>" />
-            </div>
-            <div class="form-group">
-            	<input type="password" class="form-control" name="txt_upass" placeholder="Enter Password" />
-            </div>
-            <div class="clearfix"></div><hr />
-            <div class="form-group">
-            	<button type="submit" class="btn btn-primary" name="btn-signup">
-                	<i class="glyphicon glyphicon-open-file"></i>&nbsp;SIGN UP
-                </button>
-            </div>
-            <br />
-            <label>have an account ! <a href="index.php">Sign In</a></label>
-        </form>
-       </div>
-</div>
+				<!-- Mensaje Mal-->
+	            <div class="alert alert-warning" style="display: <?php echo $show_mensaje_err; ?>;">
+	                <i class="material-icons">error_outline</i> CC de usuario ya inscrita.
+	            </div>
+	            <!-- end Mensaje Mal-->
+			
 
-</div>
 
+                <form id="sign_up" method="POST">
+                    <div class="msg">Registrate</div>
+                    <div class="input-group">
+                        <span class="input-group-addon">
+                            <i class="material-icons">fingerprint</i>
+                        </span>
+                        <div class="form-line">
+                            <input type="text" class="form-control" name="cc" placeholder="CC" required autofocus>
+                        </div>
+                    </div>
+                    <div class="input-group">
+                        <span class="input-group-addon">
+                            <i class="material-icons">person</i>
+                        </span>
+                        <div class="form-line">
+                            <input type="text" class="form-control" name="nombres" placeholder="Nombres" required autofocus>
+                        </div>
+                    </div>
+                    <div class="input-group">
+                        <span class="input-group-addon">
+                            <i class="material-icons">perm_identity</i>
+                        </span>
+                        <div class="form-line">
+                            <input type="text" class="form-control" name="primer_apellido" placeholder="Primer Apellido" required autofocus>
+                        </div>
+                    </div>
+                    <div class="input-group">
+                        <span class="input-group-addon">
+                            <i class="material-icons">perm_identity</i>
+                        </span>
+                        <div class="form-line">
+                            <input type="text" class="form-control" name="segundo_apellido" placeholder="Segundo Apellido" required autofocus>
+                        </div>
+                    </div>
+                    <div class="input-group">
+                        <span class="input-group-addon">
+                            <i class="material-icons">email</i>
+                        </span>
+                        <div class="form-line">
+                            <input type="email" class="form-control" name="email" placeholder="Correo Electronico" required>
+                        </div>
+                    </div>
+                    <div class="input-group">
+                        <span class="input-group-addon">
+                            <i class="material-icons">business</i>
+                        </span>
+                        <div class="form-line">
+                            <select class="form-control show-tick" name="sede">
+                                        <option value="">-- Seleccione Sede --</option>
+                                        <option value="Instituto_Estrada">Instituto Estrada</option>
+                                        <option value="Juan_Jose_Rondon">Juan Jose Rondon</option>
+                                        <option value="Mariscal_Sucre">Mariscal Sucre</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="input-group">
+                        <span class="input-group-addon">
+                            <i class="material-icons">lock</i>
+                        </span>
+                        <div class="form-line">
+                            <input type="password" class="form-control" name="password" placeholder="Contraseña" required>
+                        </div>
+                    </div>
+                    <div class="input-group">
+                        <span class="input-group-addon">
+                            <i class="material-icons">lock</i>
+                        </span>
+                        <div class="form-line">
+                            <input type="password" class="form-control" name="confirm" placeholder="Confirmar Contraseña" required>
+                        </div>
+                    </div>
+
+                    <button class="btn btn-block btn-lg bg-teal waves-effect" type="submit" name="btn-signup">Registrar</button>
+
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Jquery Core Js -->
+    <script src="plugins/jquery/jquery.min.js"></script>
+
+    <!-- Bootstrap Core Js -->
+    <script src="plugins/bootstrap/js/bootstrap.js"></script>
+
+    <!-- Waves Effect Plugin Js -->
+    <script src="plugins/node-waves/waves.js"></script>
+
+    <!-- Validation Plugin Js -->
+    <script src="plugins/jquery-validation/jquery.validate.js"></script>
+
+    <!-- Custom Js -->
+    <script src="js/admin.js"></script>
+    <script src="js/pages/examples/sign-up.js"></script>
 </body>
+
 </html>

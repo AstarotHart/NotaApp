@@ -7,16 +7,9 @@
                     <img src="../images/user.png" width="48" height="48" alt="User" />
                 </div>
                 <div class="info-container">
-                    <div class="name" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><?php print($userRow['nombres']." ".$userRow['prim_apellido']); ?></div>
-                    <div class="email"><?php print($userRow['email']); ?></div>
-                    <div class="btn-group user-helper-dropdown">
-                        <i class="material-icons" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">keyboard_arrow_down</i>
-                        <ul class="dropdown-menu pull-right">
-                            <li><a href="javascript:void(0);"><i class="material-icons">person</i>Perfil</a></li>
-                            <li role="seperator" class="divider"></li>
-                            <li><a href="logout.php?logout=true"><i class="material-icons">input</i>Salir</a></li>
-                        </ul>
-                    </div>
+                    <div class="name" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><?php echo $user->nombres." ".$user->prim_apellido; ?></div>
+                    <div class="email"><?php echo $user->email; ?></div>
+                    <div class="email"><?php echo $user_type->des_tipo_usuario; ?></div>
                 </div>
             </div>
             <!-- #User Info -->
