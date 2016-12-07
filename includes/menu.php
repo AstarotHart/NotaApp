@@ -1,3 +1,27 @@
+<?php 
+if (isset($_POST['actualizar'])) 
+{
+    $id_docente=$user_id;
+    $nombres=$_POST['nombres'];
+    $p_apellido=$_POST['p_apellido'];
+    $s_apellido=$_POST['s_apellido'];
+    $email=$_POST['email'];
+
+    if($user_app->update_docente($id_docente,$nombres,$p_apellido,$s_apellido,$email))
+    {
+        $msg = "<div class='alert alert-info'>
+        <strong>WOW!</strong> Record was updated successfully <a href='index.php'>HOME</a>!
+        </div>";
+     }
+     else
+     {
+        $msg = "<div class='alert alert-warning'>
+        <strong>SORRY!</strong> ERROR while updating record !
+        </div>";
+     }
+}
+ ?>
+
 <section>
         <!-- Left Sidebar -->
         <aside id="leftsidebar" class="sidebar">
@@ -7,9 +31,18 @@
                     <img src="../images/user.png" width="48" height="48" alt="User" />
                 </div>
                 <div class="info-container">
-                    <div class="name" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><?php echo $user->nombres." ".$user->prim_apellido; ?></div>
+                    <div class="name" ><?php echo $user->nombres." ".$user->prim_apellido; ?></div>
                     <div class="email"><?php echo $user->email; ?></div>
                     <div class="email"><?php echo $user_type->des_tipo_usuario; ?></div>
+                    <div class="btn-group user-helper-dropdown">
+                        <i class="material-icons" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">keyboard_arrow_down</i>
+                        <ul class="dropdown-menu pull-right">
+                            <li><a data-toggle="modal" data-target="#Actu_Datos"><i class="material-icons">person</i>Actualizar Datos</a></li>
+                            <li><a href="javascript:void(0);"><i class="material-icons">lock</i>Nueva Contraseña</a></li>
+                            <li role="seperator" class="divider"></li>
+                            <li><a href="logout.php?logout=true"><i class="material-icons">input</i>Salir</a></li>
+                        </ul>
+                    </div>
                 </div>
             </div>
             <!-- #User Info -->
@@ -80,7 +113,7 @@
             <!-- Footer -->
             <div class="legal">
                 <div class="copyright">
-                    &copy; 2016 <a href="javascript:void(0);">NotaApp</a>.
+                    &copy; 2017 <a href="javascript:void(0);">NotaApp</a>.
                 </div>
                 <div class="version">
                     <b>Version: </b> 1.0.0
@@ -89,5 +122,60 @@
             <!-- #Footer -->
         </aside>
         <!-- #END# Left Sidebar -->
+
+        <!-- Modal Actualizar Datos Usuario -->
+            <div class="modal fade" id="Actu_Datos" tabindex="-1" role="dialog">
+                <div class="modal-dialog modal-sm" role="document">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h4 class="modal-title" id="Actu_DatosLabel">Actualizar Datos</h4>
+                        </div>
+                        <div class="modal-body">
+                            <form id="sign_up" method="POST">
+                        
+                                <div class="input-group">
+                                    <span class="input-group-addon">
+                                        <i class="material-icons">person</i>
+                                    </span>
+                                    <div class="form-line">
+                                        <input type="text" class="form-control" name="nombres" value="<?php echo $user->nombres; ?>" required autofocus>
+                                    </div>
+                                </div>
+                                <div class="input-group">
+                                    <span class="input-group-addon">
+                                        <i class="material-icons">perm_identity</i>
+                                    </span>
+                                    <div class="form-line">
+                                        <input type="text" class="form-control" name="p_apellido" value="<?php echo $user->prim_apellido; ?>" required autofocus>
+                                    </div>
+                                </div>
+                                <div class="input-group">
+                                    <span class="input-group-addon">
+                                        <i class="material-icons">perm_identity</i>
+                                    </span>
+                                    <div class="form-line">
+                                        <input type="text" class="form-control" name="s_apellido" value="<?php echo $user->seg_apellido; ?>" required autofocus>
+                                    </div>
+                                </div>
+                                <div class="input-group">
+                                    <span class="input-group-addon">
+                                        <i class="material-icons">email</i>
+                                    </span>
+                                    <div class="form-line">
+                                        <input type="email" class="form-control" name="email" value="<?php echo $user->email; ?>" required>
+                                    </div>
+                                </div>
+                                
+                                <div class="modal-footer">
+                                    <button class="btn btn-block btn-lg bg-teal waves-effect" type="submit" name="actualizar">Actualizar</button>
+                                    <button type="button" class="btn btn-block btn-lg bg-amber waves-effect" data-dismiss="modal">Cancelar</button>
+                                </div>
+
+                            </form>
+                        </div>
+                        
+                    </div>
+                </div>
+            </div>
         
     </section>

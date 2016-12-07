@@ -76,40 +76,29 @@ if(isset($_POST['btn-signup']))
             </div>
             <!-- end Mensaje Mal-->
 
+
+            <!-- Lista de Docentes -->
             <div class="row clearfix">
                 <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
-
                     <div class="card">
                         <div class="header">
                             <h2>
                                 Docentes <small>Lista de docentes</small>
                             </h2>
-                            <ul class="header-dropdown m-r--5">
-                                <li>
-                                    <a href="javascript:void(0);" data-toggle="cardloading" data-loading-effect="pulse">
-                                        <i class="material-icons">loop</i>
-                                    </a>
-                                </li>
-                            </ul>
                         </div>
                         <div class="body">
-
-                    <div class="card">
-                        <div class="body">
-                        <!-- LISTAR DOCENTESS -->
-                            <?php
+                                <?php
                                  
                                 // Design initial table header
                                 $data = '<table class="table table-bordered table-striped table-hover js-basic-example dataTable">
                                                     <thead>
                                                         <tr>
-                                                            <th>No.</th>
-                                                            <th>No. Identificacion </th>
+                                                            <th>Identificación </th>
                                                             <th>Nombres</th>
-                                                            <th>Primer Apellido</th>
-                                                            <th>Segundo Apellido</th>
+                                                            <th>Apellidos</th>
                                                             <th>Email</th>
-                                                            <th>Id Tipo</th>
+                                                            <th>Tipo Usuario</th>
+                                                            <th>Sede Educativa</th>
                                                             <th>Actualizar</th>
                                                             <th>Borrar</th>
                                                         </tr>
@@ -123,24 +112,23 @@ if(isset($_POST['btn-signup']))
                                 $users = $object->Read_docente();
                                  
                                 if (count($users) > 0) {
-                                    $number = 1;
+                        
                                     foreach ($users as $user) {
                                         $data .= '<tr>
-                                                <td>' . $number . '</td>
                                                 <td>' . $user['id_docente'] . '</td>
                                                 <td>' . $user['nombres'] . '</td>
-                                                <td>' . $user['prim_apellido'] . '</td>
-                                                <td>' . $user['seg_apellido'] . '</td>
+                                                <td>' . $user['prim_apellido'] . ' ' .$user['seg_apellido'] .'</td>
                                                 <td>' . $user['email'] . '</td>
-                                                <td>' . $user['id_tipo'] . '</td>
+                                                <td>' . $user['id_tipo_usuario'] . '</td>
+                                                <td>' . $user['docentecol'] . '</td>
                                                 <td>
-                                                    <button onclick="GetUserDetails(' . $user['id_docente'] . ')" class="btn btn-warning">Update</button>
+                                                    <button onclick="GetUserDetails(' . $user['id_docente'] . ')" class="btn btn-warning">Actualizar</button>
                                                 </td>
                                                 <td>
-                                                    <button onclick="DeleteUser(' . $user['id_docente'] . ')" class="btn btn-danger">Delete</button>
+                                                    <button onclick="DeleteUser(' . $user['id_docente'] . ')" class="btn btn-danger">Borrar</button>
                                                 </td>
                                             </tr>';
-                                        $number++;
+                                        
                                     }
                                 } else {
                                     // records not found
@@ -152,60 +140,15 @@ if(isset($_POST['btn-signup']))
                                 echo $data;
                                  
                             ?>
-                        <!-- #LISTAR ALUMNOS -->
-                        </div>
-                    </div>
-
-                    <div class="card">
-                        <div class="header">
-                            <h2>NUEVO DOCENTE</h2>
-                        </div>
-                        <div class="body">
-                            <form id="form_validation" method="POST">
-                                <div class="form-group form-float">
-                                    <div class="form-line">
-                                        <input type="text" class="form-control" name="cc" required>
-                                        <label class="form-label">CC</label>
-                                    </div>
-                                </div>
-                                <div class="form-group form-float">
-                                    <div class="form-line">
-                                        <input type="text" class="form-control" name="name" required>
-                                        <label class="form-label">Nombres</label>
-                                    </div>
-                                </div>
-                                <div class="form-group form-float">
-                                    <div class="form-line">
-                                        <input type="text" class="form-control" name="pri_apellido" required>
-                                        <label class="form-label">Primer Apellido</label>
-                                    </div>
-                                </div>
-                                <div class="form-group form-float">
-                                    <div class="form-line">
-                                        <input type="text" class="form-control" name="seg_apellido" required>
-                                        <label class="form-label">Segundo Apellido</label>
-                                    </div>
-                                </div>
-                                <div class="form-group form-float">
-                                    <div class="form-line">
-                                        <input type="email" class="form-control" name="email" required>
-                                        <label class="form-label">Email</label>
-                                    </div>
-                                </div>
-                                <div class="form-group form-float">
-                                    <div class="form-line">
-                                        <input type="password" class="form-control" name="password" required>
-                                        <label class="form-label">Password</label>
-                                    </div>
-                                </div>
-            
-                                <button class="btn btn-primary waves-effect" type="submit" name="btn-signup">REGISTAR</button>
-                            </form>
+                                    
+                                </tbody>
+                            </table>
                         </div>
                     </div>
                 </div>
             </div>
-            <!-- #END# Basic Validation -->
+            <!-- #END# Lista Docentes -->
+
 
             <!-- Advanced Form Example With Validation -->
             <div class="row clearfix">

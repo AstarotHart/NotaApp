@@ -5,16 +5,9 @@
     require_once("class.user.php");
     $user_app = new USER();
   
-    
-   /** $stmt = $auth_user->runQuery("SELECT * FROM docente WHERE id_docente=:user_id");
+    $user_id=$_SESSION['user_session'];
 
-    $stmt = $auth_user->runQuery("SELECT * FROM docente inner join tipo_usuario on docente.id_tipo_usuario = tipo_usuario.id_tipo_usuario ");
-
-    $stmt->execute(array(":user_id"=>$user_id));
-    
-    $userRow=$stmt->fetch(PDO::FETCH_ASSOC);**/
-
-    $user = $user_app->user_data($_SESSION['user_session']);
+    $user = $user_app->user_data($user_id);
     $user_type = $user_app->tipo_user($user->id_tipo_usuario);
 
 ?>
@@ -259,14 +252,7 @@
                         </ul>
                     </li>
                     <!-- #END# Tasks -->
-                    <li class="dropdown">
-                        <a href="javascript:void(0);" class="dropdown-toggle" data-toggle="dropdown" role="button">
-                            <i class="material-icons">more_vert</i>
-                        </a>
-                        <ul class="dropdown-menu pull-right">
-                            <li><a href="logout.php?logout=true"><i class="material-icons">input</i>Salir</a></li>
-                        </ul>
-                    </li>
+    
                 </ul>
             </div>
         </div>
@@ -274,7 +260,7 @@
 
     <body class="theme-teal">
     <!-- Page Loader -->
-    <div class="page-loader-wrapper">
+    <!-- <div class="page-loader-wrapper">
         <div class="loader">
             <div class="md-preloader pl-size-md">
                 <svg viewbox="0 0 75 75">
@@ -283,7 +269,7 @@
             </div>
             <p>Cargando...</p>
         </div>
-    </div>
+    </div -->>
     <!-- #END# Page Loader -->
     <!-- Overlay For Sidebars -->
     <div class="overlay"></div>
