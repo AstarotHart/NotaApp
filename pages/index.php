@@ -14,12 +14,7 @@
             <div class="block-header">
                 <h2>DASHBOARD</h2>
             </div>
-            <?php 
-            if(isset($msg))
-{
- echo $msg;
-}
-             ?>
+            
             <!-- Metarial Design Buttons -->
             <div class="row">
                 <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
@@ -27,6 +22,7 @@
                         <div class="header">
                             <h2>
                                 GRUPOS
+
                                 <small>
                                     <span class="label bg-deep-orange font-italic">Director Grupo</span><span class="label bg-light-green font-italic">Docente</span>
                                 </small>
@@ -54,65 +50,10 @@
                                 <button type="button" class="btn bg-light-green waves-effect">LIGHT GREEN</button>
                             </div>
 
-                            
-                             <div class="collapse" id="collapseExample">
-                                <div class="well">
-                                    Anim pariatur cliche reprehenderit, enim eiusmod high life accusamus terry richardson ad squid. Nihil anim keffiyeh helvetica,
-                                    craft beer labore wes anderson cred nesciunt sapiente ea proident.
-                                </div>
-                            </div>
-
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <!-- #END# Metarial Design Buttons -->
-
             
         </div>
     </section>
 
-    <!-- Jquery Core Js -->
-    <script src="../plugins/jquery/jquery.min.js"></script>
-
-    <!-- Bootstrap Core Js -->
-    <script src="../plugins/bootstrap/js/bootstrap.js"></script>
-
-    <!-- Select Plugin Js -->
-    <script src="../plugins/bootstrap-select/js/bootstrap-select.js"></script>
-
-    <!-- Slimscroll Plugin Js -->
-    <script src="../plugins/jquery-slimscroll/jquery.slimscroll.js"></script>
-
-    <!-- Waves Effect Plugin Js -->
-    <script src="../plugins/node-waves/waves.js"></script>
-
-    <!-- Jquery CountTo Plugin Js -->
-    <script src="../plugins/jquery-countto/jquery.countTo.js"></script>
-
-    <!-- Morris Plugin Js -->
-    <script src="../plugins/raphael/raphael.min.js"></script>
-    <script src="../plugins/morrisjs/morris.js"></script>
-
-    <!-- ChartJs -->
-    <script src="plugins/chartjs/Chart.bundle.js"></script>
-
-    <!-- Flot Charts Plugin Js -->
-    <script src="../plugins/flot-charts/jquery.flot.js"></script>
-    <script src="../plugins/flot-charts/jquery.flot.resize.js"></script>
-    <script src="../plugins/flot-charts/jquery.flot.pie.js"></script>
-    <script src="../plugins/flot-charts/jquery.flot.categories.js"></script>
-    <script src="../plugins/flot-charts/jquery.flot.time.js"></script>
-
-    <!-- Sparkline Chart Plugin Js -->
-    <script src="../plugins/jquery-sparkline/jquery.sparkline.js"></script>
-
-    <!-- Custom Js -->
-    <script src="../js/admin.js"></script>
-    <script src="../js/pages/index.js"></script>
-
-    <!-- Demo Js -->
-    <script src="../js/demo.js"></script>
-</body>
-
-</html>
+    <!-- TFooter -->
+    <?php include("../includes/footer.php");?>
+    <!-- #Footer -->

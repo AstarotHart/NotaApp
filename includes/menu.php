@@ -7,17 +7,51 @@ if (isset($_POST['actualizar']))
     $s_apellido=$_POST['s_apellido'];
     $email=$_POST['email'];
 
-    if($user_app->update_docente($id_docente,$nombres,$p_apellido,$s_apellido,$email))
+    $host= $_SERVER["HTTP_HOST"];
+    $url= $_SERVER["REQUEST_URI"];
+
+    $fullUrl=$host.$url;
+
+    /**
+     * Llamada a funcion para actualizar los datos del docente
+     */
+    if(($user_app->update_docente($id_docente,$nombres,$p_apellido,$s_apellido,$email))==true)
     {
-        $msg = "<div class='alert alert-info'>
-        <strong>WOW!</strong> Record was updated successfully <a href='index.php'>HOME</a>!
-        </div>";
+        echo '<script type="text/javascript">';
+        echo 'setTimeout(function () { swal("Datos Actualizados","","success");';
+       // echo 'setTimeout(function () {swal({title: "Datos Actualizados",text: "",timer: 2000,showConfirmButton: false});';
+        echo '}, 1000);</script>';
      }
      else
      {
-        $msg = "<div class='alert alert-warning'>
-        <strong>SORRY!</strong> ERROR while updating record !
-        </div>";
+        echo '<script type="text/javascript">';
+        echo 'setTimeout(function () { swal("Datos NO Actualizados","","error");';
+        echo '}, 1000);</script>';
+     }
+
+}
+
+if (isset($_POST['cambiar_pass']))
+{
+    $id_docente=$user_id;
+    $old_password=$_POST['old_password'];
+    $new_password=$_POST['new_password'];
+
+    /**
+     * Llamada a funcion para cambiar la  contraseniadel docente
+     */
+    if(($user_app->cambiar_pass_docente($id_docente,$old_password,$new_password))==true)
+    {
+        echo '<script type="text/javascript">';
+        echo 'setTimeout(function () { swal("Contraseña Actualizada","","success");';
+       // echo 'setTimeout(function () {swal({title: "Datos Actualizados",text: "",timer: 2000,showConfirmButton: false});';
+        echo '}, 1000);</script>';
+     }
+     else
+     {
+        echo '<script type="text/javascript">';
+        echo 'setTimeout(function () { swal("Contraseña NO Actualizada","","error");';
+        echo '}, 1000);</script>';
      }
 }
  ?>
@@ -38,7 +72,7 @@ if (isset($_POST['actualizar']))
                         <i class="material-icons" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">keyboard_arrow_down</i>
                         <ul class="dropdown-menu pull-right">
                             <li><a data-toggle="modal" data-target="#Actu_Datos"><i class="material-icons">person</i>Actualizar Datos</a></li>
-                            <li><a href="javascript:void(0);"><i class="material-icons">lock</i>Nueva Contraseña</a></li>
+                            <li><a data-toggle="modal" data-target="#New_Pass"><i class="material-icons">lock</i>Nueva Contraseña</a></li>
                             <li role="seperator" class="divider"></li>
                             <li><a href="logout.php?logout=true"><i class="material-icons">input</i>Salir</a></li>
                         </ul>
@@ -178,4 +212,54 @@ if (isset($_POST['actualizar']))
                 </div>
             </div>
         
+
+        <!-- Modal Cambiar contrasena -->
+            <div class="modal fade" id="New_Pass" tabindex="-1" role="dialog">
+                <div class="modal-dialog modal-sm" role="document">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h4 class="modal-title" id="Actu_DatosLabel">Actualizar Datos</h4>
+                        </div>
+                        <div class="modal-body">
+                            <form id="sign_up" method="POST">
+                        
+                                <div class="input-group">
+                                    <span class="input-group-addon">
+                                        <i class="material-icons">lock</i>
+                                    </span>
+                                    <div class="form-line">
+                                        <input type="password" class="form-control" name="old_password" placeholder="Contraseña Antigua" required>
+                                    </div>
+                                </div>
+
+                                <div class="input-group">
+                                    <span class="input-group-addon">
+                                        <i class="material-icons">lock</i>
+                                    </span>
+                                    <div class="form-line">
+                                        <input type="password" class="form-control" name="new_password" placeholder="Nueva Contraseña" required>
+                                    </div>
+                                </div>
+                                <div class="input-group">
+                                    <span class="input-group-addon">
+                                        <i class="material-icons">lock</i>
+                                    </span>
+                                    <div class="form-line">
+                                        <input type="password" class="form-control" name="confirm" placeholder="Confirmar Nueva Contraseña" required>
+                                    </div>
+                                </div>
+                                
+                                <div class="modal-footer">
+                                    <button class="btn btn-block btn-lg bg-teal waves-effect" type="submit" name="cambiar_pass">Cambiar</button>
+                                    <button type="button" class="btn btn-block btn-lg bg-amber waves-effect" data-dismiss="modal">Cancelar</button>
+                                </div>
+
+                            </form>
+                        </div>
+                        
+                    </div>
+                </div>
+            </div>
+
+
     </section>

@@ -167,6 +167,45 @@ class USER
         }
     }
 
+
+    public function cambiar_pass_docente($u_id,$old_pass,$new_pass)
+    {
+        $new_password = password_hash($new_pass, PASSWORD_DEFAULT);
+        $res;
+
+        try
+        {
+            $stmt = $this->conn->prepare("SELECT id_docente, pass FROM docente WHERE id_docente=:u_id");
+            $stmt->execute(array(':u_id'=>$u_id));
+            $userRow=$stmt->fetch(PDO::FETCH_ASSOC);
+            if($stmt->rowCount() == 1)
+            {
+                if(password_verify($old_pass, $userRow['pass']))
+                {
+                    $stmt=$this->conn->prepare("UPDATE docente SET pass=:new_password WHERE id_docente=:u_id");
+
+                    $stmt->bindparam(":new_password",$new_password);
+                    $stmt->bindparam(":u_id",$u_id);
+                    $stmt->execute();
+
+                    $res= true;
+                }
+                else
+                {
+                    $res= false;
+                }
+            }
+
+            return $res;          
+        }
+
+        catch(PDOException $e)
+        {
+            echo $e->getMessage();
+            return false;
+        }
+    }
+
 /**----------------------------------------------------------------**/
 
     /**
@@ -184,13 +223,11 @@ class USER
 
                 if(password_verify($u_pass, $userRow['pass']))
                 {
-                    echo "Pass verificado";
                     $_SESSION['user_session'] = $userRow['id_docente'];
                     return true;
                 }
                 else
                 {
-                    echo "pass NO";
                     return false;
                 }
             }

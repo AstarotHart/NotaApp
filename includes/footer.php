@@ -28,11 +28,16 @@
     <!-- Wait Me Plugin Js -->
     <script src="../plugins/waitme/waitMe.js"></script>
 
+    <!-- Bootstrap Notify Plugin Js -->
+    <script src="../plugins/bootstrap-notify/bootstrap-notify.js"></script>
+
     <!-- Custom Js -->
     <script src="../js/admin.js"></script>
     <script src="../js/pages/forms/form-wizard.js"></script>
     <script src="../js/pages/tables/jquery-datatable.js"></script>
     <script src="../js/pages/cards/basic.js"></script>
+    <script src="../js/pages/ui/notifications1.js"></script>
+    <script src="../js/pages/ui/dialogs.js"></script>
 
     <!-- Demo Js -->
     <script src="../js/demo.js"></script>
