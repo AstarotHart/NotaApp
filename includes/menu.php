@@ -104,10 +104,47 @@ if (isset($_POST['cambiar_pass']))
                             <span>Inicio</span>
                         </a>
                     </li>
+
                     <li <?php if (isSite('new_docente.php', 'new_alumno.php','new_acudiente.php' )) echo 'class="active"'; ?>>
                         <a href="javascript:void(0);" class="menu-toggle">
-                            <i class="material-icons">person_add</i>
-                            <span>Nuevo</span>
+                            <i class="material-icons">domain</i>
+                            <span>Administracion</span>
+                        </a>
+                        <ul class="ml-menu">
+                            <li <?php if (isSite('periodo.php')) echo 'class="active"'; ?>>
+                                <a href="../pages/nperiodo.php">Periodo</a>
+                            </li>
+                            <li <?php if (isSite('areas.php')) echo 'class="active"'; ?>>
+                                <a href="../pages/areas.php">Areas</a>
+                            </li>
+                            <li <?php if (isSite('asignarutas.php')) echo 'class="active"'; ?>>
+                                <a href="../pages/asignarutas.php">Asignaturas</a>
+                            </li>
+                        </ul>
+                    </li>
+
+                    <li <?php if (isSite('new_docente.php', 'new_alumno.php','new_acudiente.php' )) echo 'class="active"'; ?>>
+                        <a href="javascript:void(0);" class="menu-toggle">
+                            <i class="material-icons">people</i>
+                            <span>Alumnos</span>
+                        </a>
+                        <ul class="ml-menu">
+                            <li <?php if (isSite('new_alumno.php')) echo 'class="active"'; ?>>
+                                <a href="../pages/new_alumno.php">Inscripcion</a>
+                            </li>
+                            <li <?php if (isSite('listar_alumnos.php')) echo 'class="active"'; ?>>
+                                <a href="../pages/listar_alumnos.php">Alumnos</a>
+                            </li>
+                            <li <?php if (isSite('informes.php')) echo 'class="active"'; ?>>
+                                <a href="../pages/informes.php">Informes</a>
+                            </li>
+                        </ul>
+                    </li>
+
+                    <li <?php if (isSite('new_docente.php', 'new_alumno.php','new_acudiente.php' )) echo 'class="active"'; ?>>
+                        <a href="javascript:void(0);" class="menu-toggle">
+                            <i class="material-icons">assignment_ind</i>
+                            <span>Docentes</span>
                         </a>
                         <ul class="ml-menu">
                             <li <?php if (isSite('new_docente.php')) echo 'class="active"'; ?>>
@@ -234,7 +271,7 @@ if (isset($_POST['cambiar_pass']))
 
                                 <div class="input-group">
                                     <span class="input-group-addon">
-                                        <i class="material-icons">lock</i>
+                                        <i class="material-icons">lock_outline</i>
                                     </span>
                                     <div class="form-line">
                                         <input type="password" class="form-control" name="new_password" placeholder="Nueva Contraseña" required>
@@ -242,7 +279,7 @@ if (isset($_POST['cambiar_pass']))
                                 </div>
                                 <div class="input-group">
                                     <span class="input-group-addon">
-                                        <i class="material-icons">lock</i>
+                                        <i class="material-icons">lock_outline</i>
                                     </span>
                                     <div class="form-line">
                                         <input type="password" class="form-control" name="confirm" placeholder="Confirmar Nueva Contraseña" required>

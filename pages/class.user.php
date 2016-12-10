@@ -106,7 +106,7 @@ class USER
      * @param  [int] $id_tipo = 2            [Tipo Administrador]
      * @param  [int] $id_tipo = 3            [Tipo Docente]
      */
-	public function register_docente($cc,$nombre,$prim_apellido,$seg_apellido,$email,$pass,$docentecol)
+	public function register_docente($cc,$nombre,$prim_apellido,$seg_apellido,$email,$pass,$id_sede)
 	{
 		$id_tipo="3";
 
@@ -114,8 +114,8 @@ class USER
 		{
 			$new_password = password_hash($pass, PASSWORD_DEFAULT);
 
-			$stmt = $this->conn->prepare("INSERT INTO docente(id_docente,id_tipo_usuario,nombres,prim_apellido,seg_apellido,email,pass,docentecol) 
-		                                  VALUES(:cc,:id_tipo,:nombre,:prim_ape,:seg_ape,:email,:new_password,:docentecol)");
+			$stmt = $this->conn->prepare("INSERT INTO docente(id_docente,id_tipo_usuario,nombres,prim_apellido,seg_apellido,email,pass,id_sede) 
+		                                  VALUES(:cc,:id_tipo,:nombre,:prim_ape,:seg_ape,:email,:new_password,:id_sede)");
 												  
 			$stmt->bindparam(":cc", $cc);
             $stmt->bindparam(":id_tipo", $id_tipo);
@@ -124,7 +124,7 @@ class USER
 			$stmt->bindparam(":seg_ape", $seg_apellido);
 			$stmt->bindparam(":email", $email);
 			$stmt->bindparam(":new_password", $new_password);
-            $stmt->bindparam(":docentecol", $docentecol);									  
+            $stmt->bindparam(":id_sede", $id_sede);									  
 				
 			$stmt->execute();	
 			
@@ -205,6 +205,114 @@ class USER
             return false;
         }
     }
+
+/* -------------F U N C I O N E S  A L U M N O ----------*/
+     
+    /**
+     * Leer lista de doncente desde Base de Datos
+     */
+    public function Read_alumno()
+    {
+        $query = $this->conn->prepare("SELECT * FROM alumno");
+        $query->execute();
+        $data = array();
+        while ($row = $query->fetch(PDO::FETCH_ASSOC)) {
+            $data[] = $row;
+        }
+        return $data;
+    }
+
+
+    public function register_alumno($id_alumno,$id_sede,$id_grado,$nombres,$primer_apellido,$segundo_apellido,$desplazado,$repitente,$nombre_acudiente,$apellidos_acudiente,$telefono_acudiente)
+    {
+        try
+        {
+            $stmt = $this->conn->prepare("INSERT INTO alumno(id_alumno,id_sede,id_grado,nombres,primer_apellido,segundo_apellido,desplazado,repitente,nombre_acudiente,apellidos_acudiente,telefono_acudiente) 
+                                          VALUES(:id_alumno,:id_sede,:id_grado,:nombres,:primer_apellido,:segundo_apellido,:desplazado,:repitente,:nombre_acudiente,:apellidos_acudiente,:telefono_acudiente)");
+                                                  
+            $stmt->bindparam(":id_alumno", $id_alumno);
+            $stmt->bindparam(":id_sede", $id_sede);
+            $stmt->bindparam(":id_grado", $id_grado);
+            $stmt->bindparam(":nombres", $nombres);
+            $stmt->bindparam(":primer_apellido", $primer_apellido);
+            $stmt->bindparam(":segundo_apellido", $segundo_apellido);
+            $stmt->bindparam(":desplazado", $desplazado);
+            $stmt->bindparam(":repitente", $repitente);
+            $stmt->bindparam(":nombre_acudiente", $nombre_acudiente);
+            $stmt->bindparam(":apellidos_acudiente", $apellidos_acudiente);                                    
+            $stmt->bindparam(":telefono_acudiente", $telefono_acudiente);
+                
+            $stmt->execute();   
+            
+            return $stmt;   
+        }
+        catch(PDOException $e)
+        {
+            echo $e->getMessage();
+        }               
+    }
+
+
+    /**
+     * Leer detalles de alumno por ID_ALUMNO
+     */
+    public function detalles_alumno($alumno_id)
+    {
+        try 
+        {
+            $stmt = $this->conn->prepare("SELECT id_alumno,id_grado,nombres,primer_apellido,segundo_apellido,desplazado,repitente,nombre_acudiente,primer_apellido_acudiente,segundo_apellido_acudiente,telefono_acudiente FROM alumno WHERE id_alumno=:alumno_id");
+            $stmt->bindparam(":alumno_id", $alumno_id);
+            $stmt->execute();
+
+
+            if ($stmt->rowCount() > 0) 
+            {
+
+                return $stmt->fetch(PDO::FETCH_OBJ);
+            }
+
+        } 
+
+        catch (PDOException $e) 
+        {
+            exit($e->getMessage());
+        }
+    }
+
+
+    /**
+     * Combobox para cargar SEDES
+     */
+    public function combobox_sede()
+    {
+        $query = $this->conn->prepare("SELECT id_sede,descripcion_sede FROM Sede");
+        $query->execute();
+        
+        while($row=$query->fetch(PDO::FETCH_ASSOC))
+        {
+            echo "entro";
+            echo '<option value="'.$row['id_sede'].'">'.$row['descripcion_sede'].'</option>'; 
+        }
+
+    }
+
+
+    /**
+     * Combobox para cargar GRADOS
+     */
+    public function combobox_grado()
+    {
+        $query = $this->conn->prepare("SELECT id_grado,descripcion_grado FROM Grado");
+        $query->execute();
+        
+        while($row=$query->fetch(PDO::FETCH_ASSOC))
+        {
+            echo "entro";
+            echo '<option value="'.$row['id_grado'].'">'.$row['descripcion_grado'].'</option>'; 
+        }
+
+    }
+
 
 /**----------------------------------------------------------------**/
 

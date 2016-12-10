@@ -79,7 +79,7 @@ if(isset($_POST['btn-signup']))
     <div class="signup-box">
         <div class="logo">
             <a href="javascript:void(0);">NotaAPP</a>
-            <small>Aministrador de Calificaciones</small>
+            <small>Aministrador Academico</small>
         </div>
         <div class="card">
             <div class="body">
@@ -141,9 +141,9 @@ if(isset($_POST['btn-signup']))
                         <div class="form-line">
                             <select class="form-control show-tick" name="sede">
                                         <option value="">-- Seleccione Sede --</option>
-                                        <option value="Instituto_Estrada">Instituto Estrada</option>
-                                        <option value="Juan_Jose_Rondon">Juan Jose Rondon</option>
-                                        <option value="Mariscal_Sucre">Mariscal Sucre</option>
+                                        <?php 
+                                            $user = $object->combobox_sede();
+                                        ?>
                             </select>
                         </div>
                     </div>

@@ -5,44 +5,37 @@
 
 require_once("class.user.php");
 $user = new USER();
-
 $object = new USER();
 
-$show_mensaje= "none";
-$show_mensaje_err= "none";
-
-if(isset($_POST['btn-signup']))
+if(isset($_POST['matricular']))
 {
-    $ti = strip_tags($_POST['ti']);
-    $nombres = strip_tags($_POST['name']);
-    $prim_apellido = strip_tags($_POST['pri_apellido']);
-    $seg_apellido = strip_tags($_POST['seg_apellido']);   
-    $id_acudiente = strip_tags($_POST['Id_acudiente']);
-    $id_grado = strip_tags($_POST['Id_grado']);
-    $id_grupo = strip_tags($_POST['Id_grupo']);
+    $id_alumno           = strip_tags($_POST['id_alumno']);
+    $id_sede             = strip_tags($_POST['id_sede']);
+    $id_grado            = strip_tags($_POST['id_grado']);
+    $nombres             = strip_tags($_POST['nombres']);
+    $primer_apellido     = strip_tags($_POST['primer_apellido']);
+    $segundo_apellido    = strip_tags($_POST['segundo_apellido']);
+    $desplazado          = isset($_POST['desplazado']) ? $_POST['desplazado'] : "No" ;
+    //$desplazado        = strip_tags($_POST['desplazado']);
+    //$repitente         = strip_tags($_POST['repitente']);
+    $repitente           = isset($_POST['repitente']) ? $_POST['repitente'] : "No" ;  
+    $nombres_acudiente   = strip_tags($_POST['nombres_acudiente']);
+    $apellidos_acudiente = strip_tags($_POST['apellidos_acudiente']);
+    $telefono_acudiente  = strip_tags($_POST['telefono_acudiente']);
 
-    try
+    if(($user->register_alumno($id_alumno,$id_sede,$id_grado,$nombres,$primer_apellido,$segundo_apellido,$desplazado,$repitente,$nombres_acudiente,$apellidos_acudiente,$telefono_acudiente))==true)
     {
-        $stmt = $user->runQuery("SELECT id_alumno FROM alumno WHERE id_alumno=:id_alumno");
-        $stmt->execute(array(':id_alumno'=>$ti));
-        $row=$stmt->fetch(PDO::FETCH_ASSOC);
-                
-        if($row['id_alumno']==$ti) 
-        {
-            $show_mensaje_err= "show";
-        }
-        else
-        {
-            if($user->register_alumno($ti,$nombres,$prim_apellido,$seg_apellido,$id_acudiente,$id_grado,$id_grupo))
-            {  
-                $show_mensaje= "show";
-            }
-        }
-    }
-    catch(PDOException $e)
-    {
-        $show_mensaje= "show";
-    } 
+        echo '<script type="text/javascript">';
+        echo 'setTimeout(function () { swal("Alumno Matriculado","","success");';
+       // echo 'setTimeout(function () {swal({title: "Datos Actualizados",text: "",timer: 2000,showConfirmButton: false});';
+        echo '}, 1000);</script>';
+     }
+     else
+     {
+        echo '<script type="text/javascript">';
+        echo 'setTimeout(function () { swal("Alumno NO Matriculado","","error");';
+        echo '}, 1000);</script>';
+     }
 }
 
  ?>
@@ -60,171 +53,134 @@ if(isset($_POST['btn-signup']))
     <section class="content">
         <div class="container-fluid">
 
-            <!-- Page -->
-            <!-- Basic Validation -->
-
-            <!-- Mensaje Buen-->
-            <div class="alert alert-sutiess" style="display: <?php echo $show_mensaje; ?>;">
-                <strong>Well done!</strong> Usuario creado correctamente.
-            </div>
-            <!-- end Mensaje Buen-->
-
-            <!-- Mensaje Mal-->
-            <div class="alert alert-warning" style="display: <?php echo $show_mensaje_err; ?>;">
-                <strong>Bad done!</strong> ti de usuario ya inscrita.
-            </div>
-            <!-- end Mensaje Mal-->
-
+                    <!-- Advanced Form Example With Validation -->
             <div class="row clearfix">
                 <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
-
                     <div class="card">
                         <div class="header">
-                            <h2>
-                                Alumnos <small>Lista de alumnos</small>
-                            </h2>
-                            <ul class="header-dropdown m-r--5">
-                                <li>
-                                    <a href="javascript:void(0);" data-toggle="cardloading" data-loading-effect="pulse">
-                                        <i class="material-icons">loop</i>
-                                    </a>
-                                </li>
-                            </ul>
-                        </div>
-                    <div class="body">
-
-                        <!-- LISTAR ALUMNOS -->
-                            <?php
-                                 
-                                // Design initial table header
-                                $data = '<table class="table table-bordered table-striped table-hover js-basic-example dataTable">
-                                                    <thead>
-                                                        <tr>
-                                                            <th>No.</th>
-                                                            <th>id_alumno</th>
-                                                            <th>Nombres</th>
-                                                            <th>Primer Apellido</th>
-                                                            <th>Segundo Apellido</th>
-                                                            <th>Id Acudiente</th>
-                                                            <th>Id Grado</th>
-                                                            <th>Id Grupo</th>
-                                                            <th>Update</th>
-                                                            <th>Delete</th>
-                                                        </tr>
-                                                    <thead>
-                                                    <tfoot>
-                                                        <tr>
-                                                            <th>No.</th>
-                                                            <th>id_alumno</th>
-                                                            <th>Nombres</th>
-                                                            <th>Primer Apellido</th>
-                                                            <th>Segundo Apellido</th>
-                                                            <th>Id Acudiente</th>
-                                                            <th>Id Grado</th>
-                                                            <th>Id Grupo</th>
-                                                            <th>Update</th>
-                                                            <th>Delete</th>
-                                                        </tr>
-                                                    </tfoot>
-
-                                                    <tbody>
-
-                                                    ';
-                                 
-                                 
-                                $users = $object->Read_alumno();
-                                 
-                                if (count($users) > 0) {
-                                    $number = 1;
-                                    foreach ($users as $user) {
-                                        $data .= '<tr>
-                                                <td>' . $number . '</td>
-                                                <td>' . $user['id_alumno'] . '</td>
-                                                <td>' . $user['nombres'] . '</td>
-                                                <td>' . $user['prim_apellido'] . '</td>
-                                                <td>' . $user['seg_apellido'] . '</td>
-                                                <td>' . $user['id_acudiente'] . '</td>
-                                                <td>' . $user['id_grado'] . '</td>
-                                                <td>' . $user['id_grupo'] . '</td>
-                                                <td>
-                                                    <button onclick="GetUserDetails(' . $user['id_alumno'] . ')" class="btn btn-warning">Update</button>
-                                                </td>
-                                                <td>
-                                                    <button onclick="DeleteUser(' . $user['id_alumno'] . ')" class="btn btn-danger">Delete</button>
-                                                </td>
-                                            </tr>';
-                                        $number++;
-                                    }
-                                } else {
-                                    // records not found
-                                    $data .= '<tr><td colspan="6">No hay registros para mostrar!</td></tr>';
-                                }
-                                 
-                                $data .= '<tbody></table>';
-                                 
-                                echo $data;
-                                 
-                            ?>
-                        <!-- #LISTAR ALUMNOS -->
-                        </div>
-                    </div>
-
-                    <div class="card">
-                        <div class="header">
-                            <h2>NUEVO ALUMNO</h2>
+                            <h2>Matricula</h2>
                         </div>
                         <div class="body">
-                            <form id="form_validation" method="POST">
-                                <div class="form-group form-float">
-                                    <div class="form-line">
-                                        <input type="text" class="form-control" name="ti" required>
-                                        <label class="form-label">Ti Alumno</label>
+                            <form id="register_alumno" method="POST">
+
+                                <h2 class="card-inside-title">Informacion Alumno</h2>
+
+                                <div class="row clearfix">
+                                    <div class="col-sm-4">
+                                        <div class="form-group form-float">
+                                            <div class="form-line">
+                                                <input type="text" class="form-control" name="id_alumno" required>
+                                                <label class="form-label">No. Documento*</label>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-sm-4">
+                                        <div class="form-group form-float">
+                                            <div class="form-line">
+                                                <input type="text" class="form-control" name="nombres" id="nombres" required>
+                                                <label class="form-label">Nombres*</label>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-sm-4">
+                                        <div class="form-group form-float">
+                                            <div class="form-line">
+                                                <input type="text" class="form-control" name="primer_apellido" id="primer_pellido" required>
+                                                <label class="form-label">Primer Apellido*</label>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-sm-4">
+                                        <div class="form-group form-float">
+                                            <div class="form-line">
+                                                <input type="text" class="form-control" name="segundo_apellido" id="segundo_pellido" required>
+                                                <label class="form-label">Segundo Apellido*</label>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-sm-4">
+                                        <div class="form-group form-float">
+                                            <div class="form-line">
+                                                <input id="desplazado" name="desplazado" type="checkbox">
+                                                <label for="desplazado">Desplazado</label>
+                                    
+                                                <input id="repitente" name="repitente" type="checkbox">
+                                                <label for="repitente">Repitente</label>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-sm-4">
+                                        <div class="form-group form-float">
+                                            <div class="form-line">
+                                                <select class="form-control show-tick" name="id_sede" required>
+                                                    <option value="">-- Seleccione Sede --</option>
+                                                    <?php 
+                                                        $user = $object->combobox_sede();
+                                                     ?>
+                                                </select>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-sm-4">
+                                        <div class="form-group form-float">
+                                            <div class="form-line">
+                                                <select class="form-control show-tick" name="id_grado" required>
+                                                    <option value="">-- Seleccione Grado --</option>
+                                                    <?php 
+                                                        $user = $object->combobox_grado();
+                                                     ?>
+                                                </select>
+                                            </div>
+                                        </div>
                                     </div>
                                 </div>
-                                <div class="form-group form-float">
-                                    <div class="form-line">
-                                        <input type="text" class="form-control" name="name" required>
-                                        <label class="form-label">Nombres</label>
+                            
+                                    
+                                    
+                                <h2 class="card-inside-title">Informacion Acudiente</h2>
+
+                                    <div class="row clearfix">
+
+                                        <div class="col-sm-4">
+                                            <div class="form-group form-float">
+                                                <div class="form-line">
+                                                    <input type="text" name="nombres_acudiente" class="form-control" required>
+                                                    <label class="form-label">Nombre Acudiente*</label>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-sm-4">
+                                            <div class="form-group form-float">
+                                                <div class="form-line">
+                                                    <input type="text" name="apellidos_acudiente" class="form-control" required>
+                                                    <label class="form-label">Apellidos*</label>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-sm-4">
+                                            <div class="form-group form-float">
+                                                <div class="form-line">
+                                                    <input type="text" name="telefono_acudiente" class="form-control" required>
+                                                    <label class="form-label">Telefono*</label>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <div class="col-sm-12">
+                                            <button class="btn btn-block btn-lg bg-teal waves-effect" type="submit" name="matricular">Matricular</button>
+                                        </div>
+
                                     </div>
-                                </div>
-                                <div class="form-group form-float">
-                                    <div class="form-line">
-                                        <input type="text" class="form-control" name="pri_apellido" required>
-                                        <label class="form-label">Primer Apellido</label>
-                                    </div>
-                                </div>
-                                <div class="form-group form-float">
-                                    <div class="form-line">
-                                        <input type="text" class="form-control" name="seg_apellido" required>
-                                        <label class="form-label">Segundo Apellido</label>
-                                    </div>
-                                </div>
-                                <div class="form-group form-float">
-                                    <div class="form-line">
-                                        <input type="text" class="form-control" name="Id_acudiente" required>
-                                        <label class="form-label">Id Acudiente</label>
-                                    </div>
-                                </div>
-                                <div class="form-group form-float">
-                                    <div class="form-line">
-                                        <input type="text" class="form-control" name="Id_grado" required>
-                                        <label class="form-label">Id Grado</label>
-                                    </div>
-                                </div>
-                                <div class="form-group form-float">
-                                    <div class="form-line">
-                                        <input type="text" class="form-control" name="Id_grupo" required>
-                                        <label class="form-label">Id Grupo</label>
-                                    </div>
-                                </div>
-            
-                                <button class="btn btn-primary waves-effect" type="submit" name="btn-signup">REGISTAR</button>
+                                    
+
                             </form>
                         </div>
                     </div>
                 </div>
             </div>
-            <!-- #END# Basic Validation -->
+            <!-- #END# Advanced Form Example With Validation -->
+
+                    
             
 
         </div>
