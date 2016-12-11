@@ -10,9 +10,9 @@ $(function () {
     });
 
     $('.datepicker').bootstrapMaterialDatePicker({
-        format: 'dddd DD MMMM YYYY',
+        format: 'YYYY-MM-DD',
         clearButton: true,
-        weekStart: 1,
+        weekStart: 0,
         time: false
     });
 
@@ -21,4 +21,6 @@ $(function () {
         clearButton: true,
         date: false
     });
+
+    $('#date').bootstrapMaterialDatePicker({ weekStart : 0, time: false });
 });

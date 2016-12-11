@@ -3,7 +3,7 @@
    var pluginName = "bootstrapMaterialDatePicker";
    var pluginDataName = "plugin_" + pluginName;
 
-   moment.locale('en');
+   moment.locale('es');
 
    function Plugin(element, options)
    {
@@ -17,7 +17,7 @@
       this.element = element;
       this.$element = $(element);
 
-      this.params = {date: true, time: true, format: 'YYYY-MM-DD', minDate: null, maxDate: null, currentDate: null, lang: 'en', weekStart: 0, shortTime: false, clearButton: false, nowButton: false, cancelText: 'Cancel', okText: 'OK', clearText: 'Clear', nowText: 'Now', switchOnClick: false};
+       this.params = {date: true, time: true, format: 'YYYY-MM-DDDD', minDate: null, maxDate: null, currentDate: null, lang: 'es', weekStart: 0, shortTime: false, clearButton: false, nowButton: false, cancelText: 'Cancelar', okText: 'OK', clearText: 'Limpiar', nowText: 'Ahora', switchOnClick: false, triggerEvent: 'focus'};
       this.params = $.fn.extend(this.params, options);
 
       this.name = "dtp_" + this.setName();
@@ -65,7 +65,7 @@
                  this._attachEvent(this.$dtpElement.find('.dtp-content'), 'click', this._onElementClick.bind(this));
                  this._attachEvent(this.$dtpElement, 'click', this._onBackgroundClick.bind(this));
                  this._attachEvent(this.$dtpElement.find('.dtp-close > a'), 'click', this._onCloseClick.bind(this));
-                 this._attachEvent(this.$element, 'focus', this._onFocus.bind(this));
+                 this._attachEvent(this.$element, this.params.triggerEvent, this._fireCalendar.bind(this));
               },
               initDays: function ()
               {
@@ -204,7 +204,7 @@
                          '<div class="dtp-date-view">' +
                          '<header class="dtp-header">' +
                          '<div class="dtp-actual-day">Lundi</div>' +
-                         '<div class="dtp-close"><a href="javascript:void(0);"><i class="material-icons">clear</i></</div>' +
+                         '<div class="dtp-close"><a href="javascript:void(0);"><i class="material-icons">clear</i></a></div>' +
                          '</header>' +
                          '<div class="dtp-date hidden">' +
                          '<div>' +
@@ -355,7 +355,7 @@
                     var x = -(162 * (Math.sin(-Math.PI * 2 * (i / 12))));
                     var y = -(162 * (Math.cos(-Math.PI * 2 * (i / 12))));
 
-                    var fill = ((this.currentDate.format(hFormat) == i) ? "#007d72" : 'transparent');
+                    var fill = ((this.currentDate.format(hFormat) == i) ? "#8BC34A" : 'transparent');
                     var color = ((this.currentDate.format(hFormat) == i) ? "#fff" : '#000');
 
                     var svgHourCircle = this.createSVGElement("circle", {'id': 'h-' + i, 'class': 'dtp-select-hour', 'style': 'cursor:pointer', r: '30', cx: x, cy: y, fill: fill, 'data-hour': i});
@@ -385,7 +385,7 @@
                        var x = -(110 * (Math.sin(-Math.PI * 2 * (i / 12))));
                        var y = -(110 * (Math.cos(-Math.PI * 2 * (i / 12))));
 
-                       var fill = ((this.currentDate.format(hFormat) == (i + 12)) ? "#007d72" : 'transparent');
+                       var fill = ((this.currentDate.format(hFormat) == (i + 12)) ? "#8BC34A" : 'transparent');
                        var color = ((this.currentDate.format(hFormat) == (i + 12)) ? "#fff" : '#000');
 
                        var svgHourCircle = this.createSVGElement("circle", {'id': 'h-' + (i + 12), 'class': 'dtp-select-hour', 'style': 'cursor:pointer', r: '30', cx: x, cy: y, fill: fill, 'data-hour': (i + 12)});
@@ -443,7 +443,7 @@
                     var x = -(s * (Math.sin(-Math.PI * 2 * (i / 60))));
                     var y = -(s * (Math.cos(-Math.PI * 2 * (i / 60))));
 
-                    var color = ((this.currentDate.format("m") == i) ? "#007d72" : 'transparent');
+                    var color = ((this.currentDate.format("m") == i) ? "#8BC34A" : 'transparent');
 
                     var svgMinuteCircle = this.createSVGElement("circle", {'id': 'm-' + i, 'class': 'dtp-select-minute', 'style': 'cursor:pointer', r: r, cx: x, cy: y, fill: color, 'data-minute': i});
 
@@ -510,13 +510,13 @@
                  if (isHour)
                  {
                     var svgMinuteHand = this.createSVGElement("line", {class: 'minute-hand', x1: 0, y1: 0, x2: 0, y2: -150, stroke: '#bdbdbd', 'stroke-width': 2});
-                    var svgHourHand = this.createSVGElement("line", {class: 'hour-hand', x1: 0, y1: 0, x2: 0, y2: hl, stroke: '#007d72', 'stroke-width': 8});
+                    var svgHourHand = this.createSVGElement("line", {class: 'hour-hand', x1: 0, y1: 0, x2: 0, y2: hl, stroke: '#8BC34A', 'stroke-width': 8});
 
                     svgGElement.appendChild(svgMinuteHand);
                     svgGElement.appendChild(svgHourHand);
                  } else
                  {
-                    var svgMinuteHand = this.createSVGElement("line", {class: 'minute-hand', x1: 0, y1: 0, x2: 0, y2: -150, stroke: '#007d72', 'stroke-width': 2});
+                    var svgMinuteHand = this.createSVGElement("line", {class: 'minute-hand', x1: 0, y1: 0, x2: 0, y2: -150, stroke: '#8BC34A', 'stroke-width': 2});
                     var svgHourHand = this.createSVGElement("line", {class: 'hour-hand', x1: 0, y1: 0, x2: 0, y2: hl, stroke: '#bdbdbd', 'stroke-width': 8});
 
                     svgGElement.appendChild(svgHourHand);
@@ -842,7 +842,7 @@
                     this._attachedEvents.splice(i, 1);
                  }
               },
-              _onFocus: function ()
+              _fireCalendar: function ()
               {
                  this.currentView = 0;
                  this.$element.blur();
@@ -1006,11 +1006,11 @@
 
                  if (this.params.switchOnClick === true && this.params.time === true)
                     setTimeout(this.initHours.bind(this), 200);
-                    
+
                  if(this.params.switchOnClick === true && this.params.time === false) {
                     setTimeout(this._onOKClick.bind(this), 200);
                  }
-                 
+
               },
               _onSelectHour: function (e)
               {
@@ -1030,7 +1030,7 @@
                        $(th[i]).attr('fill', '#000');
                     }
 
-                    $(parent.find('#h-' + value)).attr('fill', '#007d72');
+                    $(parent.find('#h-' + value)).attr('fill', '#8BC34A');
                     $(parent.find('#th-' + value)).attr('fill', '#fff');
 
                     this.currentDate.hour(parseInt(value));
@@ -1066,7 +1066,7 @@
                        $(tm[i]).attr('fill', '#000');
                     }
 
-                    $(parent.find('#m-' + value)).attr('fill', '#007d72');
+                    $(parent.find('#m-' + value)).attr('fill', '#8BC34A');
                     $(parent.find('#tm-' + value)).attr('fill', '#fff');
 
                     this.currentDate.minute(parseInt(value));

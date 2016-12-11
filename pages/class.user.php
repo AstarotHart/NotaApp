@@ -223,12 +223,12 @@ class USER
     }
 
 
-    public function register_alumno($id_alumno,$id_sede,$id_grado,$nombres,$primer_apellido,$segundo_apellido,$desplazado,$repitente,$nombre_acudiente,$apellidos_acudiente,$telefono_acudiente)
+    public function register_alumno($id_alumno,$id_sede,$id_grado,$nombres,$primer_apellido,$segundo_apellido,$desplazado,$repitente,$nombre_acudiente,$apellidos_acudiente,$telefono_acudiente,$fecha_matricula)
     {
         try
         {
-            $stmt = $this->conn->prepare("INSERT INTO alumno(id_alumno,id_sede,id_grado,nombres,primer_apellido,segundo_apellido,desplazado,repitente,nombre_acudiente,apellidos_acudiente,telefono_acudiente) 
-                                          VALUES(:id_alumno,:id_sede,:id_grado,:nombres,:primer_apellido,:segundo_apellido,:desplazado,:repitente,:nombre_acudiente,:apellidos_acudiente,:telefono_acudiente)");
+            $stmt = $this->conn->prepare("INSERT INTO alumno(id_alumno,id_sede,id_grado,nombres,primer_apellido,segundo_apellido,desplazado,repitente,nombre_acudiente,apellidos_acudiente,telefono_acudiente,fecha_matricula) 
+                                          VALUES(:id_alumno,:id_sede,:id_grado,:nombres,:primer_apellido,:segundo_apellido,:desplazado,:repitente,:nombre_acudiente,:apellidos_acudiente,:telefono_acudiente,:fecha_matricula)");
                                                   
             $stmt->bindparam(":id_alumno", $id_alumno);
             $stmt->bindparam(":id_sede", $id_sede);
@@ -241,6 +241,7 @@ class USER
             $stmt->bindparam(":nombre_acudiente", $nombre_acudiente);
             $stmt->bindparam(":apellidos_acudiente", $apellidos_acudiente);                                    
             $stmt->bindparam(":telefono_acudiente", $telefono_acudiente);
+            $stmt->bindparam(":fecha_matricula", $fecha_matricula);
                 
             $stmt->execute();   
             
@@ -260,7 +261,7 @@ class USER
     {
         try 
         {
-            $stmt = $this->conn->prepare("SELECT id_alumno,id_grado,nombres,primer_apellido,segundo_apellido,desplazado,repitente,nombre_acudiente,primer_apellido_acudiente,segundo_apellido_acudiente,telefono_acudiente FROM alumno WHERE id_alumno=:alumno_id");
+            $stmt = $this->conn->prepare("SELECT id_alumno,id_grado,nombres,primer_apellido,segundo_apellido,desplazado,repitente,nombre_acudiente,primer_apellido_acudiente,segundo_apellido_acudiente,telefono_acudiente,fecha_matricula FROM alumno WHERE id_alumno=:alumno_id");
             $stmt->bindparam(":alumno_id", $alumno_id);
             $stmt->execute();
 

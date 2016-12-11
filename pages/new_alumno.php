@@ -16,14 +16,13 @@ if(isset($_POST['matricular']))
     $primer_apellido     = strip_tags($_POST['primer_apellido']);
     $segundo_apellido    = strip_tags($_POST['segundo_apellido']);
     $desplazado          = isset($_POST['desplazado']) ? $_POST['desplazado'] : "No" ;
-    //$desplazado        = strip_tags($_POST['desplazado']);
-    //$repitente         = strip_tags($_POST['repitente']);
     $repitente           = isset($_POST['repitente']) ? $_POST['repitente'] : "No" ;  
     $nombres_acudiente   = strip_tags($_POST['nombres_acudiente']);
     $apellidos_acudiente = strip_tags($_POST['apellidos_acudiente']);
     $telefono_acudiente  = strip_tags($_POST['telefono_acudiente']);
+    $fecha_matricula     = strip_tags($_POST['fecha_matricula']);
 
-    if(($user->register_alumno($id_alumno,$id_sede,$id_grado,$nombres,$primer_apellido,$segundo_apellido,$desplazado,$repitente,$nombres_acudiente,$apellidos_acudiente,$telefono_acudiente))==true)
+    if(($user->register_alumno($id_alumno,$id_sede,$id_grado,$nombres,$primer_apellido,$segundo_apellido,$desplazado,$repitente,$nombres_acudiente,$apellidos_acudiente,$telefono_acudiente,$fecha_matricula))==true)
     {
         echo '<script type="text/javascript">';
         echo 'setTimeout(function () { swal("Alumno Matriculado","","success");';
@@ -101,10 +100,10 @@ if(isset($_POST['matricular']))
                                     <div class="col-sm-4">
                                         <div class="form-group form-float">
                                             <div class="form-line">
-                                                <input id="desplazado" name="desplazado" type="checkbox">
+                                                <input id="desplazado" name="desplazado" type="checkbox" value="Si">
                                                 <label for="desplazado">Desplazado</label>
                                     
-                                                <input id="repitente" name="repitente" type="checkbox">
+                                                <input id="repitente" name="repitente" type="checkbox" value="Si">
                                                 <label for="repitente">Repitente</label>
                                             </div>
                                         </div>
@@ -133,6 +132,15 @@ if(isset($_POST['matricular']))
                                             </div>
                                         </div>
                                     </div>
+                                    
+                                    <div class="col-sm-4">
+                                        <div class="form-group">
+                                            <div class="form-line">
+                                                <input type="text" name="fecha_matricula" class="datepicker form-control" placeholder="Seleccionar Fecha...">
+                                            </div>
+                                        </div>
+                                    </div>
+
                                 </div>
                             
                                     

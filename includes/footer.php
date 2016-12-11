@@ -31,13 +31,23 @@
     <!-- Bootstrap Notify Plugin Js -->
     <script src="../plugins/bootstrap-notify/bootstrap-notify.js"></script>
 
+    <!-- Moment Plugin Js -->
+    <script src="../plugins/momentjs/moment.js"></script>
+
+    <!-- Autosize Plugin Js -->
+    <script src="../plugins/autosize/autosize.js"></script>
+
+    <!-- Bootstrap Material Datetime Picker Plugin Js -->
+    <script src="../plugins/bootstrap-material-datetimepicker/js/bootstrap-material-datetimepicker.js"></script>
+
     <!-- Custom Js -->
     <script src="../js/admin.js"></script>
     <script src="../js/pages/forms/form-wizard.js"></script>
     <script src="../js/pages/tables/jquery-datatable.js"></script>
     <script src="../js/pages/cards/basic.js"></script>
-    <script src="../js/pages/ui/notifications1.js"></script>
+    <script src="../js/pages/ui/notifications.js"></script>
     <script src="../js/pages/ui/dialogs.js"></script>
+    <script src="../js/pages/forms/basic-form-elements.js"></script>
 
     <!-- Demo Js -->
     <script src="../js/demo.js"></script>
@@ -52,7 +62,6 @@
     <script src="../plugins/jquery-datatable/extensions/export/vfs_fonts.js"></script>
     <script src="../plugins/jquery-datatable/extensions/export/buttons.html5.min.js"></script>
     <script src="../plugins/jquery-datatable/extensions/export/buttons.print.min.js"></script>
-
 
 </body>
 
