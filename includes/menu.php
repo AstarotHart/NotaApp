@@ -44,7 +44,6 @@ if (isset($_POST['cambiar_pass']))
     {
         echo '<script type="text/javascript">';
         echo 'setTimeout(function () { swal("Contraseña Actualizada","","success");';
-       // echo 'setTimeout(function () {swal({title: "Datos Actualizados",text: "",timer: 2000,showConfirmButton: false});';
         echo '}, 1000);</script>';
      }
      else

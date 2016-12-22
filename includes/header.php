@@ -1,7 +1,5 @@
 <?php
-
-    require_once("session.php");
-    
+    require("session.php");
     require_once("class.user.php");
     $user_app = new USER();
   
@@ -9,7 +7,6 @@
 
     $user = $user_app->user_data($user_id);
     $user_type = $user_app->tipo_user($user->id_tipo_usuario);
-
 ?>
 <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />

@@ -259,24 +259,98 @@ class USER
      */
     public function detalles_alumno($alumno_id)
     {
+        $data_volean=false;
         try 
         {
-            $stmt = $this->conn->prepare("SELECT id_alumno,id_grado,nombres,primer_apellido,segundo_apellido,desplazado,repitente,nombre_acudiente,primer_apellido_acudiente,segundo_apellido_acudiente,telefono_acudiente,fecha_matricula FROM alumno WHERE id_alumno=:alumno_id");
+            /*$stmt = $this->conn->prepare("SELECT id_alumno,id_grado,nombres,primer_apellido,segundo_apellido,desplazado,repitente,nombre_acudiente,apellidos_acudiente,telefono_acudiente,fecha_matricula FROM alumno WHERE id_alumno=:alumno_id");
             $stmt->bindparam(":alumno_id", $alumno_id);
-            $stmt->execute();
+            $stmt->execute();*/
 
+            $query = $this->conn->prepare("SELECT * FROM alumno WHERE id_alumno=:alumno_id");
+            $query->bindParam(":alumno_id",$alumno_id,PDO::PARAM_INT,1);
+            $data = array();
 
-            if ($stmt->rowCount() > 0) 
+            if ($query->execute()) 
             {
+                $row = $query->fetch(PDO::FETCH_ASSOC);
+                //<!-- Modal Detalles Alumno -->
+                $data[] = "<div class='panel panel-info' id='DetallesAlumno' tabindex='-1' role='dialog'>
+                            <div class='modal-dialog' role='document'>
+                                <div class='modal-content'>
+                                    <div class='modal-body'>
+                                        <div class='panel panel-info'>
+                                            <div class='panel-heading'>
+                                              <h3 class='panel-title'>Sheena Shrestha</h3>
+                                            </div>
+                                            <div class='panel-body'>
+                                              <div class='row'>
+                                                <div class=' col-md-9 col-lg-9 '> 
+                                                  <table class='table table-user-information'>
+                                                    <tbody>
 
-                return $stmt->fetch(PDO::FETCH_OBJ);
-            }
+                                                  <tr>
+                                                        <td>Codigo:</td>
+                                                        <td>".$row['id_alumno']."</td>
+                                                      </tr>
+                                                      <tr>
+                                                        <td>Nombres:</td>
+                                                        <td>".$row['nombres']."</td>
+                                                      </tr>
+                                                      <tr>
+                                                        <td>Primer Apellido:</td>
+                                                        <td>".$row['primer_apellido']."</td>
+                                                      </tr>
+                                                        <td>Segundo Apellido</td>
+                                                        <td>".$row['segundo_apellido']."</td>
+                                                      </tr>
+                                                        <td>Desplazado</td>
+                                                        <td>".$row['desplazado']."</td>
+                                                      </tr>
+                                                      <tr>
+                                                        <td>Repitente</td>
+                                                        <td>".$row['repitente']."</td>
+                                                      </tr>
+                                                        <td>Nombes Acudiente</td>
+                                                        <td>".$row['nombre_acudiente']."</td>
+                                                      </tr>
+                                                      </tr>
+                                                        <td>Apellidos Acudiente</td>
+                                                        <td>".$row['apellidos_acudiente']."</td>
+                                                      </tr>
+                                                      </tr>
+                                                        <td>Telefono Acudiente</td>
+                                                        <td>".$row['telefono_acudiente']."</td>
+                                                      </tr>
+                                                      </tr>
+                                                        <td>Fecha Matricula</td>
+                                                        <td>".$row['fecha_matricula']."</td>
+                                                      </tr>
+                                                     
+                                                    </tbody>
+                                                  </table>
+                                                </div>
+                                              </div>
+                                            </div>            
+                                        </div>
+                                    </div>
+                                    <div class='modal-footer'>
+                                        <button type='button' class='btn btn-warning waves-effect' data-dismiss='modal'>Cerrar</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>";
+
+                        return $data;
+                }
+
+                return $data_volean;
 
         } 
 
-        catch (PDOException $e) 
+        catch(PDOException $e)
         {
-            exit($e->getMessage());
+            echo $e->getMessage();
+            return false;
         }
     }
 
@@ -376,6 +450,5 @@ class USER
 		unset($_SESSION['user_session']);
 		return true;
 	}
-
 }
 ?>

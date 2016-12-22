@@ -26,7 +26,72 @@ if(isset($_POST['btn-signup']))
                 
         if($row['id_acudiente']==$cc) 
         {
-            $show_mensaje_err= "show";
+            //<!-- Modal Detalles Alumno -->
+            echo "<div class='modal fade' id='DetallesAlumno' tabindex='-1' role='dialog'>
+                <div class='modal-dialog' role='document'>
+                    <div class='modal-content'>
+                        <div class='modal-body'>
+                            <div class='panel panel-info'>
+                                <div class='panel-heading'>
+                                  <h3 class='panel-title'>Sheena Shrestha</h3>
+                                </div>
+                                <div class='panel-body'>
+                                  <div class='row'>
+                                    <div class=' col-md-9 col-lg-9 '> 
+                                      <table class='table table-user-information'>
+                                        <tbody>";
+
+            echo                          "<tr>
+                                            <td>Codigo:</td>
+                                            <td>Programming</td>
+                                          </tr>
+                                          <tr>
+                                            <td>Nombres:</td>
+                                            <td>06/23/2013</td>
+                                          </tr>
+                                          <tr>
+                                            <td>Primer Apellido:</td>
+                                            <td>01/24/1988</td>
+                                          </tr>
+                                            <td>Segundo Apellido</td>
+                                            <td>Female</td>
+                                          </tr>
+                                            <td>Desplazado</td>
+                                            <td>Kathmandu,Nepal</td>
+                                          </tr>
+                                          <tr>
+                                            <td>Repitente</td>
+                                            <td>            </td>
+                                          </tr>
+                                            <td>Nombes Acudiente</td>
+                                            <td>123-4567-890(Landline)</td>
+                                          </tr>
+                                          </tr>
+                                            <td>Apellidos Acudiente</td>
+                                            <td>123-4567-890(Landline)</td>
+                                          </tr>
+                                          </tr>
+                                            <td>Telefono Acudiente</td>
+                                            <td>123-4567-890(Landline)</td>
+                                          </tr>
+                                          </tr>
+                                            <td>Fecha Matricula</td>
+                                            <td>123-4567-890(Landline)</td>
+                                          </tr>
+                                         
+                                        </tbody>
+                                      </table>
+                                    </div>
+                                  </div>
+                                </div>            
+                            </div>
+                        </div>
+                        <div class='modal-footer'>
+                            <button type='button' class='btn btn-warning waves-effect' data-dismiss='modal'>Cerrar</button>
+                        </div>
+                    </div>
+                </div>
+            </div>";
         }
         else
         {

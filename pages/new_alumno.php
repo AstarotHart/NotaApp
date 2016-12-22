@@ -186,9 +186,7 @@ if(isset($_POST['matricular']))
                     </div>
                 </div>
             </div>
-            <!-- #END# Advanced Form Example With Validation -->
-
-                    
+            <!-- #END# Advanced Form Example With Validation -->     
             
 
         </div>
