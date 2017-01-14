@@ -22,5 +22,17 @@ $(function () {
         date: false
     });
 
+    $('.date-end').bootstrapMaterialDatePicker
+    ({
+        weekStart: 0, format: 'YYYY-MM-DD', time: false
+    });
+    $('.date-start').bootstrapMaterialDatePicker
+    ({
+        weekStart: 0, format: 'YYYY-MM-DD', time: false
+    }).on('change', function(e, date)
+    {
+        $('.date-end').bootstrapMaterialDatePicker('setMinDate', date);
+    });
+
     $('#date').bootstrapMaterialDatePicker({ weekStart : 0, time: false });
 });

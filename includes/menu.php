@@ -104,35 +104,50 @@ if (isset($_POST['cambiar_pass']))
                         </a>
                     </li>
 
-                    <li <?php if (isSite('new_docente.php', 'new_alumno.php','new_acudiente.php' )) echo 'class="active"'; ?>>
+                    <li <?php if (isSite('sedes.php','anio_lectivo.php','periodo.php', 'areas.php','asignaturas.php', 'grado.php', 'grupo.php' )) echo 'class="active"'; ?>>
                         <a href="javascript:void(0);" class="menu-toggle">
                             <i class="material-icons">domain</i>
                             <span>Administracion</span>
                         </a>
                         <ul class="ml-menu">
+                            <li <?php if (isSite('sedes.php')) echo 'class="active"'; ?>>
+                                <a href="../pages/sedes.php">Sedes</a>
+                            </li>
+                            <li <?php if (isSite('anio_lectivo.php')) echo 'class="active"'; ?>>
+                                <a href="../pages/anio_lectivo.php">Año Lectivo</a>
+                            </li>
                             <li <?php if (isSite('periodo.php')) echo 'class="active"'; ?>>
-                                <a href="../pages/nperiodo.php">Periodo</a>
+                                <a href="../pages/periodo.php">Periodo</a>
                             </li>
                             <li <?php if (isSite('areas.php')) echo 'class="active"'; ?>>
                                 <a href="../pages/areas.php">Areas</a>
                             </li>
-                            <li <?php if (isSite('asignarutas.php')) echo 'class="active"'; ?>>
-                                <a href="../pages/asignarutas.php">Asignaturas</a>
+                            <li <?php if (isSite('asignaturas.php')) echo 'class="active"'; ?>>
+                                <a href="../pages/asignaturas.php">Asignaturas</a>
+                            </li>
+                            <li <?php if (isSite('grado.php')) echo 'class="active"'; ?>>
+                                <a href="../pages/grado.php">Grado</a>
+                            </li>
+                            <li <?php if (isSite('grupo.php')) echo 'class="active"'; ?>>
+                                <a href="../pages/grupo.php">Grupo</a>
                             </li>
                         </ul>
                     </li>
 
-                    <li <?php if (isSite('new_docente.php', 'new_alumno.php','new_acudiente.php' )) echo 'class="active"'; ?>>
+                    <li <?php if (isSite('matricula.php', 'alumnos.php','grupos.php','informes.php' )) echo 'class="active"'; ?>>
                         <a href="javascript:void(0);" class="menu-toggle">
                             <i class="material-icons">people</i>
                             <span>Alumnos</span>
                         </a>
                         <ul class="ml-menu">
-                            <li <?php if (isSite('new_alumno.php')) echo 'class="active"'; ?>>
-                                <a href="../pages/new_alumno.php">Inscripcion</a>
+                            <li <?php if (isSite('matricula.php')) echo 'class="active"'; ?>>
+                                <a href="../pages/matricula.php">Matricula</a>
                             </li>
-                            <li <?php if (isSite('listar_alumnos.php')) echo 'class="active"'; ?>>
-                                <a href="../pages/listar_alumnos.php">Alumnos</a>
+                            <li <?php if (isSite('alumnos.php')) echo 'class="active"'; ?>>
+                                <a href="../pages/alumnos.php">Alumnos</a>
+                            </li>
+                            <li <?php if (isSite('grupos.php')) echo 'class="active"'; ?>>
+                                <a href="../pages/grupos.php">Grupos</a>
                             </li>
                             <li <?php if (isSite('informes.php')) echo 'class="active"'; ?>>
                                 <a href="../pages/informes.php">Informes</a>
@@ -140,20 +155,17 @@ if (isset($_POST['cambiar_pass']))
                         </ul>
                     </li>
 
-                    <li <?php if (isSite('new_docente.php', 'new_alumno.php','new_acudiente.php' )) echo 'class="active"'; ?>>
+                    <li <?php if (isSite('docentes.php', 'director_grupo.php','new_acudiente.php' )) echo 'class="active"'; ?>>
                         <a href="javascript:void(0);" class="menu-toggle">
                             <i class="material-icons">assignment_ind</i>
                             <span>Docentes</span>
                         </a>
                         <ul class="ml-menu">
-                            <li <?php if (isSite('new_docente.php')) echo 'class="active"'; ?>>
-                                <a href="../pages/new_docente.php">Docente</a>
+                            <li <?php if (isSite('docentes.php')) echo 'class="active"'; ?>>
+                                <a href="../pages/docentes.php">Docente</a>
                             </li>
-                            <li <?php if (isSite('new_alumno.php')) echo 'class="active"'; ?>>
-                                <a href="../pages/new_alumno.php">Alumno</a>
-                            </li>
-                            <li <?php if (isSite('new_acudiente.php')) echo 'class="active"'; ?>>
-                                <a href="../pages/new_acudiente.php">Acudiente</a>
+                            <li <?php if (isSite('director_grupo.php')) echo 'class="active"'; ?>>
+                                <a href="../pages/director_grupo.php">Director Grupo</a>
                             </li>
                         </ul>
                     </li>
@@ -254,7 +266,7 @@ if (isset($_POST['cambiar_pass']))
                 <div class="modal-dialog modal-sm" role="document">
                     <div class="modal-content">
                         <div class="modal-header">
-                            <h4 class="modal-title" id="Actu_DatosLabel">Actualizar Datos</h4>
+                            <h4 class="modal-title" id="Actu_DatosLabel">Cambiar Contraseña</h4>
                         </div>
                         <div class="modal-body">
                             <form id="sign_up" method="POST">

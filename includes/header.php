@@ -1,3 +1,5 @@
+<!DOCTYPE html>
+<html>
 <?php
     require("session.php");
     require_once("class.user.php");
@@ -58,7 +60,7 @@
             <div class="navbar-header">
                 <a href="javascript:void(0);" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar-collapse" aria-expanded="false"></a>
                 <a href="javascript:void(0);" class="bars"></a>
-                <a class="navbar-brand" href="index.html">NotaApp - Administrador de Calificaciones</a>
+                <a class="navbar-brand" href="index.php">NotaApp - Administrador de Calificaciones</a>
             </div>
             <div class="collapse navbar-collapse" id="navbar-collapse">
                 <ul class="nav navbar-nav navbar-right">
@@ -259,8 +261,8 @@
     </nav>
 
     <body class="theme-teal">
-    <!-- Page Loader -->
-        <!-- <div class="page-loader-wrapper">
+    <!-- Page Loader --
+        <div class="page-loader-wrapper">
             <div class="loader">
                 <div class="md-preloader pl-size-md">
                     <svg viewbox="0 0 75 75">
@@ -269,7 +271,7 @@
                 </div>
                 <p>Cargando...</p>
             </div>
-        </div -->>
+        </div>
     <!-- #END# Page Loader -->
     <!-- Overlay For Sidebars -->
     <div class="overlay"></div>
