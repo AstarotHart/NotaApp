@@ -510,6 +510,8 @@ class USER
      */
     public function register_anio_periodos($id_anio_lectivo, $descripcion_anio_lectivo, $fecha_inicio, $fecha_fin, $fecha_inicio_primer, $fecha_fin_primer, $fecha_inicio_segundo, $fecha_fin_segundor, $fecha_inicio_tercer, $fecha_fin_tercer, $fecha_inicio_cuarto, $fecha_fin_cuarto, $id_sede)
     {
+        $id_anio_lectivo.=$id_sede;
+        
         $id_periodo1 = $id_anio_lectivo;
         $id_periodo2 = $id_anio_lectivo;
         $id_periodo3 = $id_anio_lectivo;
