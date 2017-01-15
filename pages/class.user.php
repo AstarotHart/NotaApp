@@ -508,12 +508,17 @@ class USER
      * [register_anio_periodos description]
  
      */
-    public function register_anio_periodos($id_anio_lectivo, $descripcion_anio_lectivo, $fecha_inicio_anio_lectivo, $fecha_fin_anio_lectivo, $fecha_inicio_primer, $fecha_fin_primer, $fecha_inicio_segundo, $fecha_fin_segundor, $fecha_inicio_tercer, $fecha_fin_tercer, $fecha_inicio_cuarto, $fecha_fin_cuarto)
+    public function register_anio_periodos($id_anio_lectivo, $descripcion_anio_lectivo, $fecha_inicio, $fecha_fin, $fecha_inicio_primer, $fecha_fin_primer, $fecha_inicio_segundo, $fecha_fin_segundor, $fecha_inicio_tercer, $fecha_fin_tercer, $fecha_inicio_cuarto, $fecha_fin_cuarto, $id_sede)
     {
-        $id_perdiodo1 = $id_anio_lectivo."-1";
-        $id_perdiodo2 = $id_anio_lectivo."-2";
-        $id_perdiodo3 = $id_anio_lectivo."-3";
-        $id_perdiodo4 = $id_anio_lectivo."-4";
+        $id_periodo1 = $id_anio_lectivo;
+        $id_periodo2 = $id_anio_lectivo;
+        $id_periodo3 = $id_anio_lectivo;
+        $id_periodo4 = $id_anio_lectivo;
+
+        $id_periodo1.="P1";
+        $id_periodo2.="P2";
+        $id_periodo3.="P3";
+        $id_periodo4.="P4";
 
         $desc_periodo1 = "Primer Periodo Año ".$id_anio_lectivo;
         $desc_periodo2 = "Primer Segundo Año ".$id_anio_lectivo;
@@ -523,69 +528,61 @@ class USER
         try
         {
         //---- Ingresar en la base de datos Año lectivo
-            $stmt_anio = $this->conn->prepare("INSERT INTO anio_lectivo(id_anio_lectivo, id_sede, descripcion_anio_lectivo, fecha_inicio_anio_lectivo, fecha_fin_anio_lectivo) 
-                                          VALUES(:id_anio_lectivo, :id_sede, :descripcion_anio_lectivo, :fecha_inicio_anio_lectivo, :fecha_fin_anio_lectivo)");
-                                                  
-            $stmt_anio->bindparam(":id_anio_lectivo", $id_anio_lectivo);
-            $stmt_anio->bindparam(":id_sede", $id_sede);
-            $stmt_anio->bindparam(":descripcion_anio_lectivo", $descripcion_anio_lectivo);
-            $stmt_anio->bindparam(":fecha_inicio_anio_lectivo", $fecha_inicio_anio_lectivo);
-            $stmt_anio->bindparam(":fecha_fin_anio_lectivo", $fecha_fin_anio_lectivo);
-
-        //---- Ingresar en la base de datos Periodo 1
-            $stmt_periodo1 = $this->conn->prepare("INSERT INTO periodo(id_perdiodo1, id_anio_lectivo, desc_periodo1, fecha_inicio_primer, fecha_fin_primer) 
-                                          VALUES(:id_perdiodo1, :id_anio_lectivo, :desc_periodo1, :fecha_inicio_primer, :fecha_fin_primer)");
-                                                  
-            $stmt_periodo1->bindparam(":id_perdiodo1", $id_perdiodo1);
-            $stmt_periodo1->bindparam(":id_anio_lectivo", $id_anio_lectivo);
-            $stmt_periodo1->bindparam(":desc_periodo1", $desc_periodo1);
-            $stmt_periodo1->bindparam(":fecha_inicio_primer", $fecha_inicio_primer);
-            $stmt_periodo1->bindparam(":fecha_fin_primer", $fecha_fin_primer);
-
-
-        //---- Ingresar en la base de datos Periodo 2
-            $stmt_periodo2 = $this->conn->prepare("INSERT INTO periodo(id_perdiodo2, id_anio_lectivo, desc_periodo2, fecha_inicio_segundo, fecha_fin_segundo) 
-                                          VALUES(:id_perdiodo2, :id_anio_lectivo, :desc_periodo2, :fecha_inicio_segundo, :fecha_fin_segundo)");
-                                                  
-            $stmt_periodo2->bindparam(":id_perdiodo2", $id_perdiodo2);
-            $stmt_periodo2->bindparam(":id_anio_lectivo", $id_anio_lectivo);
-            $stmt_periodo2->bindparam(":desc_periodo2", $desc_periodo2);
-            $stmt_periodo2->bindparam(":fecha_inicio_segundo", $fecha_inicio_segundo);
-            $stmt_periodo2->bindparam(":fecha_fin_segundo", $fecha_fin_segundo);
-
-
-        //---- Ingresar en la base de datos Periodo 3
-            $stmt_periodo3 = $this->conn->prepare("INSERT INTO periodo(id_perdiodo3, id_anio_lectivo, desc_periodo3, fecha_inicio_tercer, fecha_fin_tercer) 
-                                          VALUES(:id_perdiodo3, :id_anio_lectivo, :desc_periodo3, :fecha_inicio_tercer, :fecha_fin_tercer)");
-                                                  
-            $stmt_periodo3->bindparam(":id_perdiodo3", $id_perdiodo3);
-            $stmt_periodo3->bindparam(":id_anio_lectivo", $id_anio_lectivo);
-            $stmt_periodo3->bindparam(":desc_periodo3", $desc_periodo3);
-            $stmt_periodo3->bindparam(":fecha_inicio_tercer", $fecha_inicio_tercer);
-            $stmt_periodo3->bindparam(":fecha_fin_tercer", $fecha_fin_tercer);
-
-
-        //---- Ingresar en la base de datos Periodo 4
-            $stmt_periodo4 = $this->conn->prepare("INSERT INTO periodo(id_perdiodo4, id_anio_lectivo, desc_periodo4, fecha_inicio_cuarto, fecha_fin_cuarto) 
-                                          VALUES(:id_perdiodo4, :id_anio_lectivo, :desc_periodo4, :fecha_inicio_cuarto, :fecha_fin_cuarto)");
-                                                  
-            $stmt_periodo4->bindparam(":id_perdiodo4", $id_perdiodo4);
-            $stmt_periodo4->bindparam(":id_anio_lectivo", $id_anio_lectivo);
-            $stmt_periodo4->bindparam(":desc_periodo4", $desc_periodo4);
-            $stmt_periodo4->bindparam(":fecha_inicio_cuarto", $fecha_inicio_cuarto);
-            $stmt_periodo4->bindparam(":fecha_fin_cuarto", $fecha_fin_cuarto);
-            
-
-
-
+            $stmt_anio = $this->conn->prepare("INSERT INTO anio_lectivo(id_anio_lectivo, id_sede, descripcion_anio_lectivo, fecha_inicio, fecha_fin) 
+                                          VALUES(?, ?, ?, ?, ?)");
+                
+        /** Insertar datos Año lectivo */                               
+            $stmt_anio->bindparam(1, $id_anio_lectivo);
+            $stmt_anio->bindparam(2, $id_sede);
+            $stmt_anio->bindparam(3, $descripcion_anio_lectivo);
+            $stmt_anio->bindparam(4, $fecha_inicio);
+            $stmt_anio->bindparam(5, $fecha_fin);
 
             $stmt_anio->execute();
-            $stmt_periodo1->execute();
-            $stmt_periodo2->execute();
-            $stmt_periodo3->execute();
-            $stmt_periodo4->execute(); 
+
+
+        //---- Ingresar en la base de datos Periodo 1
+            $stmt_periodo = $this->conn->prepare("INSERT INTO periodo(id_periodo, id_anio_lectivo, desc_periodo, fecha_inicio, fecha_fin) 
+                                          VALUES(?, ?, ?, ?, ?)");
+                
+        /** Insertar datos primer periodo */                               
+            $stmt_periodo->bindparam(1, $id_periodo1);
+            $stmt_periodo->bindparam(2, $id_anio_lectivo);
+            $stmt_periodo->bindparam(3, $desc_periodo1);
+            $stmt_periodo->bindparam(4, $fecha_inicio_primer);
+            $stmt_periodo->bindparam(5, $fecha_fin_primer);
+
+            $stmt_periodo->execute();
+
+        /* Insertar datos segundo periodo */
+            $stmt_periodo->bindparam(1, $id_periodo2);
+            $stmt_periodo->bindparam(2, $id_anio_lectivo);
+            $stmt_periodo->bindparam(3, $desc_periodo2);
+            $stmt_periodo->bindparam(4, $fecha_inicio_segundo);
+            $stmt_periodo->bindparam(5, $fecha_fin_segundo);
+
+            $stmt_periodo->execute();
+
+        /* Insertar datos tercero periodo */
+            $stmt_periodo->bindparam(1, $id_periodo3);
+            $stmt_periodo->bindparam(2, $id_anio_lectivo);
+            $stmt_periodo->bindparam(3, $desc_periodo3);
+            $stmt_periodo->bindparam(4, $fecha_inicio_tercer);
+            $stmt_periodo->bindparam(5, $fecha_fin_tercer);
+
+            $stmt_periodo->execute();
+
+        /* Insertar datos cuarto periodo */
+            $stmt_periodo->bindparam(1, $id_periodo4);
+            $stmt_periodo->bindparam(2, $id_anio_lectivo);
+            $stmt_periodo->bindparam(3, $desc_periodo4);
+            $stmt_periodo->bindparam(4, $fecha_inicio_cuarto);
+            $stmt_periodo->bindparam(5, $fecha_fin_cuarto);
+
+            $stmt_periodo->execute();
+
             
-            return $stmt;   
+            return "true";   
         }
         catch(PDOException $e)
         {
