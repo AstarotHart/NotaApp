@@ -7,6 +7,7 @@ require_once("class.user.php");
 $user = new USER();
 $cabecera = new USER();
 $nota = new USER();
+$falta = new USER();
 $object = new USER();
 
 if (isset($_POST['new_pass_docente_admin']))
@@ -77,21 +78,43 @@ if (isset($_POST['new_pass_docente_admin']))
             }
         } 
 
-        echo "contador ".count($users).".";
+        //echo "contador ".count($users).".";
 
         if (count($users) > 0) 
         {
                         
             foreach ($users as $users) 
             {
-                $nota = $nota->Read_nota($users['id_alumno']);
+                $notas = $nota->Read_nota($users['id_alumno']);
+                $res_nota= "0";
+
+                $faltas = $falta->Read_faltas($users['id_alumno']);
+                $res_falta = "0";
+
+                //echo "<br>id alumno ".$users['id_alumno'].".";
+
+                //echo "<br>contador Filas Faltas ".count($faltas).".";
+
+                if (count($faltas) > 0) 
+                {
+                    $res_falta = $faltas->inasistencia;
+                }
+
+                if (count($notas) > 0) 
+                {
+                    $res_nota = $notas->nota;
+                }
+                
+
+                //echo "<br>Faltas ".$res_falta;
+                //echo "<br>Nota ".$res_nota;
 
                 $data .= '<tr>
                         <td>' . $num. '</td>
                         <td>' . $users['primer_apellido'] . ' ' .$users['segundo_apellido'] . ' ' .$users['nombres'] .'</td>
                         <td>' . $users['id_alumno'] . '</td>
-                        <td>' . $nota->nota . '</td>
-                        <td>' . $users['des_tipo_usuario'] . '</td>
+                        <td>' . $res_nota . '</td>
+                        <td>' . $res_falta . '</td>
                         <td>
                             
                             <form id="new_pass_admin" method="POST">

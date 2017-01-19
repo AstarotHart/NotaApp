@@ -821,12 +821,42 @@ class USER
         return $data;
     }
 
-
+    /**
+     * [Read_nota description]
+     * @param [type] $id_alumno [description]
+     */
     public function Read_nota($id_alumno)
     {
         try 
         {
             $stmt = $this->conn->prepare("SELECT nota FROM nota WHERE id_alumno=:id_alumno");
+            $stmt->bindparam(":id_alumno", $id_alumno);
+            $stmt->execute();
+
+
+            if ($stmt->rowCount() > 0) 
+            {
+
+                return $stmt->fetch(PDO::FETCH_OBJ);
+            }
+
+        } 
+
+        catch (PDOException $e) 
+        {
+            exit($e->getMessage());
+        }
+    }
+
+    /**
+     * [Read_faltas description]
+     * @param [type] $id_alumno [description]
+     */
+    public function Read_faltas($id_alumno)
+    {
+        try 
+        {
+            $stmt = $this->conn->prepare("SELECT inasistencia FROM asistencia WHERE id_alumno=:id_alumno");
             $stmt->bindparam(":id_alumno", $id_alumno);
             $stmt->execute();
 
