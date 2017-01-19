@@ -81,8 +81,10 @@ if (isset($_POST['crear']))
                                                         <tr>
                                                             <th>Codigo</th>
                                                             <th>Nombre</th>
+                                                            <th>Sede</th>
                                                             <th>Docente</th>
                                                             <th>Area</th>
+                                                            <th>Intesidad Horaria</th>
                                                             <th>Acciones</th>
                                                         </tr>
                                                     <thead>
@@ -100,8 +102,10 @@ if (isset($_POST['crear']))
         
                                                         <td>' . $asignatura['id_asignatura'] . '</td>
                                                         <td>' . $asignatura['nombre_asignatura'] . '</td>
+                                                        <td>' . $asignatura['descripcion_sede'] . '</td>
                                                         <td>' . $asignatura['nombres'] . ' ' . $asignatura['prim_apellido'] . '</td>
                                                         <td>' . $asignatura['nombre_area'] . '</td>
+                                                        <td>' . $asignatura['intensidad_horaria'] . '</td>
                                                         <td>
                                                             <div class="btn-group" role="group">
                                                                 <button data-toggle="modal" data-target="#view-modal" data-id="'.$asignatura['id_asignatura'].'" id="getUser" class="btn btn-primary btn-xs waves-effect"><i class="material-icons">info_outline    </i></button>

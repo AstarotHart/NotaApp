@@ -4,7 +4,7 @@
     require("session.php");
     require_once("class.user.php");
     $user_app = new USER();
-  
+      
     $user_id=$_SESSION['user_session'];
 
     $user = $user_app->user_data($user_id);

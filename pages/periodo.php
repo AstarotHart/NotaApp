@@ -50,18 +50,10 @@ $object = new USER();
                                                             <th>Fecha de Inicio</th>
                                                             <th>Fecha de Finalizacion</th>
                                                             <th>Año Lecivo</th>
+                                                            <th>Acciones</th>
                                                         </tr>
                                                     <thead>
-                                                    <tfoot>
-                                                        <tr>
-                                                            <th>Codigo</th>
-                                                            <th>Descipcion</th>
-                                                            <th>Fecha de Inicio</th>
-                                                            <th>Fecha de Finalizacion</th>
-                                                            <th>Año Lecivo</th>
-                                                        </tr>
-                                                    </tfoot>
-
+                                
                                                     <tbody>
 
                                                     ';
@@ -80,16 +72,15 @@ $object = new USER();
                                                 <td>' . $periodo['fecha_fin'] . '</td>
                                                 <td>' . $periodo['descripcion_anio_lectivo'] . '</td>
                                                 <td>
+                                                            <div class="btn-group" role="group">
+                                                                <button data-toggle="modal" data-target="#view-modal" data-id="'.$periodo['id_periodo'].'" id="getUser" class="btn btn-primary btn-xs waves-effect"><i class="material-icons">info_outline    </i></button>
 
-                                                
-                                                    <button data-toggle="modal" data-target="#view-modal" data-id="'.$periodo['id_periodo'].'" id="getUser" class="btn btn-primary btn-xs waves-effect"><i class="material-icons">info_outline    </i></button>
+                                                                <button type="submit" class="btn btn-warning btn-xs waves-effect" data-toggle="modal" data-target="#Detallesarea" name="Detalles" onclick="' . $periodo['id_periodo'] . '"><i class="material-icons">mode_edit</i></button>
 
-                                                    <button data-toggle="modal" data-target="#view-modal" data-id="' . $periodo['id_periodo'] . '" id="getUser" class="btn btn-sm btn-info"><i class="glyphicon glyphicon-eye-open"></i> View</button>
-
-                                                
-                                                    <button type="submit" class="btn btn-warning btn-xs waves-effect" data-toggle="modal" data-target="#DetallesAlumno" name="Detalles" onclick="' . $periodo['id_periodo'] . '"><i class="material-icons">mode_edit</i></button>
-                                                
-                                                </td>
+                                                                <button type="submit" class="btn btn-danger btn-xs waves-effect" data-toggle="modal" data-target="#Detallesarea" name="Detalles" onclick="' . $periodo['id_periodo'] . '"><i class="material-icons">delete</i></button>
+                                                            </div>
+                                                        
+                                                        </td>
                                             </tr>';
 
                                     }

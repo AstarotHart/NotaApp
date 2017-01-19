@@ -3,6 +3,8 @@ require_once("class.user.php");
 $grupo = new USER();
 $object = new USER();
 
+$show_table= "none";
+
 if (isset($_POST['crear'])) 
 {
     $id_grado=$_POST['id_grado'];
@@ -15,14 +17,14 @@ if (isset($_POST['crear']))
     if(($grupo->register_grupos($id_grado,$id_docente,$nombre_grupo))==true)
     {
         echo '<script type="text/javascript">';
-        echo 'setTimeout(function () { swal("grupo Creada","","success");';
+        echo 'setTimeout(function () { swal("Grupo Creado","","success");';
        // echo 'setTimeout(function () {swal({title: "Datos Actualizados",text: "",timer: 2000,showConfirmButton: false});';
         echo '}, 1000);</script>';
      }
      else
      {
         echo '<script type="text/javascript">';
-        echo 'setTimeout(function () { swal("grupo NO Creada","","error");';
+        echo 'setTimeout(function () { swal("Grupo NO Creado","","error");';
         echo '}, 1000);</script>';
      }
 
@@ -61,6 +63,15 @@ if (isset($_POST['crear']))
                         </div>
                     <div class="body">
 
+                    <?php 
+                        $grupos = $object->Read_grupos();
+                                 
+                            if (count($grupos) > 0) $show_table= "show";
+                    ?>
+
+                        <!-- Div mostrar u ocultar tablas -->
+                        <div  style="display: <?php echo $show_table; ?>;">
+
                         <!-- LISTAR AREAS -->
                             <?php
                                  
@@ -70,8 +81,9 @@ if (isset($_POST['crear']))
                                                         <tr>
                                                             <th>Codigo</th>
                                                             <th>Nombre</th>
-                                                            <th>Director</th>
                                                             <th>Grado</th>
+                                                            <th>Sede</th>
+                                                            <th>Director Grupo</th>
                                                             <th>Acciones</th>
                                                         </tr>
                                                     <thead>
@@ -81,8 +93,6 @@ if (isset($_POST['crear']))
                                                     ';
                                  
                                  
-                                $grupos = $object->Read_grupos();
-                                 
                                 if (count($grupos) > 0) 
                                 {
                                     foreach ($grupos as $grupo) {
@@ -90,8 +100,9 @@ if (isset($_POST['crear']))
         
                                                         <td>' . $grupo['id_grupo'] . '</td>
                                                         <td>' . $grupo['descripcion_grupo'] . '</td>
+                                                        <td>' . $grupo['descripcion_grado'] . '</td>
+                                                        <td>' . $grupo['descripcion_sede'] . '</td>
                                                         <td>' . $grupo['nombres'] . ' ' . $grupo['prim_apellido'] . '</td>
-                                                        <td>' . $grupo['id_grado'] . '</td>
                                                         <td>
                                                             <div class="btn-group" role="group">
                                                                 <button data-toggle="modal" data-target="#view-modal" data-id="'.$grupo['id_grupo'].'" id="getUser" class="btn btn-primary btn-xs waves-effect"><i class="material-icons">info_outline    </i></button>
@@ -115,6 +126,7 @@ if (isset($_POST['crear']))
                                 echo $data;
                                 
                             ?>
+                            </div><!-- Fin DIV ocultar o mostrar tabla -->
 
                             <button type="button" class="btn bg-teal waves-effect" data-toggle="modal" data-target="#New_Area">Nuevo Grupo</button>
                         </div>

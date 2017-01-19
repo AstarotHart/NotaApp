@@ -327,7 +327,7 @@ class USER
      */
     public function Read_asignaturas()
     {
-        $query = $this->conn->prepare("SELECT * FROM asignatura A inner join docente D inner join area AR ON A.id_docente = D.id_docente AND A.id_area = AR.id_area");
+        $query = $this->conn->prepare("SELECT * FROM asignatura A inner join docente D inner join area AR inner join sede S ON A.id_docente = D.id_docente AND A.id_area = AR.id_area AND AR.id_sede = S.id_sede");
         $query->execute();
         $data = array();
         while ($row = $query->fetch(PDO::FETCH_ASSOC)) {
@@ -442,7 +442,7 @@ class USER
      */
     public function Read_grupos()
     {
-        $query = $this->conn->prepare("SELECT * FROM grupo GP inner join grado GD inner join docente D ON GP.id_grado = GD.id_grado AND GP.id_docente = D.id_docente");
+        $query = $this->conn->prepare("SELECT * FROM grupo GP inner join grado GD inner join docente D inner join sede S ON GP.id_grado = GD.id_grado AND GP.id_docente = D.id_docente AND GD.id_sede = S.id_sede");
         $query->execute();
         $data = array();
         while ($row = $query->fetch(PDO::FETCH_ASSOC)) {
@@ -460,21 +460,18 @@ class USER
      */
     public function register_grupos($id_grado,$id_docente,$descripcion_grupo)
     {
-
         $id_grupo=$id_grado;
-
         $id_grupo.="-".$descripcion_grupo;
-
 
         try
         {
-            $stmt = $this->conn->prepare("INSERT INTO grupo(id_grupo,id_docente,id_grado,descripcion_grupo) 
-                                          VALUES(:id_grupo,:id_docente,:id_grado,:descripcion_grupo)");
+            $stmt = $this->conn->prepare("INSERT INTO grupo(id_grupo,id_grado,id_docente,descripcion_grupo) 
+                                          VALUES(?,?,?,?)");
                                                   
-            $stmt->bindparam(":id_grupo", $id_grupo);
-            $stmt->bindparam(":id_docente", $id_docente);
-            $stmt->bindparam(":id_grado", $id_grado);
-            $stmt->bindparam(":descripcion_grupo", $descripcion_grupo);                                 
+            $stmt->bindparam(1, $id_grupo);
+            $stmt->bindparam(2, $id_grado);
+            $stmt->bindparam(3, $id_docente);
+            $stmt->bindparam(4, $descripcion_grupo);                                 
                 
             $stmt->execute();   
             
@@ -523,9 +520,9 @@ class USER
         $id_periodo4.="P4";
 
         $desc_periodo1 = "Primer Periodo Año ".$id_anio_lectivo;
-        $desc_periodo2 = "Primer Segundo Año ".$id_anio_lectivo;
-        $desc_periodo3 = "Primer Tercer Año ".$id_anio_lectivo;
-        $desc_periodo4 = "Primer Cuarto Año ".$id_anio_lectivo;
+        $desc_periodo2 = "Segundo Periodo Año ".$id_anio_lectivo;
+        $desc_periodo3 = "Tercer Periodo Año ".$id_anio_lectivo;
+        $desc_periodo4 = "Cuarto Periodo Año ".$id_anio_lectivo;
 
         try
         {
@@ -640,7 +637,7 @@ class USER
     {
         //$query = $this->conn->prepare("SELECT * FROM docente");
         
-        $query = $this->conn->prepare('SELECT * FROM docente D inner join sede S inner join tipo_usuario TU ON D.id_sede = S.id_sede AND D.id_tipo_usuario = TU.id_tipo_usuario WHERE D.id_tipo_usuario = "3"');
+        $query = $this->conn->prepare('SELECT * FROM docente D inner join sede S ON D.id_sede = S.id_sede inner join tipo_usuario TU ON D.id_tipo_usuario = TU.id_tipo_usuario WHERE D.id_tipo_usuario = "3"');
         $query->execute();
         $data = array();
         while ($row = $query->fetch(PDO::FETCH_ASSOC)) {
@@ -649,20 +646,6 @@ class USER
         return $data;
     }
 
-    /**
-     * Leer lista de doncente desde Base de Datos segun sede ($id_sede)
-     */
-    public function Read_docente_sede($id_sede)
-    {
-        $query = $this->conn->prepare('SELECT * FROM docente WHERE id_sede = :id_sede AND id_tipo_usuario = "3"');
-        $query->bindParam(":id_sede",$id_sede);
-        $query->execute();
-        $data = array();
-        while ($row = $query->fetch(PDO::FETCH_ASSOC)) {
-            $data[] = $row;
-        }
-        return $data;
-    }
 
     /**
      * Funcion para registrar a un nuevo docente
@@ -790,8 +773,71 @@ class USER
         return $data;
     }
 
+    /**
+     * Leer lista de doncente desde Base de Datos segun sede ($id_sede)
+     */
+    public function Read_docente_sede($id_sede)
+    {
+        $query = $this->conn->prepare('SELECT * FROM docente WHERE id_sede = :id_sede AND id_tipo_usuario = "3"');
+        $query->bindParam(":id_sede",$id_sede);
+        $query->execute();
+        $data = array();
+        while ($row = $query->fetch(PDO::FETCH_ASSOC)) {
+            $data[] = $row;
+        }
+        return $data;
+    }
+
+    /**
+     * [Read_alumnos_grupo description]
+     * @param [type] $id_docente [description]
+     */
+    public function Read_alumnos_grupo($id_docente)
+    {
+        $query = $this->conn->prepare('SELECT * FROM alumno AL inner join grupo GR inner join grado GRA inner join sede S ON AL.id_grupo = GR.id_grupo AND GR.id_grado = GRA.id_grado AND s.id_sede = GRA.id_sede WHERE GR.id_docente = :id_docente ');
+        $query->bindParam(":id_docente",$id_docente);
+        $query->execute();
+        $data = array();
+        while ($row = $query->fetch(PDO::FETCH_ASSOC)) {
+            $data[] = $row;
+        }
+        return $data;
+    }
+
+
+    /**
+     * [Read_alumnos_grupo description]
+     * @param [type] $id_docente [description]
+     */
+    public function Read_cabecera_grupo($id_docente)
+    {
+        $query = $this->conn->prepare('SELECT * FROM grado GRA inner join grupo GRU inner join sede S  ON GRA.id_sede = S.id_sede AND GRA.id_grado = GRU.id_grado WHERE GRU.id_docente = :id_docente ');
+        $query->bindParam(":id_docente",$id_docente);
+        $query->execute();
+        $data = array();
+        while ($row = $query->fetch(PDO::FETCH_ASSOC)) {
+            $data[] = $row;
+        }
+        return $data;
+    }
+
 /* -------------F U N C I O N E S  A L U M N O ----------*/
-     
+    
+    /**
+     * [Read_alumno description]
+     */
+    public function Read_alumno()
+    {        
+        $query = $this->conn->prepare('SELECT * FROM alumno AL inner join sede S inner join grupo G inner join grado GR ON AL.id_sede = S.id_sede AND AL.id_grupo = G.id_grupo AND G.id_grado = GR.id_grado');
+        $query->execute();
+        $data = array();
+        while ($row = $query->fetch(PDO::FETCH_ASSOC)) {
+            $data[] = $row;
+        }
+        return $data;
+    }
+
+    
     /**
      * [Read_alumno_sede description]
      * @param [type] $id_sede [description]
@@ -992,7 +1038,7 @@ class USER
 /**----------------------------------------------------------------**/
 
     /**
-     * Loguear al ususario
+     * Loguear al usuario
      */
     public function doLogin($u_id,$u_pass)
     {

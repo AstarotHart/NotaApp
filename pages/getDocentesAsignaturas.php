@@ -17,11 +17,11 @@
 	}
 	else
 	{
-		$docentes = $docentes->Read_docente_sede($action);;
+		$docentes = $docentes->Read_docente_sede($action);
 	}
 	
 	?>
-	<!--<option value="">-- Seleccione Docente --</option>-->
+	<!--<option value="">-- Seleccione Area --</option>-->
 	<?php
 
 	if (count($docentes) > 0) 
@@ -29,14 +29,13 @@
         foreach ($docentes as $docente)
         {
         	?>
-			<option value="<?php echo $docente['id_docente']; ?>"><?php echo $docente['nombres'].' '.$docente['prim_apellido']; ?></option>'; 
+			<option value="<?php echo $docente['id_docente']; ?>"><?php echo $docente['nombres']." ".$docente['prim_apellido']; ?></option>'; 
 			<?php
         }
     } else {
         ?>
-			<option value=""><p class="col-pink">Sin Docente en la Sede</p></option>';
+			<option value=""><p class="col-pink">Sin Docentes en la Sede</p></option>';
         <?php
     }
-	
+
 	?>
-	

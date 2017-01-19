@@ -110,12 +110,13 @@ if(isset($_POST['Detalles']))
         <div class="container-fluid">
             
             <!-- Metarial Design Buttons -->
-            <div class="row">
+            <div class="row clearfix">
                 <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+
                     <div class="card">
                         <div class="header">
                             <h2>
-                                Alumnos <small>Lista de Alumnos por sede educativa</small>
+                                Alumnos <small>Lista de Alumnos por intitucion Educativa</small>
                             </h2>
                             <ul class="header-dropdown m-r--5">
                                 <li>
@@ -125,257 +126,67 @@ if(isset($_POST['Detalles']))
                                 </li>
                             </ul>
                         </div>
-                    
                         <div class="body">
-                            <div class="panel-group" id="accordion_11" role="tablist" aria-multiselectable="true">
-                                <div class="panel panel-col-blue">
-                                    <div class="panel-heading" role="tab" id="headingOne_11">
-                                        <h4 class="panel-title">
-                                            <a role="button" data-toggle="collapse" data-parent="#accordion_11" href="#collapseOne_11" aria-expanded="false" aria-controls="collapseOne_11">
-                                                <i class="material-icons">assessment</i>Instituto Estrada
-                                            </a>
-                                        </h4>
-                                    </div>
-                                    <div id="collapseOne_11" class="panel-collapse collapse in" role="tabpanel" aria-labelledby="headingOne_11">
-                                        <div class="panel-body">
-                                            <!-- LISTAR ALUMNOS -->
-                                            <?php
-                                                 
-                                                // Design initial table header
-                                                $data = '<table class="table table-bordered table-striped table-hover js-basic-example dataTable">
-                                                                    <thead>
-                                                                        <tr>
-                                                                            <th>Codigo</th>
-                                                                            <th>Nombres</th>
-                                                                            <th>Primer Apellido</th>
-                                                                            <th>Segundo Apellido</th>
-                                                                            <th>Sede</th>
-                                                                            <th>Grupo</th>
-                                                                            <th>Detalles</th>
-                                                                        </tr>
-                                                                    <thead>
-                                                                    <tfoot>
-                                                                        <tr>
-                                                                            <th>Codigo</th>
-                                                                            <th>Nombres</th>
-                                                                            <th>Primer Apellido</th>
-                                                                            <th>Segundo Apellido</th>
-                                                                            <th>Sede</th>
-                                                                            <th>Grupo</th>
-                                                                            <th>Detalles</th>
-                                                                        </tr>
-                                                                    </tfoot>
+                            
+                            <!-- LISTAR ALUMNOS -->
+                            <?php
+                                 
+                                // Design initial table header
+                                $data = '<table class="table table-bordered table-striped table-hover js-basic-example dataTable">
+                                                    <thead>
+                                                        <tr>
+                                                            <th>Codigo</th>
+                                                            <th>Nombres</th>
+                                                            <th>Primer Apellido</th>
+                                                            <th>Segundo Apellido</th>
+                                                            <th>Sede</th>
+                                                            <th>Grupo</th>
+                                                            <th>Detalles</th>
+                                                        </tr>
+                                                    <thead>
 
-                                                                    <tbody>
+                                                    <tbody>
 
-                                                                    ';
-                                                 
-                                                 
-                                                $alumnos = $object->Read_alumno_estrada();
-                                                 
-                                                if (count($alumnos) > 0) 
-                                                {
-                                                    foreach ($alumnos as $alumno) {
-                                                        $data .= '<tr>
-                        
-                                                                <td>' . $alumno['id_alumno'] . '</td>
-                                                                <td>' . $alumno['nombres'] . '</td>
-                                                                <td>' . $alumno['primer_apellido'] . '</td>
-                                                                <td>' . $alumno['segundo_apellido'] . '</td>
-                                                                <td>' . $alumno['descripcion_sede'] . '</td>
-                                                                <td>' . $alumno['id_grado'] . '</td>
-                                                                <td>
+                                                    ';
+                                 
+                                 
+                                $alumnos = $object->Read_alumno();
+                                 
+                                if (count($alumnos) > 0) 
+                                {
+                                    foreach ($alumnos as $alumno) {
+                                        $data .= '<tr>
+        
+                                                <td>' . $alumno['id_alumno'] . '</td>
+                                                <td>' . $alumno['nombres'] . '</td>
+                                                <td>' . $alumno['primer_apellido'] . '</td>
+                                                <td>' . $alumno['segundo_apellido'] . '</td>
+                                                <td>' . $alumno['descripcion_sede'] . '</td>
+                                                <td>' . $alumno['descripcion_grado'] . '-'.$alumno['descripcion_grupo'] . '</td>
+                                                <td>
 
-                                                                
-                                                                    <button data-toggle="modal" data-target="#view-modal" data-id="'.$alumno['id_alumno'].'" id="getUser" class="btn btn-primary btn-xs waves-effect"><i class="material-icons">info_outline    </i></button>
-
-                                                                    <button data-toggle="modal" data-target="#view-modal" data-id="' . $alumno['id_alumno'] . '" id="getUser" class="btn btn-sm btn-info"><i class="glyphicon glyphicon-eye-open"></i> View</button>
-
-                                                                
-                                                                    <button type="submit" class="btn btn-warning btn-xs waves-effect" data-toggle="modal" data-target="#DetallesAlumno" name="Detalles" onclick="' . $alumno['id_alumno'] . '"><i class="material-icons">mode_edit</i></button>
-                                                                
-                                                                </td>
-                                                            </tr>';
-
-                                                    }
-                                                } else {
-                                                    // records not found
-                                                    $data .= '<tr><td colspan="6">No hay registros para mostrar!</td></tr>';
-                                                }
-                                                 
-                                                $data .= '<tbody></table>';
-                                                 
-                                                echo $data;
                                                 
-                                            ?>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="panel panel-col-light-green">
-                                    <div class="panel-heading" role="tab" id="headingTwo_11">
-                                        <h4 class="panel-title">
-                                            <a class="collapsed" role="button" data-toggle="collapse" data-parent="#accordion_11" href="#collapseTwo_11" aria-expanded="false"
-                                               aria-controls="collapseTwo_11">
-                                                <i class="material-icons">assessment</i>Mariscal Sucre
-                                            </a>
-                                        </h4>
-                                    </div>
-                                    <div id="collapseTwo_11" class="panel-collapse collapse" role="tabpanel" aria-labelledby="headingTwo_11">
-                                        <div class="panel-body">
-                                            <!-- LISTAR ALUMNOS -->
-                                            <?php
-                                                 
-                                                // Design initial table header
-                                                $data = '<table class="table table-bordered table-striped table-hover js-basic-example dataTable">
-                                                                    <thead>
-                                                                        <tr>
-                                                                            <th>Codigo</th>
-                                                                            <th>Nombres</th>
-                                                                            <th>Primer Apellido</th>
-                                                                            <th>Segundo Apellido</th>
-                                                                            <th>Sede</th>
-                                                                            <th>Grupo</th>
-                                                                            <th>Detalles</th>
-                                                                        </tr>
-                                                                    <thead>
-                                                                    <tfoot>
-                                                                        <tr>
-                                                                            <th>Codigo</th>
-                                                                            <th>Nombres</th>
-                                                                            <th>Primer Apellido</th>
-                                                                            <th>Segundo Apellido</th>
-                                                                            <th>Sede</th>
-                                                                            <th>Grupo</th>
-                                                                            <th>Detalles</th>
-                                                                        </tr>
-                                                                    </tfoot>
+                                                    <button data-toggle="modal" data-target="#view-modal" data-id="'.$alumno['id_alumno'].'" id="getUser" class="btn btn-primary btn-xs waves-effect"><i class="material-icons">info_outline    </i></button>
 
-                                                                    <tbody>
+                                                    <button data-toggle="modal" data-target="#view-modal" data-id="' . $alumno['id_alumno'] . '" id="getUser" class="btn btn-sm btn-info"><i class="glyphicon glyphicon-eye-open"></i> View</button>
 
-                                                                    ';
-                                                 
-                                                 
-                                                $alumnos = $object->Read_alumno_mariscal();
-                                                 
-                                                if (count($alumnos) > 0) 
-                                                {
-                                                    foreach ($alumnos as $alumno) {
-                                                        $data .= '<tr>
-                        
-                                                                <td>' . $alumno['id_alumno'] . '</td>
-                                                                <td>' . $alumno['nombres'] . '</td>
-                                                                <td>' . $alumno['primer_apellido'] . '</td>
-                                                                <td>' . $alumno['segundo_apellido'] . '</td>
-                                                                <td>' . $alumno['descripcion_sede'] . '</td>
-                                                                <td>' . $alumno['id_grado'] . '</td>
-                                                                <td>
-
-                                                                
-                                                                    <button data-toggle="modal" data-target="#view-modal" data-id="'.$alumno['id_alumno'].'" id="getUser" class="btn btn-primary btn-xs waves-effect"><i class="material-icons">info_outline    </i></button>
-
-                                                                    <button data-toggle="modal" data-target="#view-modal" data-id="' . $alumno['id_alumno'] . '" id="getUser" class="btn btn-sm btn-info"><i class="glyphicon glyphicon-eye-open"></i> View</button>
-
-                                                                
-                                                                    <button type="submit" class="btn btn-warning btn-xs waves-effect" data-toggle="modal" data-target="#DetallesAlumno" name="Detalles" onclick="' . $alumno['id_alumno'] . '"><i class="material-icons">mode_edit</i></button>
-                                                                
-                                                                </td>
-                                                            </tr>';
-
-                                                    }
-                                                } else {
-                                                    // records not found
-                                                    $data .= '<tr><td colspan="6">No hay registros para mostrar!</td></tr>';
-                                                }
-                                                 
-                                                $data .= '<tbody></table>';
-                                                 
-                                                echo $data;
                                                 
-                                            ?>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="panel panel-col-lime">
-                                    <div class="panel-heading" role="tab" id="headingThree_11">
-                                        <h4 class="panel-title">
-                                            <a class="collapsed" role="button" data-toggle="collapse" data-parent="#accordion_11" href="#collapseThree_11" aria-expanded="false"
-                                               aria-controls="collapseThree_11">
-                                                <i class="material-icons">assessment</i>Juan Jose Rondon
-                                            </a>
-                                        </h4>
-                                    </div>
-                                    <div id="collapseThree_11" class="panel-collapse collapse" role="tabpanel" aria-labelledby="headingThree_11">
-                                        <div class="panel-body">
-                                            <!-- LISTAR ALUMNOS -->
-                                            <?php
-                                                 
-                                                // Design initial table header
-                                                $data = '<table class="table table-bordered table-striped table-hover js-basic-example dataTable">
-                                                                    <thead>
-                                                                        <tr>
-                                                                            <th>Codigo</th>
-                                                                            <th>Nombres</th>
-                                                                            <th>Primer Apellido</th>
-                                                                            <th>Segundo Apellido</th>
-                                                                            <th>Sede</th>
-                                                                            <th>Grupo</th>
-                                                                            <th>Detalles</th>
-                                                                        </tr>
-                                                                    <thead>
-                                                                    <tfoot>
-                                                                        <tr>
-                                                                            <th>Codigo</th>
-                                                                            <th>Nombres</th>
-                                                                            <th>Primer Apellido</th>
-                                                                            <th>Segundo Apellido</th>
-                                                                            <th>Sede</th>
-                                                                            <th>Grupo</th>
-                                                                            <th>Detalles</th>
-                                                                        </tr>
-                                                                    </tfoot>
-
-                                                                    <tbody>
-
-                                                                    ';
-                                                 
-                                                 
-                                                $alumnos = $object->Read_alumno_rondon();
-                                                 
-                                                if (count($alumnos) > 0) 
-                                                {
-                                                    foreach ($alumnos as $alumno) {
-                                                        $data .= '<tr>
-                        
-                                                                <td>' . $alumno['id_alumno'] . '</td>
-                                                                <td>' . $alumno['nombres'] . '</td>
-                                                                <td>' . $alumno['primer_apellido'] . '</td>
-                                                                <td>' . $alumno['segundo_apellido'] . '</td>
-                                                                <td>' . $alumno['descripcion_sede'] . '</td>
-                                                                <td>' . $alumno['id_grado'] . '</td>
-                                                                <td>
-
-                                                                
-                                                                    <button data-toggle="modal" data-target="#view-modal" data-id="'.$alumno['id_alumno'].'" id="getUser" class="btn btn-primary btn-xs waves-effect"><i class="material-icons">info_outline    </i></button>
-
-                                                                    <button data-toggle="modal" data-target="#view-modal" data-id="' . $alumno['id_alumno'] . '" id="getUser" class="btn btn-sm btn-info"><i class="glyphicon glyphicon-eye-open"></i> View</button>
-
-                                                                
-                                                                    <button type="submit" class="btn btn-warning btn-xs waves-effect" data-toggle="modal" data-target="#DetallesAlumno" name="Detalles" onclick="' . $alumno['id_alumno'] . '"><i class="material-icons">mode_edit</i></button>
-                                                                
-                                                                </td>
-                                                            </tr>';
-
-                                                    }
-                                                } else {
-                                                    // records not found
-                                                    $data .= '<tr><td colspan="6">No hay registros para mostrar!</td></tr>';
-                                                }
-                                                 
-                                                $data .= '<tbody></table>';
-                                                 
-                                                echo $data;
+                                                    <button type="submit" class="btn btn-warning btn-xs waves-effect" data-toggle="modal" data-target="#DetallesAlumno" name="Detalles" onclick="' . $alumno['id_alumno'] . '"><i class="material-icons">mode_edit</i></button>
                                                 
-                                            ?>
+                                                </td>
+                                            </tr>';
+
+                                    }
+                                } else {
+                                    // records not found
+                                    $data .= '<tr><td colspan="6">No hay registros para mostrar!</td></tr>';
+                                }
+                                 
+                                $data .= '<tbody></table>';
+                                 
+                                echo $data;
+                                
+                            ?>
                                         </div>
                                     </div>
                                 </div>

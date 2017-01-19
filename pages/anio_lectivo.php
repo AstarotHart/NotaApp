@@ -23,8 +23,6 @@ if (isset($_POST['crear']))
     $fecha_fin_cuarto          = strip_tags($_POST['fecha_fin_cuarto']);
     $id_sede                   = strip_tags($_POST['id_sede']);
 
-    echo "Año lectivo ".$id_anio_lectivo."<br>Dedc Año lectivo ".$descripcion_anio_lectivo."<br>inicio Año lectivo ".$fecha_inicio_anio_lectivo."<br>fin Año lectivo ".$fecha_fin_anio_lectivo."<br>inicio primer periodo ".$fecha_inicio_primer."<br>fin primer periodo ".$fecha_fin_primer."<br>inicio segundo periodo ".$fecha_inicio_segundo."<br>fin segundo periodo ".$fecha_fin_segundo."<br>inicio Tercer periodo ".$fecha_inicio_tercer."<br>fin Tercero periodo ".$fecha_fin_tercer."<br>inicio Cuarto periodo ".$fecha_inicio_cuarto."<br>fin Cuarto periodo ".$fecha_fin_cuarto."<br>Id Sede ".$id_sede."<br>";
-
     if(($anios->register_anio_periodos($id_anio_lectivo, $descripcion_anio_lectivo, $fecha_inicio_anio_lectivo, $fecha_fin_anio_lectivo, $fecha_inicio_primer, $fecha_fin_primer, $fecha_inicio_segundo, $fecha_fin_segundo, $fecha_inicio_tercer, $fecha_fin_tercer, $fecha_inicio_cuarto, $fecha_fin_cuarto, $id_sede))==true)
     {
         echo '<script type="text/javascript">';
