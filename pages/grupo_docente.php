@@ -4,11 +4,14 @@
 <?php 
 
 require_once("class.user.php");
+
 $user = new USER();
 $cabecera = new USER();
 $nota = new USER();
 $falta = new USER();
 $object = new USER();
+
+$show_table= "none";
 
 if (isset($_POST['new_pass_docente_admin']))
 {
@@ -73,8 +76,7 @@ if (isset($_POST['new_pass_docente_admin']))
                         
             foreach ($cabecera as $cabecera) 
             {
-                
-                
+                $show_table= "show";
             }
         } 
 
@@ -117,12 +119,9 @@ if (isset($_POST['new_pass_docente_admin']))
                         <td>' . $res_falta . '</td>
                         <td>
                             
-                            <form id="new_pass_admin" method="POST">
-                                <input type="hidden" class="form-control" name="id_docente_docente" value="'. $users['id_alumno'] .'">
-                                <input type="hidden" class="form-control" name="new_pass_docente" value="'. $users['id_alumno'] .'">
-                            
-                                <button class="btn btn-warning waves-effect" type="submit" name="new_pass_docente_admin">Nueva Contraseña</button>
-                            </form>
+                            <div class="btn-group" role="group">
+                                <button type="submit" class="btn btn-warning btn-xs waves-effect" data-toggle="modal" data-target="#Detallesarea" name="Detalles" onclick="' . $users['id_alumno'] . '"><i class="material-icons">mode_edit</i></button>
+                            </div>
                                 
                         </td>
                     </tr>';
@@ -155,30 +154,34 @@ if (isset($_POST['new_pass_docente_admin']))
                             </h2>
                         </div>
                         <div class="body">
+                            
+                            <!-- Div mostrar u ocultar tablas -->
+                            <div  style="display: <?php echo $show_table; ?>;">
+                                <div class="col-sm-3">
+                                    <b>Grupo:</b> <?php echo $cabecera['descripcion_grado'] . '-'.$cabecera['descripcion_grupo'] ; ?>
+                                </div>
 
-                            <div class="col-sm-3">
-                                <b>Grupo:</b> <?php echo $cabecera['descripcion_grado'] . '-'.$cabecera['descripcion_grupo'] ; ?>
-                            </div>
+                                <div class="col-sm-3">
+                                    <b>Sede:</b> <?php echo $cabecera['descripcion_sede']; ?>
+                                </div>
 
-                            <div class="col-sm-3">
-                                <b>Sede:</b> <?php echo $cabecera['descripcion_sede']; ?>
-                            </div>
+                                <div class="col-sm-3">
+                                    <b>Periodo:</b> 1
+                                </div>
 
-                            <div class="col-sm-3">
-                                <b>Periodo:</b> 1
-                            </div>
-
-                            <div class="col-sm-3">
-                                <b>Año Lectivo:</b> 2017
-                            </div>
-                                <?php
-                                
-                                echo $data; 
-                                 
-                            ?>
+                                <div class="col-sm-3">
+                                    <b>Año Lectivo:</b> 2017
+                                </div>
+                                    <?php
                                     
-                                </tbody>
-                            </table>
+                                    echo $data; 
+                                     
+                                ?>
+                                        
+                                    </tbody>
+                                </table>
+
+                            </div><!-- Fin DIV ocultar o mostrar tabla -->
                         </div>
                     </div>
                 </div>
