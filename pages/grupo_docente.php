@@ -6,6 +6,7 @@
 require_once("class.user.php");
 $user = new USER();
 $cabecera = new USER();
+$nota = new USER();
 $object = new USER();
 
 if (isset($_POST['new_pass_docente_admin']))
@@ -83,10 +84,13 @@ if (isset($_POST['new_pass_docente_admin']))
                         
             foreach ($users as $users) 
             {
+                $nota = $nota->Read_nota($users['id_alumno']);
+
                 $data .= '<tr>
                         <td>' . $num. '</td>
                         <td>' . $users['primer_apellido'] . ' ' .$users['segundo_apellido'] . ' ' .$users['nombres'] .'</td>
                         <td>' . $users['id_alumno'] . '</td>
+                        <td>' . $nota->nota . '</td>
                         <td>' . $users['des_tipo_usuario'] . '</td>
                         <td>
                             
