@@ -58,10 +58,17 @@ if (isset($_POST['new_pass_docente_admin']))
                                     <th>No.</th>
                                     <th>Nombre Estudiente</th>
                                     <th>Codigo</th>
-                                    <th>Nota</th>
-                                    <th>Faltas</th>
+                                    <th>P. 1</th>
+                                    <th>F. P1</th>
+                                    <th>P. 2</th>
+                                    <th>F. P2</th>
+                                    <th>P. 3</th>
+                                    <th>F. P3</th>
+                                    <th>P. 4</th>
+                                    <th>F. P4</th>
+                                    <th>NOTA FINAL</th>
+                                    <th>FALTAS TOTALES</th>
                                     <th>Acciones</th>
-                                    
                                 </tr>
                             <thead>
 
@@ -87,44 +94,73 @@ if (isset($_POST['new_pass_docente_admin']))
                         
             foreach ($users as $users) 
             {
-                $notas = $nota->Read_nota($users['id_alumno']);
-                $res_nota= "0";
+                $notas  = $object->Read_notas($cabecera['id_asignatura'],$users['id_alumno']);
+                $faltas = $object->Read_faltas($cabecera['id_asignatura'],$users['id_alumno']);
 
-                $faltas = $falta->Read_faltas($users['id_alumno']);
-                $res_falta = "0";
+                    $res_nota1        = "0";
+                    $res_nota2        = "0";
+                    $res_nota3        = "0";
+                    $res_nota4        = "0";
+                    $res_nota_final   = "0";
+                    
+                    $res_falta1       = "0";
+                    $res_falta2       = "0";
+                    $res_falta3       = "0";
+                    $res_falta4       = "0";
+                    $res_falta_final = "0";
 
-                //echo "<br>id alumno ".$users['id_alumno'].".";
-
-                //echo "<br>contador Filas Faltas ".count($faltas).".";
-
-                if (count($faltas) > 0) 
-                {
-                    $res_falta = $faltas->inasistencia;
-                }
 
                 if (count($notas) > 0) 
                 {
-                    $res_nota = $notas->nota;
+                    foreach ($notas as $notas) 
+                    {
+                        $res_nota1 = $notas['nota1'];
+                        $res_nota2 = $notas['nota2'];
+                        $res_nota3 = $notas['nota3'];
+                        $res_nota4 = $notas['nota4'];
+                        $res_nota_final = ($res_nota1+$res_nota2+$res_nota3+$res_nota4)/4;    
+                    }
+                    
                 }
-                
 
-                //echo "<br>Faltas ".$res_falta;
-                //echo "<br>Nota ".$res_nota;
+                if (count($faltas) > 0) 
+                {
+                    foreach ($faltas as $faltas) 
+                    {
+                        $res_falta1 = $faltas['inasistencia_p1'];
+                        $res_falta2 = $faltas['inasistencia_p2'];
+                        $res_falta3 = $faltas['inasistencia_p3'];
+                        $res_falta4 = $faltas['inasistencia_p4'];
+                        $res_falta_final = ($res_falta1+$res_falta2+$res_falta3+$res_falta4);    
+                    }
+                    
+                }
 
-                $data .= '<tr>
-                        <td>' . $num. '</td>
-                        <td>' . $users['primer_apellido'] . ' ' .$users['segundo_apellido'] . ' ' .$users['nombres'] .'</td>
-                        <td>' . $users['id_alumno'] . '</td>
-                        <td>' . $res_nota . '</td>
-                        <td>' . $res_falta . '</td>
-                        <td>
-                            
-                            <div class="btn-group" role="group">
-                                <button type="submit" class="btn btn-warning btn-xs waves-effect" data-toggle="modal" data-target="#Detallesarea" name="Detalles" onclick="' . $users['id_alumno'] . '"><i class="material-icons">mode_edit</i></button>
-                            </div>
+
+
+                $data .= '
+                        <tr>
+                            <td>' . $num. '</td>
+                            <td>' . $users['primer_apellido'] . ' ' .$users['segundo_apellido'] . ' ' .$users['nombres'] .'</td>
+                            <td>' . $users['id_alumno'] . '</td>
+                            <td>' . $res_nota1  . '</td>
+                            <td>' . $res_falta1 . '</td>
+                            <td>' . $res_nota2  . '</td>
+                            <td>' . $res_falta2 . '</td>
+                            <td>' . $res_nota3  . '</td>
+                            <td>' . $res_falta3 . '</td>
+                            <td>' . $res_nota4  . '</td>
+                            <td>' . $res_falta4 . '</td>
+                            <td>' . $res_nota_final . '</td>
+                            <td>' . $res_falta_final . '</td>
+                            <td>
                                 
-                        </td>
-                    </tr>';
+                                <div class="btn-group" role="group">
+                                    <button type="submit" class="btn btn-warning btn-xs waves-effect" data-toggle="modal" data-target="#Detallesarea" name="Detalles" onclick="' . $users['id_alumno'] . '"><i class="material-icons">mode_edit</i></button>
+                                </div>
+                                    
+                            </td>
+                        </tr>';
 
                     $num++;
                 
@@ -150,7 +186,7 @@ if (isset($_POST['new_pass_docente_admin']))
                     <div class="card">
                         <div class="header">
                             <h2>
-                                Docentes <small>Lista de docentes</small>
+                                Asignaturas <small>Lista de Estudientes Por Asignaturas</small>
                             </h2>
                         </div>
                         <div class="body">
@@ -158,11 +194,11 @@ if (isset($_POST['new_pass_docente_admin']))
                             <!-- Div mostrar u ocultar tablas -->
                             <div  style="display: <?php echo $show_table; ?>;">
                                 <div class="col-sm-3">
-                                    <b>Grupo:</b> <?php echo $cabecera['descripcion_grado'] . '-'.$cabecera['descripcion_grupo'] ; ?>
+                                    <b>Grupo:</b> <?php echo $cabecera['descripcion_grupo'] ; ?>
                                 </div>
 
                                 <div class="col-sm-3">
-                                    <b>Sede:</b> <?php echo $cabecera['descripcion_sede']; ?>
+                                    <b>Asignatura:</b> <?php echo $cabecera['nombre_asignatura']; ?>
                                 </div>
 
                                 <div class="col-sm-3">
@@ -180,6 +216,10 @@ if (isset($_POST['new_pass_docente_admin']))
                                         
                                     </tbody>
                                 </table>
+
+                                <blockquote class="m-b-25 font-12">
+                                    <p><b>P.1</b>: Primer Periodo,<b>P.2</b>: Segundo Periodo,<b>P.3</b>: Tercer Periodo,<b>P.4</b>: Cuarto Periodo. <b>F. P.1</b>: Faltas Primer Periodo,<b>F. P.2</b>: Faltas Segundo Periodo,<b>F. P.3</b>: Faltas Tercer Periodo,<b>F. P.4</b>: Faltas Cuarto Periodo. </p>
+                                </blockquote>
 
                             </div><!-- Fin DIV ocultar o mostrar tabla -->
                         </div>

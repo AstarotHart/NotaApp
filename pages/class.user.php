@@ -794,7 +794,7 @@ class USER
      */
     public function Read_alumnos_grupo($id_docente)
     {
-        $query = $this->conn->prepare('SELECT * FROM alumno AL inner join grupo GR inner join grado GRA inner join sede S ON AL.id_grupo = GR.id_grupo AND GR.id_grado = GRA.id_grado AND s.id_sede = GRA.id_sede WHERE GR.id_docente = :id_docente ');
+        $query = $this->conn->prepare('SELECT * FROM alumno AL inner join grupo GR inner join grado GRA inner join sede S ON AL.id_grupo = GR.id_grupo AND GR.id_grado = GRA.id_grado AND s.id_sede = GRA.id_sede WHERE GR.id_docente = :id_docente ORDER BY AL.primer_apellido ');
         $query->bindParam(":id_docente",$id_docente);
         $query->execute();
         $data = array();
@@ -811,7 +811,7 @@ class USER
      */
     public function Read_cabecera_grupo($id_docente)
     {
-        $query = $this->conn->prepare('SELECT * FROM grado GRA inner join grupo GRU inner join sede S  ON GRA.id_sede = S.id_sede AND GRA.id_grado = GRU.id_grado WHERE GRU.id_docente = :id_docente ');
+        $query = $this->conn->prepare('SELECT * FROM grupo GRU  inner join asignatura ASI  ON ASI.id_grupo = GRU.id_grupo WHERE ASI.id_docente = :id_docente ');
         $query->bindParam(":id_docente",$id_docente);
         $query->execute();
         $data = array();
@@ -822,57 +822,39 @@ class USER
     }
 
     /**
-     * [Read_nota description]
-     * @param [type] $id_alumno [description]
+     * [Read_notas description]
+     * @param [type] $id_asignatura [description]
+     * @param [type] $id_alumno     [description]
      */
-    public function Read_nota($id_alumno)
+    public function Read_notas($id_asignatura, $id_alumno)
     {
-        try 
-        {
-            $stmt = $this->conn->prepare("SELECT nota FROM nota WHERE id_alumno=:id_alumno");
-            $stmt->bindparam(":id_alumno", $id_alumno);
-            $stmt->execute();
-
-
-            if ($stmt->rowCount() > 0) 
-            {
-
-                return $stmt->fetch(PDO::FETCH_OBJ);
-            }
-
-        } 
-
-        catch (PDOException $e) 
-        {
-            exit($e->getMessage());
+        $query = $this->conn->prepare('SELECT * FROM nota WHERE id_asignatura = :id_asignatura AND id_alumno = :id_alumno');
+        $query->bindParam(":id_asignatura",$id_asignatura);
+        $query->bindParam(":id_alumno",$id_alumno);
+        $query->execute();
+        $data = array();
+        while ($row = $query->fetch(PDO::FETCH_ASSOC)) {
+            $data[] = $row;
         }
+        return $data;
     }
 
     /**
      * [Read_faltas description]
-     * @param [type] $id_alumno [description]
+     * @param [type] $id_asignatura [description]
+     * @param [type] $id_alumno     [description]
      */
-    public function Read_faltas($id_alumno)
+    public function Read_faltas($id_asignatura, $id_alumno)
     {
-        try 
-        {
-            $stmt = $this->conn->prepare("SELECT inasistencia FROM asistencia WHERE id_alumno=:id_alumno");
-            $stmt->bindparam(":id_alumno", $id_alumno);
-            $stmt->execute();
-
-
-            if ($stmt->rowCount() > 0) 
-            {
-
-                return $stmt->fetch(PDO::FETCH_OBJ);
-            }
-
-        } 
-
-        catch (PDOException $e) 
-        {
-            exit($e->getMessage());
+        $query = $this->conn->prepare('SELECT * FROM asistencia WHERE id_asignatura = :id_asignatura AND id_alumno = :id_alumno');
+        $query->bindParam(":id_asignatura",$id_asignatura);
+        $query->bindParam(":id_alumno",$id_alumno);
+        $query->execute();
+        $data = array();
+        while ($row = $query->fetch(PDO::FETCH_ASSOC)) {
+            $data[] = $row;
         }
+        return $data;
     }
 
 /* -------------F U N C I O N E S  A L U M N O ----------*/
