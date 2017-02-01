@@ -858,34 +858,73 @@ class USER
     }
 
 
-    public function update_nota($id_alumno,$name_nota,$nota,$materia)
+    public function update_nota($id_alumno,$name_nota,$nota,$materia,$anio)
     {
         try
         {
-            if ($name_nota = "nota1") 
-            {
-                $stmt=$this->conn->prepare("UPDATE nota SET nota1=:nota WHERE id_alumno=:id_alumno AND id_asignatura=:materia");
-            }
-            elseif ($name_nota = "nota2") 
-            {
-                $stmt=$this->conn->prepare("UPDATE nota SET nota2=:nota WHERE id_alumno=:id_alumno AND id_asignatura=:materia");
-            }
-            elseif ($name_nota = "nota3") 
-            {
-                $stmt=$this->conn->prepare("UPDATE nota SET nota3=:nota WHERE id_alumno=:id_alumno AND id_asignatura=:materia");
-            }
-            elseif ($name_nota = "nota4") 
-            {
-                $stmt=$this->conn->prepare("UPDATE nota SET nota4=:nota WHERE id_alumno=:id_alumno AND id_asignatura=:materia");
-            }
-            
 
-            $stmt->bindparam(":nota",$nota);
-            $stmt->bindparam(":id_alumno",$id_alumno);
-            $stmt->bindparam(":materia",$materia);
-            $stmt->execute();
+            $stmt1 = $this->conn->prepare("SELECT id_alumno FROM nota WHERE id_alumno=:id_alumno");
+            $stmt1->execute(array(':id_alumno'=>$id_alumno));
+            $userRow=$stmt1->fetch(PDO::FETCH_ASSOC);
 
-            return true;            
+            if($stmt1->rowCount() == 1)
+            {
+                if ($name_nota == "nota1") 
+                {
+                    $stmt=$this->conn->prepare("UPDATE nota SET nota1=:nota WHERE id_alumno=:id_alumno AND id_asignatura=:materia");
+                }
+                elseif ($name_nota == "nota2") 
+                {
+                    $stmt=$this->conn->prepare("UPDATE nota SET nota2=:nota WHERE id_alumno=:id_alumno AND id_asignatura=:materia");
+                }
+                elseif ($name_nota == "nota3") 
+                {
+                    $stmt=$this->conn->prepare("UPDATE nota SET nota3=:nota WHERE id_alumno=:id_alumno AND id_asignatura=:materia");
+                }
+                elseif ($name_nota == "nota4") 
+                {
+                    $stmt=$this->conn->prepare("UPDATE nota SET nota4=:nota WHERE id_alumno=:id_alumno AND id_asignatura=:materia");
+                }
+
+                $stmt->bindparam(":nota",$nota);
+                $stmt->bindparam(":id_alumno",$id_alumno);
+                $stmt->bindparam(":materia",$materia);
+
+                $stmt->execute();
+
+            }else
+            {                                                  
+                if ($name_nota == "nota1") 
+                {
+                    $stmt2 = $this->conn->prepare("INSERT INTO nota(id_alumno,id_anio_lectivo,id_asignatura,nota1) 
+                                          VALUES(:id_alumno,:anio,:materia,:nota)");
+                }
+                elseif ($name_nota == "nota2") 
+                {
+                    $stmt2 = $this->conn->prepare("INSERT INTO nota(id_alumno,id_anio_lectivo,id_asignatura,nota2) 
+                                          VALUES(:id_alumno,:anio,:materia,:nota)");
+                }
+                elseif ($name_nota == "nota3") 
+                {
+                    $stmt2 = $this->conn->prepare("INSERT INTO nota(id_alumno,id_anio_lectivo,id_asignatura,nota3) 
+                                          VALUES(:id_alumno,:anio,:materia,:nota)");
+                }
+                elseif ($name_nota == "nota4") 
+                {
+                    $stmt2 = $this->conn->prepare("INSERT INTO nota(id_alumno,id_anio_lectivo,id_asignatura,nota4) 
+                                          VALUES(:id_alumno,:anio,:materia,:nota)");
+                }
+
+                $stmt2->bindparam(":nota",$nota);
+                $stmt2->bindparam(":id_alumno",$id_alumno);
+                $stmt2->bindparam(":materia",$materia);
+                $stmt2->bindparam(":anio",$anio);
+
+                $stmt2->execute();
+
+            }
+
+                return true;            
         }
 
         catch(PDOException $e)

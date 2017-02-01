@@ -163,13 +163,13 @@ if (isset($_POST['new_pass_docente_admin']))
                             <td>' . $num. '</td>
                             <td>' . $users['primer_apellido'] . ' ' .$users['segundo_apellido'] . ' ' .$users['nombres'] .'</td>
                             <td>' . $users['id_alumno'] . '</td>
-                            <td><span class="xedit" id="'.$users['id_alumno'].'" name="nota1" materia="'.$cabecera['id_asignatura'].'">'.$res_nota1.'</span></td>
+                            <td><span class="xedit" id="'.$users['id_alumno'].'" name="nota1" materia="'.$cabecera['id_asignatura'].'" anio="'.$cabecera['id_anio_lectivo'].'">'.$res_nota1.'</span></td>
                             <td>' . $res_falta1 . '</td>
-                            <td>' . $res_nota2  . '</td>
+                            <td><span class="xedit" id="'.$users['id_alumno'].'" name="nota2" materia="'.$cabecera['id_asignatura'].'" anio="'.$cabecera['id_anio_lectivo'].'">'.$res_nota2.'</span></td>
                             <td>' . $res_falta2 . '</td>
-                            <td>' . $res_nota3  . '</td>
+                            <td><span class="xedit" id="'.$users['id_alumno'].'" name="nota3" materia="'.$cabecera['id_asignatura'].'" anio="'.$cabecera['id_anio_lectivo'].'">'.$res_nota3.'</span></td>
                             <td>' . $res_falta3 . '</td>
-                            <td>' . $res_nota4  . '</td>
+                            <td><span class="xedit" id="'.$users['id_alumno'].'" name="nota4" materia="'.$cabecera['id_asignatura'].'" anio="'.$cabecera['id_anio_lectivo'].'">'.$res_nota4.'</span></td>
                             <td>' . $res_falta4 . '</td>
                             <td>' . $res_nota_final . '</td>
                             <td>' . $res_falta_final . '</td>
@@ -262,13 +262,14 @@ if (isset($_POST['new_pass_docente_admin']))
                 $.fn.editable.defaults.mode = 'popup';
                 $('.xedit').editable();     
                 $(document).on('click','.editable-submit',function(){
+                    var u = $(this).closest('td').children('span').attr('anio');
                     var v = $(this).closest('td').children('span').attr('materia');
                     var w = $(this).closest('td').children('span').attr('name');
                     var x = $(this).closest('td').children('span').attr('id');
                     var y = $('.materia').val();
                     var z = $(this).closest('td').children('span');
                     $.ajax({
-                        url: "update_nota.php?id="+x+"&data="+y+"&nota="+w+"&materia="+v,
+                        url: "update_nota.php?id="+x+"&data="+y+"&nota="+w+"&materia="+v+"&anio="+u,
                         type: 'GET',
                         success: function(s){
                             if(s == 'status'){
