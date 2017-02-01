@@ -97,16 +97,18 @@ if (isset($_POST['new_pass_docente_admin']))
                 $notas  = $object->Read_notas($cabecera['id_asignatura'],$users['id_alumno']);
                 $faltas = $object->Read_faltas($cabecera['id_asignatura'],$users['id_alumno']);
 
-                    $res_nota1        = "0";
-                    $res_nota2        = "0";
-                    $res_nota3        = "0";
-                    $res_nota4        = "0";
-                    $res_nota_final   = "0";
+                    $res_nota1       = "0";
+                    $res_nota2       = "0";
+                    $res_nota3       = "0";
+                    $res_nota4       = "0";
+                    $nota_final      = "0";
+                    $res_nota_final  = "0";
                     
-                    $res_falta1       = "0";
-                    $res_falta2       = "0";
-                    $res_falta3       = "0";
-                    $res_falta4       = "0";
+                    $res_falta1      = "0";
+                    $res_falta2      = "0";
+                    $res_falta3      = "0";
+                    $res_falta4      = "0";
+                    $falta_final     = "0";
                     $res_falta_final = "0";
 
 
@@ -114,11 +116,20 @@ if (isset($_POST['new_pass_docente_admin']))
                 {
                     foreach ($notas as $notas) 
                     {
-                        $res_nota1 = $notas['nota1'];
-                        $res_nota2 = $notas['nota2'];
-                        $res_nota3 = $notas['nota3'];
-                        $res_nota4 = $notas['nota4'];
-                        $res_nota_final = ($res_nota1+$res_nota2+$res_nota3+$res_nota4)/4;    
+                        $res_nota1  = $notas['nota1'];
+                        $res_nota2  = $notas['nota2'];
+                        $res_nota3  = $notas['nota3'];
+                        $res_nota4  = $notas['nota4'];
+                        $nota_final = ($res_nota1+$res_nota2+$res_nota3+$res_nota4)/4;   
+                    }
+
+                    if ($nota_final < "3") 
+                    {
+                        $res_nota_final = '<p class="font-bold col-pink">'.$nota_final.'</p>';
+                    }
+                    else
+                    {
+                        $res_nota_final = $nota_final;
                     }
                     
                 }
@@ -127,11 +138,20 @@ if (isset($_POST['new_pass_docente_admin']))
                 {
                     foreach ($faltas as $faltas) 
                     {
-                        $res_falta1 = $faltas['inasistencia_p1'];
-                        $res_falta2 = $faltas['inasistencia_p2'];
-                        $res_falta3 = $faltas['inasistencia_p3'];
-                        $res_falta4 = $faltas['inasistencia_p4'];
-                        $res_falta_final = ($res_falta1+$res_falta2+$res_falta3+$res_falta4);    
+                        $res_falta1  = $faltas['inasistencia_p1'];
+                        $res_falta2  = $faltas['inasistencia_p2'];
+                        $res_falta3  = $faltas['inasistencia_p3'];
+                        $res_falta4  = $faltas['inasistencia_p4'];
+                        $falta_final = ($res_falta1+$res_falta2+$res_falta3+$res_falta4);    
+                    }
+
+                    if ($falta_final >= "4") 
+                    {
+                        $res_falta_final = '<p class="font-bold col-pink">'.$falta_final.'</p>';
+                    }
+                    else
+                    {
+                        $res_falta_final = $falta_final;
                     }
                     
                 }
@@ -143,7 +163,7 @@ if (isset($_POST['new_pass_docente_admin']))
                             <td>' . $num. '</td>
                             <td>' . $users['primer_apellido'] . ' ' .$users['segundo_apellido'] . ' ' .$users['nombres'] .'</td>
                             <td>' . $users['id_alumno'] . '</td>
-                            <td>' . $res_nota1  . '</td>
+                            <td><span class="xedit" id="'.$users['id_alumno'].'" name="nota1" materia="'.$cabecera['id_asignatura'].'">'.$res_nota1.'</span></td>
                             <td>' . $res_falta1 . '</td>
                             <td>' . $res_nota2  . '</td>
                             <td>' . $res_falta2 . '</td>
@@ -234,18 +254,32 @@ if (isset($_POST['new_pass_docente_admin']))
     <!-- TFooter -->
     <?php include("../includes/footer.php");?>
     <!-- #Footer -->
+    
+    <script src="../js/bootstrap-editable.js"></script>
 
     <script type="text/javascript">
-    var accion;
-    var idP;
-    function new_pass(id, nombres, ocupacion, telefono, sitioweb){
-      accion = 'E';
-      idP = id;
-      document.frmClientes.nombress.value = nombres;
-      document.frmClientes.ocupacion.value = ocupacion;
-      document.frmClientes.telefono.value = telefono;
-      document.frmClientes.sitioweb.value = sitioweb;
-      $('#modal').modal('show');
-    }
-
+        jQuery(document).ready(function() {  
+                $.fn.editable.defaults.mode = 'popup';
+                $('.xedit').editable();     
+                $(document).on('click','.editable-submit',function(){
+                    var v = $(this).closest('td').children('span').attr('materia');
+                    var w = $(this).closest('td').children('span').attr('name');
+                    var x = $(this).closest('td').children('span').attr('id');
+                    var y = $('.materia').val();
+                    var z = $(this).closest('td').children('span');
+                    $.ajax({
+                        url: "update_nota.php?id="+x+"&data="+y+"&nota="+w+"&materia="+v,
+                        type: 'GET',
+                        success: function(s){
+                            if(s == 'status'){
+                            $(z).html(y);}
+                            if(s == 'error') {
+                            alert('Error Processing your Request!');}
+                        },
+                        error: function(e){
+                            alert('Error Processing your Request!!');
+                        }
+                    });
+                });
+        });
     </script>

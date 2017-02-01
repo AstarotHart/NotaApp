@@ -857,6 +857,44 @@ class USER
         return $data;
     }
 
+
+    public function update_nota($id_alumno,$name_nota,$nota,$materia)
+    {
+        try
+        {
+            if ($name_nota = "nota1") 
+            {
+                $stmt=$this->conn->prepare("UPDATE nota SET nota1=:nota WHERE id_alumno=:id_alumno AND id_asignatura=:materia");
+            }
+            elseif ($name_nota = "nota2") 
+            {
+                $stmt=$this->conn->prepare("UPDATE nota SET nota2=:nota WHERE id_alumno=:id_alumno AND id_asignatura=:materia");
+            }
+            elseif ($name_nota = "nota3") 
+            {
+                $stmt=$this->conn->prepare("UPDATE nota SET nota3=:nota WHERE id_alumno=:id_alumno AND id_asignatura=:materia");
+            }
+            elseif ($name_nota = "nota4") 
+            {
+                $stmt=$this->conn->prepare("UPDATE nota SET nota4=:nota WHERE id_alumno=:id_alumno AND id_asignatura=:materia");
+            }
+            
+
+            $stmt->bindparam(":nota",$nota);
+            $stmt->bindparam(":id_alumno",$id_alumno);
+            $stmt->bindparam(":materia",$materia);
+            $stmt->execute();
+
+            return true;            
+        }
+
+        catch(PDOException $e)
+        {
+            echo $e->getMessage();
+            return false;
+        }
+    }
+
 /* -------------F U N C I O N E S  A L U M N O ----------*/
     
     /**
