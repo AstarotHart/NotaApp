@@ -967,7 +967,7 @@ class USER
                 {
                     $stmt=$this->conn->prepare("UPDATE asistencia SET inasistencia_p3=:falta WHERE id_alumno=:id_alumno AND id_asignatura=:materia");
                 }
-                elseif ($name_falta == "ninasistencia_") 
+                elseif ($name_falta == "inasistencia_p4") 
                 {
                     $stmt=$this->conn->prepare("UPDATE asistencia SET inasistencia_p4=:falta WHERE id_alumno=:id_alumno AND id_asignatura=:materia");
                 }
