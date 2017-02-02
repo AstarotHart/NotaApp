@@ -858,6 +858,15 @@ class USER
     }
 
 
+    /**
+     * [update_nota description]
+     * @param  [type] $id_alumno [description]
+     * @param  [type] $name_nota [description]
+     * @param  [type] $nota      [description]
+     * @param  [type] $materia   [description]
+     * @param  [type] $anio      [description]
+     * @return [type]            [description]
+     */
     public function update_nota($id_alumno,$name_nota,$nota,$materia,$anio)
     {
         try
@@ -916,6 +925,83 @@ class USER
                 }
 
                 $stmt2->bindparam(":nota",$nota);
+                $stmt2->bindparam(":id_alumno",$id_alumno);
+                $stmt2->bindparam(":materia",$materia);
+                $stmt2->bindparam(":anio",$anio);
+
+                $stmt2->execute();
+
+            }
+
+                return true;            
+        }
+
+        catch(PDOException $e)
+        {
+            echo $e->getMessage();
+            return false;
+        }
+    }
+
+
+    public function update_faltas($id_alumno,$name_falta,$falta,$materia,$anio)
+    {
+        try
+        {
+
+            $stmt1 = $this->conn->prepare("SELECT id_alumno FROM asistencia WHERE id_alumno=:id_alumno");
+            $stmt1->execute(array(':id_alumno'=>$id_alumno));
+            $userRow=$stmt1->fetch(PDO::FETCH_ASSOC);
+
+            if($stmt1->rowCount() == 1)
+            {
+                if ($name_falta == "inasistencia_p1") 
+                {
+                    $stmt=$this->conn->prepare("UPDATE asistencia SET inasistencia_p1=:falta WHERE id_alumno=:id_alumno AND id_asignatura=:materia");
+                }
+                elseif ($name_falta == "inasistencia_p2") 
+                {
+                    $stmt=$this->conn->prepare("UPDATE asistencia SET inasistencia_p2=:falta WHERE id_alumno=:id_alumno AND id_asignatura=:materia");
+                }
+                elseif ($name_falta == "inasistencia_p3") 
+                {
+                    $stmt=$this->conn->prepare("UPDATE asistencia SET inasistencia_p3=:falta WHERE id_alumno=:id_alumno AND id_asignatura=:materia");
+                }
+                elseif ($name_falta == "ninasistencia_") 
+                {
+                    $stmt=$this->conn->prepare("UPDATE asistencia SET inasistencia_p4=:falta WHERE id_alumno=:id_alumno AND id_asignatura=:materia");
+                }
+
+                $stmt->bindparam(":falta",$falta);
+                $stmt->bindparam(":id_alumno",$id_alumno);
+                $stmt->bindparam(":materia",$materia);
+
+                $stmt->execute();
+
+            }else
+            {                                                  
+                if ($name_falta == "inasistencia_p1") 
+                {
+                    $stmt2 = $this->conn->prepare("INSERT INTO asistencia(id_alumno,id_anio_lectivo,id_asignatura,inasistencia_p1) 
+                                          VALUES(:id_alumno,:anio,:materia,:falta)");
+                }
+                elseif ($name_falta == "inasistencia_p2") 
+                {
+                    $stmt2 = $this->conn->prepare("INSERT INTO asistencia(id_alumno,id_anio_lectivo,id_asignatura,inasistencia_p2) 
+                                          VALUES(:id_alumno,:anio,:materia,:falta)");
+                }
+                elseif ($name_falta == "nota3") 
+                {
+                    $stmt2 = $this->conn->prepare("INSERT INTO asistencia(id_alumno,id_anio_lectivo,id_asignatura,inasistencia_p3) 
+                                          VALUES(:id_alumno,:anio,:materia,:falta)");
+                }
+                elseif ($name_falta == "inasistencia_p4") 
+                {
+                    $stmt2 = $this->conn->prepare("INSERT INTO asistencia(id_alumno,id_anio_lectivo,id_asignatura,inasistencia_p4) 
+                                          VALUES(:id_alumno,:anio,:materia,:falta)");
+                }
+
+                $stmt2->bindparam(":falta",$falta);
                 $stmt2->bindparam(":id_alumno",$id_alumno);
                 $stmt2->bindparam(":materia",$materia);
                 $stmt2->bindparam(":anio",$anio);

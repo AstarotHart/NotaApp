@@ -7,18 +7,18 @@
 	if($_GET['id'] and $_GET['data'])
 	{
 		$id_alumno = $_GET['id'];
-		$nota      = $_GET['data'];
-		$name_nota = $_GET['nota'];
+		$falta      = $_GET['data'];
+		$name_falta = $_GET['nota'];
 		$materia   = $_GET['materia'];
 		$anio      = $_GET['anio'];
 
 		echo "<br>id_alumno: ". $id_alumno;
-		echo "<br>nota: ". $nota;
-		echo "<br>name_nota: ". $name_nota;
+		echo "<br>Falta: ". $falta;
+		echo "<br>name_Falta: ". $name_falta;
 		echo "<br>materia: ". $materia;
-		echo "<br>anio: ". $anio;
+		echo "<br>anio: ". $anio."<br>";
 		
-		$notas = $notas->update_nota($id_alumno,$name_nota,$nota,$materia,$anio);
+		$notas = $notas->update_faltas($id_alumno,$name_falta,$falta,$materia,$anio);
 		echo "ohh YEAH";
 	}
 ?>

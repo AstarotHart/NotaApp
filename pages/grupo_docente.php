@@ -13,27 +13,6 @@ $object = new USER();
 
 $show_table= "none";
 
-if (isset($_POST['new_pass_docente_admin']))
-{
-    $id_docente_docente=$_POST['id_docente_docente'];   
-
-    /**
-     * Llamada a funcion para cambiar la  contraseniadel docente
-     */
-    if(($user->new_pass_docente_admin($id_docente_docente))==true)
-    {
-        echo '<script type="text/javascript">';
-        echo 'setTimeout(function () { swal("Contraseña Actualizada","","success");';
-        echo '}, 1000);</script>';
-     }
-     else
-     {
-        echo '<script type="text/javascript">';
-        echo 'setTimeout(function () { swal("Contraseña NO Actualizada","","error");';
-        echo '}, 1000);</script>';
-     }
-}
-
  ?>
 
 
@@ -101,7 +80,7 @@ if (isset($_POST['new_pass_docente_admin']))
                     $res_nota2       = "0";
                     $res_nota3       = "0";
                     $res_nota4       = "0";
-                    $nota_final      = "0";
+                    $nota_final      = 0;
                     $res_nota_final  = "0";
                     
                     $res_falta1      = "0";
@@ -120,16 +99,18 @@ if (isset($_POST['new_pass_docente_admin']))
                         $res_nota2  = $notas['nota2'];
                         $res_nota3  = $notas['nota3'];
                         $res_nota4  = $notas['nota4'];
-                        $nota_final = ($res_nota1+$res_nota2+$res_nota3+$res_nota4)/4;   
+                        $nota_final = ($res_nota1+$res_nota2+$res_nota3+$res_nota4)/4;
+
+                        $nota_final =  number_format($nota_final,1);  
                     }
 
-                    if ($nota_final < "3") 
+                    if ($nota_final <= 2.9) 
                     {
                         $res_nota_final = '<p class="font-bold col-pink">'.$nota_final.'</p>';
                     }
                     else
                     {
-                        $res_nota_final = $nota_final;
+                        $res_nota_final = '<b>'.$nota_final.'</b>';
                     }
                     
                 }
@@ -164,13 +145,13 @@ if (isset($_POST['new_pass_docente_admin']))
                             <td>' . $users['primer_apellido'] . ' ' .$users['segundo_apellido'] . ' ' .$users['nombres'] .'</td>
                             <td>' . $users['id_alumno'] . '</td>
                             <td><span class="xedit" id="'.$users['id_alumno'].'" name="nota1" materia="'.$cabecera['id_asignatura'].'" anio="'.$cabecera['id_anio_lectivo'].'">'.$res_nota1.'</span></td>
-                            <td>' . $res_falta1 . '</td>
+                            <td><span tipo="falta" class="xedit" id="'.$users['id_alumno'].'" name="inasistencia_p1" materia="'.$cabecera['id_asignatura'].'" anio="'.$cabecera['id_anio_lectivo'].'">'.$res_falta1.'</span></td>
                             <td><span class="xedit" id="'.$users['id_alumno'].'" name="nota2" materia="'.$cabecera['id_asignatura'].'" anio="'.$cabecera['id_anio_lectivo'].'">'.$res_nota2.'</span></td>
-                            <td>' . $res_falta2 . '</td>
+                            <td><span class="xedit" id="'.$users['id_alumno'].'" name="inasistencia_p2" materia="'.$cabecera['id_asignatura'].'" anio="'.$cabecera['id_anio_lectivo'].'">'.$res_falta2.'</span></td>
                             <td><span class="xedit" id="'.$users['id_alumno'].'" name="nota3" materia="'.$cabecera['id_asignatura'].'" anio="'.$cabecera['id_anio_lectivo'].'">'.$res_nota3.'</span></td>
-                            <td>' . $res_falta3 . '</td>
+                            <td><span class="xedit" id="'.$users['id_alumno'].'" name="inasistencia_p3" materia="'.$cabecera['id_asignatura'].'" anio="'.$cabecera['id_anio_lectivo'].'">'.$res_falta3.'</span></td>
                             <td><span class="xedit" id="'.$users['id_alumno'].'" name="nota4" materia="'.$cabecera['id_asignatura'].'" anio="'.$cabecera['id_anio_lectivo'].'">'.$res_nota4.'</span></td>
-                            <td>' . $res_falta4 . '</td>
+                            <td><span class="xedit" id="'.$users['id_alumno'].'" name="inasistencia_p4" materia="'.$cabecera['id_asignatura'].'" anio="'.$cabecera['id_anio_lectivo'].'">'.$res_falta4.'</span></td>
                             <td>' . $res_nota_final . '</td>
                             <td>' . $res_falta_final . '</td>
                             <td>
@@ -228,11 +209,14 @@ if (isset($_POST['new_pass_docente_admin']))
                                 <div class="col-sm-3">
                                     <b>Año Lectivo:</b> 2017
                                 </div>
+
+                                <div id="miTabla">
                                     <?php
-                                    
-                                    echo $data; 
-                                     
-                                ?>
+                                        
+                                        echo $data; 
+                                         
+                                    ?>
+                                </div>
                                         
                                     </tbody>
                                 </table>
@@ -257,6 +241,7 @@ if (isset($_POST['new_pass_docente_admin']))
     
     <script src="../js/bootstrap-editable.js"></script>
 
+    <!-- Funcion para editar NOTAS alumno-
     <script type="text/javascript">
         jQuery(document).ready(function() {  
                 $.fn.editable.defaults.mode = 'popup';
@@ -272,6 +257,7 @@ if (isset($_POST['new_pass_docente_admin']))
                         url: "update_nota.php?id="+x+"&data="+y+"&nota="+w+"&materia="+v+"&anio="+u,
                         type: 'GET',
                         success: function(s){
+                            //location.reload();
                             if(s == 'status'){
                             $(z).html(y);}
                             if(s == 'error') {
@@ -284,3 +270,59 @@ if (isset($_POST['new_pass_docente_admin']))
                 });
         });
     </script>
+
+
+
+    <!-- Funcion para editar FALTAS alumno-->
+    <script type="text/javascript">
+        jQuery(document).ready(function() {  
+                $.fn.editable.defaults.mode = 'popup';
+                $('.xedit').editable();     
+                $(document).on('click','.editable-submit',function(){
+                    var u = $(this).closest('td').children('span').attr('anio');
+                    var v = $(this).closest('td').children('span').attr('materia');
+                    var w = $(this).closest('td').children('span').attr('name');
+                    var x = $(this).closest('td').children('span').attr('id');
+                    var y = $('.materia').val();
+                    var z = $(this).closest('td').children('span');
+
+                    if (w == "inasistencia_p1" || w == "inasistencia_p2" || w == "inasistencia_p3" || w == "inasistencia_p4" ) 
+                    {
+                        $.ajax({
+                            url: "update_falta.php?id="+x+"&data="+y+"&nota="+w+"&materia="+v+"&anio="+u,
+                            type: 'GET',
+                            success: function(s){
+                                location.reload();
+                                if(s == 'status'){
+                                $(z).html(y);}
+                                if(s == 'error') {
+                                alert('Error Processing your Request!');}
+                            },
+                            error: function(e){
+                                alert('Error Processing your Request!!');
+                            }
+                        });
+                    }
+                    else
+                    {
+                        $.ajax({
+                            url: "update_nota.php?id="+x+"&data="+y+"&nota="+w+"&materia="+v+"&anio="+u,
+                            type: 'GET',
+                            success: function(s){
+                                location.reload();
+                                if(s == 'status'){
+                                $(z).html(y);}
+                                if(s == 'error') {
+                                alert('Error Processing your Request!');}
+                            },
+                            error: function(e){
+                                alert('Error Processing your Request!!');
+                            }
+                        })
+                    }
+
+                    
+                });
+        });
+    </script>
+
