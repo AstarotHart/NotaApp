@@ -342,7 +342,7 @@ class USER
      * @param  [type] $nombre_area [description]
      * @return [type]              [description]
      */
-    public function register_asignaturas($id_docente,$id_area,$nombre_asignatura)
+    public function register_asignaturas($id_docente,$id_area,$nombre_asignatura,$intensidad_horaria,$porcentaje)
     {
 
         $id_asignatura=$id_area;
@@ -354,13 +354,15 @@ class USER
 
         try
         {
-            $stmt = $this->conn->prepare("INSERT INTO asignatura(id_asignatura,id_docente,id_area,nombre_asignatura) 
-                                          VALUES(:id_asignatura,:id_docente,:id_area,:nombre_asignatura)");
+            $stmt = $this->conn->prepare("INSERT INTO asignatura(id_asignatura,id_docente,id_area,nombre_asignatura,intensidad_horaria,porcentaje) 
+                                          VALUES(:id_asignatura,:id_docente,:id_area,:nombre_asignatura,:intensidad_horaria,:porcentaje)");
                                                   
             $stmt->bindparam(":id_asignatura", $id_asignatura);
             $stmt->bindparam(":id_docente", $id_docente);
             $stmt->bindparam(":id_area", $id_area);
-            $stmt->bindparam(":nombre_asignatura", $nombre_asignatura);                                 
+            $stmt->bindparam(":nombre_asignatura", $nombre_asignatura);
+            $stmt->bindparam(":intensidad_horaria", $intensidad_horaria);
+            $stmt->bindparam(":porcentaje", $porcentaje);                                 
                 
             $stmt->execute();   
             
@@ -1018,6 +1020,62 @@ class USER
             echo $e->getMessage();
             return false;
         }
+    }
+
+    /**
+     * [read_logros description]
+     * @param  [type] $id_asignatura [description]
+     * @return [type]                [description]
+     */
+    public function Read_logros($id_asignatura)
+    {
+        $query = $this->conn->prepare('SELECT * FROM logros WHERE id_asignatura = :id_asignatura');
+        $query->bindParam(":id_asignatura",$id_asignatura);
+        $query->execute();
+        $data = array();
+        while ($row = $query->fetch(PDO::FETCH_ASSOC)) {
+            $data[] = $row;
+        }
+        return $data;
+    }
+
+    /**
+     * [register_logros description]
+     * @param  [type] $id_asignatura [description]
+     * @param  [type] $logro         [description]
+     * @return [type]                [description]
+     */
+    public function register_logros($id_asignatura,$logro)
+    {
+
+        $query = $this->conn->prepare('SELECT* FROM logros WHERE id_asignatura LIKE :id_asignatura');
+        $query->bindParam(":id_asignatura",$id_asignatura);
+        $query->execute();
+
+        $N_logros = $query->rowCount();
+
+        $N_logros++;
+
+        $id_logro = $id_asignatura.'L-'.$N_logros;
+
+
+        try
+        {
+            $stmt = $this->conn->prepare("INSERT INTO logros(id_logro,id_asignatura,descripcion) 
+                                          VALUES(:id_logro,:id_asignatura,:logro)");
+                                                  
+            $stmt->bindparam(":id_logro", $id_logro);
+            $stmt->bindparam(":id_asignatura", $id_asignatura);
+            $stmt->bindparam(":logro", $logro);                                  
+                
+            $stmt->execute();   
+            
+            return $stmt;   
+        }
+        catch(PDOException $e)
+        {
+            echo $e->getMessage();
+        }               
     }
 
 /* -------------F U N C I O N E S  A L U M N O ----------*/

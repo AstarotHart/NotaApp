@@ -10,11 +10,13 @@ if (isset($_POST['crear']))
     $id_docente=$_POST['id_docente'];
     $id_area=$_POST['id_area'];
     $nombre_asignatura=$_POST['nombre_asignatura'];
+    $intensidad_horaria = $_POST['intensidad_horaria'];
+    $porcentaje = $_POST['porcentaje'];
 
     /**
      * Llamada a funcion para actualizar los datos del docente
      */
-    if(($asignatura->register_asignaturas($id_docente,$id_area,$nombre_asignatura))==true)
+    if(($asignatura->register_asignaturas($id_docente,$id_area,$nombre_asignatura,$intensidad_horaria,$porcentaje))==true)
     {
         echo '<script type="text/javascript">';
         echo 'setTimeout(function () { swal("Asignatura Creada","","success");';
@@ -85,6 +87,7 @@ if (isset($_POST['crear']))
                                                             <th>Docente</th>
                                                             <th>Area</th>
                                                             <th>Intesidad Horaria</th>
+                                                            <th>Porcentaje</th>
                                                             <th>Acciones</th>
                                                         </tr>
                                                     <thead>
@@ -106,6 +109,7 @@ if (isset($_POST['crear']))
                                                         <td>' . $asignatura['nombres'] . ' ' . $asignatura['prim_apellido'] . '</td>
                                                         <td>' . $asignatura['nombre_area'] . '</td>
                                                         <td>' . $asignatura['intensidad_horaria'] . '</td>
+                                                        <td>' . $asignatura['porcentaje'] . '</td>
                                                         <td>
                                                             <div class="btn-group" role="group">
                                                                 <button data-toggle="modal" data-target="#view-modal" data-id="'.$asignatura['id_asignatura'].'" id="getUser" class="btn btn-primary btn-xs waves-effect"><i class="material-icons">info_outline    </i></button>
@@ -232,7 +236,7 @@ if (isset($_POST['crear']))
 
 
 
-    <!-- Modal Actualizar Datos Usuario -->
+    <!-- Modal crear nueva ASIGNATURA -->
     <div class="modal fade" id="New_Area" tabindex="-1" role="dialog">
         <div class="modal-dialog modal-sm" role="document">
             <div class="modal-content">
@@ -282,6 +286,22 @@ if (isset($_POST['crear']))
                             </span>
                             <div class="form-line">
                                 <input type="text" class="form-control" name="nombre_asignatura" placeholder="Nombre Asignatura" required autofocus>
+                            </div>
+                        </div>
+                        <div class="input-group">
+                            <span class="input-group-addon">
+                                <i class="material-icons">watch_later</i>
+                            </span>
+                            <div class="form-line">
+                                <input type="text" class="form-control" name="intensidad_horaria" placeholder="Intesidad Horaria" required autofocus>
+                            </div>
+                        </div>
+                        <div class="input-group">
+                            <span class="input-group-addon">
+                                <i class="material-icons">show_chart</i>
+                            </span>
+                            <div class="form-line">
+                                <input type="number" min="0" max="100" value="50" class="form-control" name="porcentaje" placeholder="Porcentaje" required autofocus>
                             </div>
                         </div>
                         
