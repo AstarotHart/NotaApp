@@ -207,6 +207,29 @@ class USER
 
     }
 
+
+    /**
+     * [combobox_logros description]
+     * @param  [type] $id_asignatura [description]
+     * @return [type]                [description]
+     */
+    public function combobox_logros($id_asignatura)
+    {
+        $res = "";
+
+        $query = $this->conn->prepare("SELECT id_logro,descripcion FROM logros WHERE id_asignatura = :id_asignatura");
+        $query->bindParam(":id_asignatura", $id_asignatura);
+        $query->execute();
+        
+        while($row=$query->fetch(PDO::FETCH_ASSOC))
+        {
+            $res .= '<option value="'.$row['id_logro'].'">'.$row['id_logro'].'</option>'; 
+        }
+
+        return $res;
+
+    }
+
     /**
      * [Read_sedes description]
      */
@@ -945,7 +968,15 @@ class USER
         }
     }
 
-
+    /**
+     * [update_faltas description]
+     * @param  [type] $id_alumno  [description]
+     * @param  [type] $name_falta [description]
+     * @param  [type] $falta      [description]
+     * @param  [type] $materia    [description]
+     * @param  [type] $anio       [description]
+     * @return [type]             [description]
+     */
     public function update_faltas($id_alumno,$name_falta,$falta,$materia,$anio)
     {
         try
@@ -1031,6 +1062,23 @@ class USER
     {
         $query = $this->conn->prepare('SELECT * FROM logros WHERE id_asignatura = :id_asignatura');
         $query->bindParam(":id_asignatura",$id_asignatura);
+        $query->execute();
+        $data = array();
+        while ($row = $query->fetch(PDO::FETCH_ASSOC)) {
+            $data[] = $row;
+        }
+        return $data;
+    }
+
+    /**
+     * [Read_logros_alumno description]
+     * @param [type] $id_asignatura [description]
+     */
+    public function Read_logros_alumno($id_asignatura,$id_alumno)
+    {
+        $query = $this->conn->prepare('SELECT * FROM alumnos_logros AL inner join logros L ON AL.id_asignatura = L.id_asignatura WHERE Al.id_asignatura = :id_asignatura AND Al.id_alumno = :id_alumno');
+        $query->bindParam(":id_asignatura",$id_asignatura);
+        $query->bindParam(":id_alumno",$id_alumno);
         $query->execute();
         $data = array();
         while ($row = $query->fetch(PDO::FETCH_ASSOC)) {

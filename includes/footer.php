@@ -37,6 +37,9 @@
     <!-- Autosize Plugin Js -->
     <script src="../plugins/autosize/autosize.js"></script>
 
+    <!-- Select Plugin Js -->
+    <script src="../plugins/bootstrap-select/js/bootstrap-select.js"></script>
+
     <!-- Bootstrap Material Datetime Picker Plugin Js -->
     <script src="../plugins/bootstrap-material-datetimepicker/js/bootstrap-material-datetimepicker.js"></script>
 

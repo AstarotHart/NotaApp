@@ -5,13 +5,14 @@
 
 require_once("class.user.php");
 
-$user     = new USER();
-$cabecera = new USER();
-$nota     = new USER();
-$falta    = new USER();
-$logros   = new USER();
-$newLogro = new USER();
-$object   = new USER();
+$user           = new USER();
+$cabecera       = new USER();
+$nota           = new USER();
+$falta          = new USER();
+$logros         = new USER();
+$logros_alumnos = new USER();
+$newLogro       = new USER();
+$object         = new USER();
 
 $show_table= "none";
 
@@ -73,7 +74,7 @@ if (isset($_POST['crear']))
                                 <th>F. P4</th>
                                 <th>NOTA FINAL</th>
                                 <th>FALTAS TOTALES</th>
-                                <th>Acciones</th>
+                                <th>Logros</th>
                             </tr>
                         <thead>
 
@@ -107,7 +108,9 @@ if (isset($_POST['crear']))
     {
         $res_logros = "No hay logros para Mostrar.!!";
     }
+    
 
+    //leer notas y faltas
     if (count($users) > 0) 
     {
                     
@@ -178,6 +181,26 @@ if (isset($_POST['crear']))
             }
 
 
+            //llamando a la funcion read logros para cargar los losgros por asignatura
+    $logros_alumnos = $object->Read_logros_alumno($cabecera['id_asignatura'],$users['id_alumno']);
+    $res_logros_alumno = "";
+
+
+    if (count($logros_alumnos) > 0)
+    {
+        foreach ($logros_alumnos as $logros_alumnos)
+        {
+            $res_logros_alumno =$logros_alumnos['id_logros']. '<br>';
+        }
+    }
+    else
+    {
+        $res_logros_alumno = "No hay logros para Mostrar.!!";
+    }
+
+
+    echo "Id Alumno: ".$users['id_alumno'].", Id Asignatura: ".$cabecera['id_asignatura']."<br>";
+
 
             $data .= '
                     <tr>
@@ -196,9 +219,11 @@ if (isset($_POST['crear']))
                         <td>' . $res_falta_final . '</td>
                         <td>
                             
-                            <div class="btn-group" role="group">
-                                <button type="submit" class="btn btn-warning btn-xs waves-effect" data-toggle="modal" data-target="#Detallesarea" name="Detalles" onclick="' . $users['id_alumno'] . '"><i class="material-icons">mode_edit</i></button>
-                            </div>
+                            '.$res_logros_alumno.'
+                            <select class="form-control show-tick" multiple>
+                                        <option value="">-- Seleccione Sede --</option> 
+                                            '.$user = $object->combobox_logros($cabecera['id_asignatura']).'
+                                    </select>
                                 
                         </td>
                     </tr>';
@@ -214,6 +239,7 @@ if (isset($_POST['crear']))
     }
      
     $data .= '<tbody></table>';
+
 
 ?>
 <!-- end menu-->
