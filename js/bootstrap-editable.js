@@ -3507,7 +3507,7 @@ Range (inherit from number)
         }         
     });
     Range.defaults = $.extend({}, $.fn.editabletypes.number.defaults, {
-        tpl: '<input type="range"><output style="width: 30px; display: inline-block"></output>',
+        tpl: '<input type="range"><output style="width: 10px; display: inline-block"></output>',
         inputclass: 'input-medium'
     });
     $.fn.editabletypes.range = Range;
@@ -4572,11 +4572,11 @@ Editableform based on Twitter Bootstrap 3
     
     //buttons
     $.fn.editableform.buttons = 
-      '<button type="submit" class="btn btn-primary btn-sm editable-submit">'+
-        '<i class="glyphicon glyphicon-ok"></i> '+
+      '<button type="submit" class="btn bg-teal btn-sm waves-effect editable-submit">'+
+        '<i class="material-icons">done</i></button>'+
       '</button>'+
-      '<button type="button" class="btn btn-default btn-sm editable-cancel">'+
-        '<i class="glyphicon glyphicon-remove"></i> '+
+      '<button type="button" class="btn bg-red btn-sm waves-effect editable-cancel">'+
+        '<i class="material-icons">close</i></button>'+
       '</button>';         
     
     //error classes
