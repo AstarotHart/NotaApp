@@ -4,6 +4,9 @@
     <!-- Bootstrap Core Js -->
     <script src="../plugins/bootstrap/js/bootstrap.js"></script>
 
+    <!-- Select Plugin Js 
+    <script src="../plugins/bootstrap-select/js/bootstrap-select.js"></script>
+
     <!-- Slimscroll Plugin Js -->
     <script src="../plugins/jquery-slimscroll/jquery.slimscroll.js"></script>
 
@@ -34,9 +37,6 @@
     <!-- Autosize Plugin Js -->
     <script src="../plugins/autosize/autosize.js"></script>
 
-    <!-- Multi Select Plugin Js -->
-    <script src="../plugins/multi-select/js/jquery.multi-select.js"></script>
-
     <!-- Bootstrap Material Datetime Picker Plugin Js -->
     <script src="../plugins/bootstrap-material-datetimepicker/js/bootstrap-material-datetimepicker.js"></script>
 
@@ -47,7 +47,6 @@
     <script src="../js/pages/cards/basic.js"></script>
     <script src="../js/pages/ui/notifications.js"></script>
     <script src="../js/pages/ui/dialogs.js"></script>
-    <script src="../js/pages/forms/advanced-form-elements.js"></script>
     <script src="../js/pages/forms/basic-form-elements.js"></script>
 
     <!-- Demo Js -->
