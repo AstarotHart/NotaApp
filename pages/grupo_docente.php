@@ -210,13 +210,13 @@ if (isset($_POST['crear']))
                         <td>' . $res_nota_final . '</td>
                         <td>' . $res_falta_final . '</td>
                         <td>
-                            
-                            <div class="btn-group" role="group">
-                                <button type="submit" class="btn btn-warning btn-xs waves-effect" data-toggle="modal" data-target="#Detallesarea" name="Detalles" onclick="' . $users['id_alumno'] . '"><i class="material-icons">mode_edit</i></button>
-                            </div>
+
                             '.$res_logros_alumno.'
                             
-                                
+                            <select class="form-control show-tick" multiple name="id_logros">
+                                        <option value="">-- Seleccione Logros --</option> 
+                                            '. $user = $object->combobox_logros($cabecera['id_asignatura']) .'
+                                    </select>                                
                         </td>
                     </tr>';
 
@@ -314,6 +314,9 @@ if (isset($_POST['crear']))
 
 <script src="../js/bootstrap-editable.js"></script>
 
+<!-- Select Plugin Js -->
+<script src="../plugins/bootstrap-select/js/bootstrap-select.js"></script>
+
 <!-- Funcion para editar FALTAS alumno-->
 <script type="text/javascript">
     jQuery(document).ready(function() {  
@@ -366,7 +369,9 @@ if (isset($_POST['crear']))
             });
     });
 
+</script>
 
+<script type="text/javascript">
     $(function(){
 
         //enable / disable
@@ -375,7 +380,6 @@ if (isset($_POST['crear']))
 
        });
     });
-
 </script>
 
 
