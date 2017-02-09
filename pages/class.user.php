@@ -216,7 +216,6 @@ class USER
     public function combobox_logros($id_asignatura)
     {
         $res = "";
-        $cont =1;
 
         $query = $this->conn->prepare("SELECT id_logro,descripcion FROM logros WHERE id_asignatura = :id_asignatura");
         $query->bindParam(":id_asignatura", $id_asignatura);
@@ -224,8 +223,7 @@ class USER
         
         while($row=$query->fetch(PDO::FETCH_ASSOC))
         {
-            $res .= '<option value="'.$row['id_logro'].'">'.$cont.'</option>';
-            $cont++;
+            $res .= '<option value="'.$row['id_logro'].'">'.$row['id_logro'].'</option>'; 
         }
 
         return $res;
