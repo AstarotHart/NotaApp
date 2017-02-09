@@ -165,7 +165,7 @@ if (isset($_POST['crear']))
                                         <?php 
                                             $anios = $object->combobox_sede();
                                         ?>
-                            </select>
+                                </select>
                             </div>
                         </div>
                         <div class="input-group">
