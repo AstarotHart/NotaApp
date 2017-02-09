@@ -1040,6 +1040,25 @@ class USER
     }
 
     /**
+     * [Read_logros_alumno description]
+     * @param [type] $id_asignatura [description]
+     * @param [type] $id_alumno     [description]
+     */
+    public function Read_logros_alumno($id_asignatura,$id_alumno)
+    {
+        $query = $this->conn->prepare('SELECT * FROM alumnos_logros AL inner join logros L ON AL.id_asignatura = L.id_asignatura WHERE Al.id_asignatura = :id_asignatura AND Al.id_alumno = :id_alumno');
+        $query->bindParam(":id_asignatura",$id_asignatura);
+        $query->bindParam(":id_alumno",$id_alumno);
+        $query->execute();
+        $data = array();
+        while ($row = $query->fetch(PDO::FETCH_ASSOC)) {
+            $data[] = $row;
+        }
+        return $data;
+    }
+
+
+    /**
      * [register_logros description]
      * @param  [type] $id_asignatura [description]
      * @param  [type] $logro         [description]

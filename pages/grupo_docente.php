@@ -177,21 +177,36 @@ if (isset($_POST['crear']))
                 
             }
 
+            //llamando a la funcion read logros para cargar los losgros por asignatura
+            $logros_alumnos = $object->Read_logros_alumno($cabecera['id_asignatura'],$users['id_alumno']);
+            $res_logros_alumno = "";
 
+
+            if (count($logros_alumnos) > 0)
+            {
+                foreach ($logros_alumnos as $logros_alumnos)
+                {
+                    $res_logros_alumno =$logros_alumnos['id_logros']. '<br>';
+                }
+            }
+            else
+            {
+                $res_logros_alumno = "No hay logros para Mostrar.!!";
+            }
 
             $data .= '
                     <tr>
                         <td>' . $num. '</td>
                         <td>' . $users['primer_apellido'] . ' ' .$users['segundo_apellido'] . ' ' .$users['nombres'] .'</td>
                         <td>' . $users['id_alumno'] . '</td>
-                        <td><span class="xedit" id="'.$users['id_alumno'].'" name="nota1" materia="'.$cabecera['id_asignatura'].'" anio="'.$cabecera['id_anio_lectivo'].'">'.$res_nota1.'</span></td>
-                        <td><span tipo="falta" class="xedit" id="'.$users['id_alumno'].'" name="inasistencia_p1" materia="'.$cabecera['id_asignatura'].'" anio="'.$cabecera['id_anio_lectivo'].'">'.$res_falta1.'</span></td>
-                        <td><span class="xedit" id="'.$users['id_alumno'].'" name="nota2" materia="'.$cabecera['id_asignatura'].'" anio="'.$cabecera['id_anio_lectivo'].'">'.$res_nota2.'</span></td>
-                        <td><span class="xedit" id="'.$users['id_alumno'].'" name="inasistencia_p2" materia="'.$cabecera['id_asignatura'].'" anio="'.$cabecera['id_anio_lectivo'].'">'.$res_falta2.'</span></td>
-                        <td><span class="xedit" id="'.$users['id_alumno'].'" name="nota3" materia="'.$cabecera['id_asignatura'].'" anio="'.$cabecera['id_anio_lectivo'].'">'.$res_nota3.'</span></td>
-                        <td><span class="xedit" id="'.$users['id_alumno'].'" name="inasistencia_p3" materia="'.$cabecera['id_asignatura'].'" anio="'.$cabecera['id_anio_lectivo'].'">'.$res_falta3.'</span></td>
-                        <td><span class="xedit" id="'.$users['id_alumno'].'" name="nota4" materia="'.$cabecera['id_asignatura'].'" anio="'.$cabecera['id_anio_lectivo'].'">'.$res_nota4.'</span></td>
-                        <td><span class="xedit" id="'.$users['id_alumno'].'" name="inasistencia_p4" materia="'.$cabecera['id_asignatura'].'" anio="'.$cabecera['id_anio_lectivo'].'">'.$res_falta4.'</span></td>
+                        <td><span class="xedit" id="periodo1" id_alumno="'.$users['id_alumno'].'" name="nota1" materia="'.$cabecera['id_asignatura'].'" anio="'.$cabecera['id_anio_lectivo'].'">'.$res_nota1.'</span></td>
+                        <td><span tipo="falta" class="xedit" id="periodo1" id_alumno="'.$users['id_alumno'].'" name="inasistencia_p1" materia="'.$cabecera['id_asignatura'].'" anio="'.$cabecera['id_anio_lectivo'].'">'.$res_falta1.'</span></td>
+                        <td><span class="xedit" id="periodo2" id_alumno="'.$users['id_alumno'].'" name="nota2" materia="'.$cabecera['id_asignatura'].'" anio="'.$cabecera['id_anio_lectivo'].'">'.$res_nota2.'</span></td>
+                        <td><span class="xedit" id="periodo2" id_alumno="'.$users['id_alumno'].'" name="inasistencia_p2" materia="'.$cabecera['id_asignatura'].'" anio="'.$cabecera['id_anio_lectivo'].'">'.$res_falta2.'</span></td>
+                        <td><span class="xedit" id="periodo3" id_alumno="'.$users['id_alumno'].'" name="nota3" materia="'.$cabecera['id_asignatura'].'" anio="'.$cabecera['id_anio_lectivo'].'">'.$res_nota3.'</span></td>
+                        <td><span class="xedit" id="periodo3" id_alumno="'.$users['id_alumno'].'" name="inasistencia_p3" materia="'.$cabecera['id_asignatura'].'" anio="'.$cabecera['id_anio_lectivo'].'">'.$res_falta3.'</span></td>
+                        <td><span class="xedit" id="periodo4" id_alumno="'.$users['id_alumno'].'" name="nota4" materia="'.$cabecera['id_asignatura'].'" anio="'.$cabecera['id_anio_lectivo'].'">'.$res_nota4.'</span></td>
+                        <td><span class="xedit" id="periodo4" id_alumno="'.$users['id_alumno'].'" name="inasistencia_p4" materia="'.$cabecera['id_asignatura'].'" anio="'.$cabecera['id_anio_lectivo'].'">'.$res_falta4.'</span></td>
                         <td>' . $res_nota_final . '</td>
                         <td>' . $res_falta_final . '</td>
                         <td>
@@ -199,6 +214,8 @@ if (isset($_POST['crear']))
                             <div class="btn-group" role="group">
                                 <button type="submit" class="btn btn-warning btn-xs waves-effect" data-toggle="modal" data-target="#Detallesarea" name="Detalles" onclick="' . $users['id_alumno'] . '"><i class="material-icons">mode_edit</i></button>
                             </div>
+                            '.$res_logros_alumno.'
+                            
                                 
                         </td>
                     </tr>';
@@ -279,6 +296,8 @@ if (isset($_POST['crear']))
                                 <p><b>P.1</b>: Primer Periodo,<b>P.2</b>: Segundo Periodo,<b>P.3</b>: Tercer Periodo,<b>P.4</b>: Cuarto Periodo. <b>F. P.1</b>: Faltas Primer Periodo,<b>F. P.2</b>: Faltas Segundo Periodo,<b>F. P.3</b>: Faltas Tercer Periodo,<b>F. P.4</b>: Faltas Cuarto Periodo. </p>
                             </blockquote>
 
+                            <button id="enable" class="btn btn-default">enable / disable</button>
+
                         </div><!-- Fin DIV ocultar o mostrar tabla -->
                     </div>
                 </div>
@@ -304,7 +323,7 @@ if (isset($_POST['crear']))
                 var u = $(this).closest('td').children('span').attr('anio');
                 var v = $(this).closest('td').children('span').attr('materia');
                 var w = $(this).closest('td').children('span').attr('name');
-                var x = $(this).closest('td').children('span').attr('id');
+                var x = $(this).closest('td').children('span').attr('id_alumno');
                 var y = $('.materia').val();
                 var z = $(this).closest('td').children('span');
 
@@ -346,6 +365,17 @@ if (isset($_POST['crear']))
                 
             });
     });
+
+
+    $(function(){
+
+        //enable / disable
+       $('#enable').click(function() {
+           $('#miTabla #periodo1').editable('toggleDisabled');
+
+       });
+    });
+
 </script>
 
 
