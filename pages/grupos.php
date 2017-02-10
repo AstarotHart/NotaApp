@@ -10,11 +10,12 @@ if (isset($_POST['crear']))
     $id_grado=$_POST['id_grado'];
     $id_docente=$_POST['id_docente'];
     $nombre_grupo=$_POST['nombre_grupo'];
+    $id_sede=$_POST['id_sede'];
 
     /**
      * Llamada a funcion para actualizar los datos del docente
      */
-    if(($grupo->register_grupos($id_grado,$id_docente,$nombre_grupo))==true)
+    if(($grupo->register_grupos($id_grado,$id_docente,$nombre_grupo,$id_sede))==true)
     {
         echo '<script type="text/javascript">';
         echo 'setTimeout(function () { swal("Grupo Creado","","success");';

@@ -7,14 +7,24 @@ $show_table= "none";
 
 if (isset($_POST['crear'])) 
 {
-    $id_docente=$_POST['id_docente'];
-    $id_area=$_POST['id_area'];
-    $nombre_asignatura=$_POST['nombre_asignatura'];
+    $id_docente         =$_POST['id_docente'];
+    $id_area            =$_POST['id_area'];
+    $nombre_asignatura  =$_POST['nombre_asignatura'];
+    $intensidad_horaria = $_POST['intensidad_horaria'];
+    $porcentaje         = $_POST['porcentaje'];
+    $id_grupo           = $_POST['id_grupo'];
+
+    echo "Id Docente: ".$id_docente."<br>";
+    echo "Id area: ".$id_area."<br>";
+    echo "nombre_asignatura: ".$nombre_asignatura."<br>";
+    echo "intensidad_horaria: ".$intensidad_horaria."<br>";
+    echo "porcentaje: ".$porcentaje."<br>";
+    echo "id_grupo: ".$id_grupo."<br>";
 
     /**
      * Llamada a funcion para actualizar los datos del docente
      */
-    if(($asignatura->register_asignaturas($id_docente,$id_area,$nombre_asignatura))==true)
+    if(($asignatura->register_asignaturas($id_docente,$id_area,$nombre_asignatura,$intensidad_horaria,$porcentaje,$id_grupo))==true)
     {
         echo '<script type="text/javascript">';
         echo 'setTimeout(function () { swal("Asignatura Creada","","success");';
@@ -85,6 +95,7 @@ if (isset($_POST['crear']))
                                                             <th>Docente</th>
                                                             <th>Area</th>
                                                             <th>Intesidad Horaria</th>
+                                                            <th>Porcentaje</th>
                                                             <th>Acciones</th>
                                                         </tr>
                                                     <thead>
@@ -106,6 +117,7 @@ if (isset($_POST['crear']))
                                                         <td>' . $asignatura['nombres'] . ' ' . $asignatura['prim_apellido'] . '</td>
                                                         <td>' . $asignatura['nombre_area'] . '</td>
                                                         <td>' . $asignatura['intensidad_horaria'] . '</td>
+                                                        <td>' . $asignatura['porcentaje'] . '</td>
                                                         <td>
                                                             <div class="btn-group" role="group">
                                                                 <button data-toggle="modal" data-target="#view-modal" data-id="'.$asignatura['id_asignatura'].'" id="getUser" class="btn btn-primary btn-xs waves-effect"><i class="material-icons">info_outline    </i></button>
@@ -227,12 +239,52 @@ if (isset($_POST['crear']))
             });
         })
         // code to get all records from table via select box
+        
+
+        //----------FUNCION SELECCIONAR GRUPO--------------
+
+        function getAllGrupo(){
+            
+            $.ajax
+            ({
+                url: 'getGrupoAsignatura.php',
+                data: 'action=showAll',
+                cache: false,
+                success: function(r)
+                {
+                    $("#display3").html(r);
+                }
+            });         
+        }
+        
+        getAllArea();
+        // function to get all records from table
+
+        // code to get all records from table via select box
+        $("#getDocentes").change(function()
+        {               
+            var id = $(this).find(":selected").val();
+
+            var dataString = 'action='+ id;
+                    
+            $.ajax
+            ({
+                url: 'getGrupoAsignatura.php',
+                data: dataString,
+                cache: false,
+                success: function(r)
+                {
+                    $("#display3").html(r);
+                } 
+            });
+        })
+        // code to get all records from table via select box
     });
     </script>
 
 
 
-    <!-- Modal Actualizar Datos Usuario -->
+    <!-- Modal crear nueva ASIGNATURA -->
     <div class="modal fade" id="New_Area" tabindex="-1" role="dialog">
         <div class="modal-dialog modal-sm" role="document">
             <div class="modal-content">
@@ -276,12 +328,39 @@ if (isset($_POST['crear']))
                             </select>
                             </div>
                         </div>
+                        
+                        <div class="input-group">
+                            <span class="input-group-addon">
+                                <i class="material-icons">label</i>
+                            </span>
+                            <div class="form-line">
+                                <select class="form-control show-tick" name="id_grupo" id="display3">
+                            </select>
+                            </div>
+                        </div>
+
                         <div class="input-group">
                             <span class="input-group-addon">
                                 <i class="material-icons">assignment</i>
                             </span>
                             <div class="form-line">
                                 <input type="text" class="form-control" name="nombre_asignatura" placeholder="Nombre Asignatura" required autofocus>
+                            </div>
+                        </div>
+                        <div class="input-group">
+                            <span class="input-group-addon">
+                                <i class="material-icons">watch_later</i>
+                            </span>
+                            <div class="form-line">
+                                <input type="text" class="form-control" name="intensidad_horaria" placeholder="Intesidad Horaria" required autofocus>
+                            </div>
+                        </div>
+                        <div class="input-group">
+                            <span class="input-group-addon">
+                                <i class="material-icons">show_chart</i>
+                            </span>
+                            <div class="form-line">
+                                <input type="number" min="0" max="100" value="50" class="form-control" name="porcentaje" placeholder="Porcentaje" required autofocus>
                             </div>
                         </div>
                         

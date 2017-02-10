@@ -7,13 +7,14 @@ $show_table= "none";
 
 if (isset($_POST['crear'])) 
 {
-    $id_sede=$_POST['id_sede'];
-    $nombre_area=$_POST['nombre_area'];
+    $id_sede     =$_POST['id_sede'];
+    $nombre_area =$_POST['nombre_area'];
+    $id_grado    = $_POST['id_grado'];
 
     /**
      * Llamada a funcion para actualizar los datos del docente
      */
-    if(($area->register_area($id_sede,$nombre_area))==true)
+    if(($area->register_area($id_sede,$nombre_area,$id_grado))==true)
     {
         echo '<script type="text/javascript">';
         echo 'setTimeout(function () { swal("Area Creada","","success");';
@@ -81,6 +82,8 @@ if (isset($_POST['crear']))
                                                         <tr>
                                                             <th>Codigo</th>
                                                             <th>Nombre</th>
+                                                            <th>Sede</th>
+                                                            <th>Grado</th>
                                                             <th>Acciones</th>
                                                         </tr>
                                                     <thead>
@@ -97,6 +100,8 @@ if (isset($_POST['crear']))
         
                                                         <td>' . $area['id_area'] . '</td>
                                                         <td>' . $area['nombre_area'] . '</td>
+                                                        <td>' . $area['id_sede'] . '</td>
+                                                        <td>' . $area['descripcion_grado'] . '</td>
                                                         <td>
                                                             <div class="btn-group" role="group">
                                                                 <button data-toggle="modal" data-target="#view-modal" data-id="'.$area['id_area'].'" id="getUser" class="btn btn-primary btn-xs waves-effect"><i class="material-icons">info_outline    </i></button>
@@ -130,12 +135,61 @@ if (isset($_POST['crear']))
 
     </section>
 
+
+    <!-- Jquery Core Js -->
+    <script src="jquery-1.11.2.min.js"></script>
+    <script type="text/javascript">
+    $(document).ready(function()
+    {
+
+    //----------FUNCION SELECCIONAR AREA--------------
+
+        function getAllArea(){
+            
+            $.ajax
+            ({
+                url: 'getGradoSede.php',
+                data: 'action=showAll',
+                cache: false,
+                success: function(r)
+                {
+                    $("#display").html(r);
+                }
+            });         
+        }
+        
+        getAllArea();
+        // function to get all records from table
+
+        // code to get all records from table via select box
+        $("#getGrado").change(function()
+        {               
+            var id = $(this).find(":selected").val();
+
+            var dataString = 'action='+ id;
+                    
+            $.ajax
+            ({
+                url: 'getGradoGrupo.php',
+                data: dataString,
+                cache: false,
+                success: function(r)
+                {
+                    $("#display").html(r);
+                } 
+            });
+        })
+        // code to get all records from table via select box
+    });
+    </script>
+
+
     <!-- Modal Actualizar Datos Usuario -->
     <div class="modal fade" id="New_Area" tabindex="-1" role="dialog">
         <div class="modal-dialog modal-sm" role="document">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h4 class="modal-title" id="Actu_DatosLabel">Actualizar Datos</h4>
+                    <h4 class="modal-title" id="Actu_DatosLabel">Crear Area</h4>
                 </div>
                 <div class="modal-body">
                     <form id="Area_new" method="POST">
@@ -144,7 +198,7 @@ if (isset($_POST['crear']))
                                 <i class="material-icons">account_balance</i>
                             </span>
                             <div class="form-line">
-                                <select class="form-control show-tick" name="id_sede">
+                                <select class="form-control show-tick" name="id_sede" id="getGrado">
                                         <option value="">-- Seleccione Sede --</option>
                                         <?php 
                                             $user = $object->combobox_sede();
@@ -152,6 +206,17 @@ if (isset($_POST['crear']))
                             </select>
                             </div>
                         </div>
+
+                        <div class="input-group">
+                            <span class="input-group-addon">
+                                <i class="material-icons">layers</i>
+                            </span>
+                            <div class="form-line">
+                                <select class="form-control show-tick" name="id_grado" id="display">
+                            </select>
+                            </div>
+                        </div>
+
                         <div class="input-group">
                             <span class="input-group-addon">
                                 <i class="material-icons">assignment</i>

@@ -1,4 +1,25 @@
-<?php 
+<?php
+
+$show_menu_admin = "none";
+$show_menu_doc   = "none";
+$show_menu_coo   = "none";
+
+if ($user_type->des_tipo_usuario == 'Administrador')
+{
+    $show_menu_admin = "show";
+}
+
+if ($user_type->des_tipo_usuario == "Docente") 
+{
+    $show_menu_doc = "show";
+}
+
+if ($user_type->des_tipo_usuario == "Coordinador") 
+{
+    $show_menu_coo = "show";
+}
+
+// saber si se inicializo el boton ACTUALIZAR
 if (isset($_POST['actualizar'])) 
 {
     $id_docente=$user_id;
@@ -31,6 +52,8 @@ if (isset($_POST['actualizar']))
 
 }
 
+
+// saber si se inicializo el boton CAMBIAR_PASS
 if (isset($_POST['cambiar_pass']))
 {
     $id_docente=$user_id;
@@ -95,103 +118,112 @@ if (isset($_POST['cambiar_pass']))
                     }
                 ?>
 
+            <!-- Menu Administrador -->
                 <ul class="list">
                     <li class="header">Menú Principal</li>
-                    <li <?php if (isSite('index.php')) echo 'class="active"'; ?>>
-                        <a href="../pages/index.php">
-                            <i class="material-icons">home</i>
-                            <span>Inicio</span>
-                        </a>
-                    </li>
+                        <li <?php if (isSite('index.php')) echo 'class="active"'; ?>>
+                            <a href="../pages/index.php">
+                                <i class="material-icons">home</i>
+                                <span>Inicio</span>
+                            </a>
+                        </li>
 
-                    <li <?php if (isSite('sedes.php','anio_lectivo.php','periodo.php', 'areas.php','asignaturas.php', 'grado.php', 'grupos.php', 'docentes.php' )) echo 'class="active"'; ?>>
-                        <a href="javascript:void(0);" class="menu-toggle">
-                            <i class="material-icons">domain</i>
-                            <span>Administracion</span>
-                        </a>
-                        <ul class="ml-menu">
-                            <li <?php if (isSite('sedes.php')) echo 'class="active"'; ?>>
-                                <a href="../pages/sedes.php">Sedes</a>
+                        <div  style="display: <?php echo $show_menu_admin; ?>;">
+                            <li <?php if (isSite('sedes.php','anio_lectivo.php','periodo.php', 'areas.php','asignaturas.php', 'grado.php', 'grupos.php', 'docentes.php' )) echo 'class="active"'; ?>>
+                                <a href="javascript:void(0);" class="menu-toggle">
+                                    <i class="material-icons">domain</i>
+                                    <span>Administracion</span>
+                                </a>
+                                <ul class="ml-menu">
+                                    <li <?php if (isSite('sedes.php')) echo 'class="active"'; ?>>
+                                        <a href="../pages/sedes.php">Sedes</a>
+                                    </li>
+                                    <li <?php if (isSite('anio_lectivo.php')) echo 'class="active"'; ?>>
+                                        <a href="../pages/anio_lectivo.php">Año Lectivo</a>
+                                    </li>
+                                    <li <?php if (isSite('periodo.php')) echo 'class="active"'; ?>>
+                                        <a href="../pages/periodo.php">Periodo</a>
+                                    </li>
+                                    <li <?php if (isSite('areas.php')) echo 'class="active"'; ?>>
+                                        <a href="../pages/areas.php">Areas</a>
+                                    </li>
+                                    <li <?php if (isSite('asignaturas.php')) echo 'class="active"'; ?>>
+                                        <a href="../pages/asignaturas.php">Asignaturas</a>
+                                    </li>
+                                    <li <?php if (isSite('grado.php')) echo 'class="active"'; ?>>
+                                        <a href="../pages/grado.php">Grado</a>
+                                    </li>
+                                    <li <?php if (isSite('grupos.php')) echo 'class="active"'; ?>>
+                                        <a href="../pages/grupos.php">Grupo</a>
+                                    </li>
+                                    <li <?php if (isSite('docentes.php')) echo 'class="active"'; ?>>
+                                        <a href="../pages/docentes.php">Docentes</a>
+                                    </li>
+                                </ul>
                             </li>
-                            <li <?php if (isSite('anio_lectivo.php')) echo 'class="active"'; ?>>
-                                <a href="../pages/anio_lectivo.php">Año Lectivo</a>
-                            </li>
-                            <li <?php if (isSite('periodo.php')) echo 'class="active"'; ?>>
-                                <a href="../pages/periodo.php">Periodo</a>
-                            </li>
-                            <li <?php if (isSite('areas.php')) echo 'class="active"'; ?>>
-                                <a href="../pages/areas.php">Areas</a>
-                            </li>
-                            <li <?php if (isSite('asignaturas.php')) echo 'class="active"'; ?>>
-                                <a href="../pages/asignaturas.php">Asignaturas</a>
-                            </li>
-                            <li <?php if (isSite('grado.php')) echo 'class="active"'; ?>>
-                                <a href="../pages/grado.php">Grado</a>
-                            </li>
-                            <li <?php if (isSite('grupos.php')) echo 'class="active"'; ?>>
-                                <a href="../pages/grupos.php">Grupo</a>
-                            </li>
-                            <li <?php if (isSite('docentes.php')) echo 'class="active"'; ?>>
-                                <a href="../pages/docentes.php">Docentes</a>
-                            </li>
-                        </ul>
-                    </li>
+                        
 
-                    <li <?php if (isSite('matricula.php', 'alumnos.php','informes.php' )) echo 'class="active"'; ?>>
-                        <a href="javascript:void(0);" class="menu-toggle">
-                            <i class="material-icons">people</i>
-                            <span>Alumnos</span>
-                        </a>
-                        <ul class="ml-menu">
-                            <li <?php if (isSite('matricula.php')) echo 'class="active"'; ?>>
-                                <a href="../pages/matricula.php">Matricula</a>
+                            <li <?php if (isSite('matricula.php', 'alumnos.php','informes.php' )) echo 'class="active"'; ?>>
+                                <a href="javascript:void(0);" class="menu-toggle">
+                                    <i class="material-icons">people</i>
+                                    <span>Alumnos</span>
+                                </a>
+                                <ul class="ml-menu">
+                                    <li <?php if (isSite('matricula.php')) echo 'class="active"'; ?>>
+                                        <a href="../pages/matricula.php">Matricula</a>
+                                    </li>
+                                    <li <?php if (isSite('alumnos.php')) echo 'class="active"'; ?>>
+                                        <a href="../pages/alumnos.php">Alumnos</a>
+                                    </li>
+                                    <li <?php if (isSite('informes.php')) echo 'class="active"'; ?>>
+                                        <a href="../pages/informes.php">Informes</a>
+                                    </li>
+                                </ul>
                             </li>
-                            <li <?php if (isSite('alumnos.php')) echo 'class="active"'; ?>>
-                                <a href="../pages/alumnos.php">Alumnos</a>
-                            </li>
-                            <li <?php if (isSite('informes.php')) echo 'class="active"'; ?>>
-                                <a href="../pages/informes.php">Informes</a>
-                            </li>
-                        </ul>
-                    </li>
+                        </div>
 
-                    <li <?php if (isSite('director_grupo.php','grupo_docente.php' )) echo 'class="active"'; ?>>
-                        <a href="javascript:void(0);" class="menu-toggle">
-                            <i class="material-icons">assignment_ind</i>
-                            <span>Docentes</span>
-                        </a>
-                        <ul class="ml-menu">
-                            <li <?php if (isSite('director_grupo.php')) echo 'class="active"'; ?>>
-                                <a href="../pages/director_grupo.php">Director Grupo</a>
+                        <div  style="display: <?php echo $show_menu_doc; ?>;">
+                            <li <?php if (isSite('director_grupo.php','grupo_docente.php' )) echo 'class="active"'; ?>>
+                                <a href="javascript:void(0);" class="menu-toggle">
+                                    <i class="material-icons">assignment_ind</i>
+                                    <span>Docentes</span>
+                                </a>
+                                <ul class="ml-menu">
+                                    <li <?php if (isSite('director_grupo.php')) echo 'class="active"'; ?>>
+                                        <a href="../pages/director_grupo.php">Director Grupo</a>
+                                    </li>
+                                    <li <?php if (isSite('grupo_docente.php')) echo 'class="active"'; ?>>
+                                        <a href="../pages/grupo_docente.php">Grupos Docente </a>
+                                    </li>
+                                </ul>
                             </li>
-                            <li <?php if (isSite('grupo_docente.php')) echo 'class="active"'; ?>>
-                                <a href="../pages/grupo_docente.php">Grupos Docente </a>
-                            </li>
-                        </ul>
-                    </li>
-                    
-                    <li class="header">Otro Menú</li>
-                    <li>
-                        <a href="javascript:void(0);">
-                            <i class="material-icons col-red">donut_large</i>
-                            <span>Important</span>
-                        </a>
-                    </li>
-                    <li>
-                        <a href="javascript:void(0);">
-                            <i class="material-icons col-amber">donut_large</i>
-                            <span>Warning</span>
-                        </a>
-                    </li>
-                    <li>
-                        <a href="javascript:void(0);">
-                            <i class="material-icons col-light-blue">donut_large</i>
-                            <span>Information</span>
-                        </a>
+                        </div>
+                        
+                        <li class="header">Otro Menú</li>
+                        <li>
+                            <a href="javascript:void(0);">
+                                <i class="material-icons col-red">donut_large</i>
+                                <span>Important</span>
+                            </a>
+                        </li>
+                        <li>
+                            <a href="javascript:void(0);">
+                                <i class="material-icons col-amber">donut_large</i>
+                                <span>Warning</span>
+                            </a>
+                        </li>
+                        <li>
+                            <a href="javascript:void(0);">
+                                <i class="material-icons col-light-blue">donut_large</i>
+                                <span>Information</span>
+                            </a>
+                        </li>
                     </li>
                 </ul>
             </div>
-            <!-- #Menu -->
+            <!-- Fin menu Administrador -->
+
+
             <!-- Footer -->
             <div class="legal">
                 <div class="copyright">
