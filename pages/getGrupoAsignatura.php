@@ -6,35 +6,35 @@
 	echo "Accion " . $_REQUEST['action'];
 	$action = $_REQUEST['action'];
 
-	$grado = new USER();
+	$grupo = new USER();
 
 
 	
 	if($action=="showAll")
 	{
-		$grado = $grado->Read_grupos();
+		$grupo = $grupo->Read_grupos();
 		
 	}
 	else
 	{
-		$grado = $grado->Read_grupos_sede($action);
+		$grupo = $grupo->Read_grupos_sede($action);
 	}
 	
 	?>
 	
 	<?php
 
-	if (count($grado) > 0) 
+	if (count($grupo) > 0) 
 	{                 
-        foreach ($grado as $grado)
+        foreach ($grupo as $grupo)
         {
         	?>
-			<option value="<?php echo $grado['id_grado']; ?>"><?php echo $grado['descripcion_grado']."-".$grado['descripcion_grupo']; ?></option>';
+			<option value="<?php echo $grupo['id_grupo']; ?>"><?php echo $grupo['descripcion_grado']."-".$grupo['descripcion_grupo']; ?></option>';
 			<?php
         }
     } else {
         ?>
-			<option value=""><p class="col-pink">Sin Grados en la Sede</p></option>';
+			<option value=""><p class="col-pink">Sin Grupos en la Sede</p></option>';
         <?php
     }
 	

@@ -500,7 +500,6 @@ class USER
         {
             $id_grado = $anio['id_anio_lectivo'];
         }
-        $id_grado.=$id_sede;
         $id_grado.=$descripcion_grado;
 
         try
