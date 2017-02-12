@@ -19,6 +19,6 @@
 		echo "<br>anio: ". $anio ."<br>";
 		
 		$notas = $notas->update_nota($id_alumno,$name_nota,$nota,$materia,$anio);
-		echo "ohh YEAH";
+		echo $notas;
 	}
 ?>

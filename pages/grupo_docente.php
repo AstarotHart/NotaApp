@@ -7,6 +7,7 @@ $falta    = new USER();
 $logros   = new USER();
 $newLogro = new USER();
 $object   = new USER();
+$fechas   = new USER();
 
 $show_table_alumnos= "none";
 $show_table_logros= "none";
@@ -81,8 +82,54 @@ if (isset($_POST['crear']))
     {
         //llamando a la funcion read logros para cargar los losgros por asignatura
         $logros = $object->read_logros($cabecera['id_asignatura']);
+        $fechas = $object->Read_fecha_periodos($cabecera['id_anio_lectivo']);
         $res_logros = "<ol>";
     }
+
+    // cargar Informacion Periodos
+    if (count($fechas) > 0)
+    { 
+        $fechas_periodos=array();
+        $cont_fechas=0;
+        foreach ($fechas as $fechas)
+        {
+            $fechas_periodos[$cont_fechas]=$fechas;
+            $cont_fechas++;
+        }
+
+        //# periodos
+        $no_periodo1 = 1;
+        $no_periodo2 = 2;
+        $no_periodo3 = 3;
+        $no_periodo4 = 4;
+
+        //ids Peridos
+        $id_periodo1 = ((array_column($fechas_periodos, "id_periodo"))[0]);
+        $id_periodo2 = ((array_column($fechas_periodos, "id_periodo"))[1]);
+        $id_periodo3 = ((array_column($fechas_periodos, "id_periodo"))[2]);
+        $id_periodo4 = ((array_column($fechas_periodos, "id_periodo"))[3]);
+
+        //Fecha InicioPeridos
+        $inicio_periodo1 = ((array_column($fechas_periodos, "fecha_inicio"))[0]);
+        $inicio_periodo2 = ((array_column($fechas_periodos, "fecha_inicio"))[1]);
+        $inicio_periodo3 = ((array_column($fechas_periodos, "fecha_inicio"))[2]);
+        $inicio_periodo4 = ((array_column($fechas_periodos, "fecha_inicio"))[3]);
+
+        //Fecha FinPeridos
+        $fin_periodo1 = ((array_column($fechas_periodos, "fecha_fin"))[0]);
+        $fin_periodo2 = ((array_column($fechas_periodos, "fecha_fin"))[1]);
+        $fin_periodo3 = ((array_column($fechas_periodos, "fecha_fin"))[2]);
+        $fin_periodo4 = ((array_column($fechas_periodos, "fecha_fin"))[3]);
+
+        //Fecha InicioPeridos
+        $desc_periodo1 = ((array_column($fechas_periodos, "desc_periodo"))[0]);
+        $desc_periodo2 = ((array_column($fechas_periodos, "desc_periodo"))[1]);
+        $desc_periodo3 = ((array_column($fechas_periodos, "desc_periodo"))[2]);
+        $desc_periodo4 = ((array_column($fechas_periodos, "desc_periodo"))[3]);
+    }
+
+
+
     
     if (count($logros) > 0)
     {
@@ -102,10 +149,11 @@ if (isset($_POST['crear']))
                     
         foreach ($users as $users) 
         {
+            $notas  = $object->Read_notas($cabecera['id_asignatura'],$users['id_alumno']);
+            $faltas = $object->Read_faltas($cabecera['id_asignatura'],$users['id_alumno']);
+
             if (isset($cabecera['id_asignatura']) and isset($cabecera['id_alumno']))
             {
-                $notas  = $object->Read_notas($cabecera['id_asignatura'],$users['id_alumno']);
-                $faltas = $object->Read_faltas($cabecera['id_asignatura'],$users['id_alumno']);
                 $show_table_alumnos = "show";
             }
                 $res_nota1      = "0";
@@ -121,6 +169,7 @@ if (isset($_POST['crear']))
                 $res_falta4      = "0";
                 $falta_final     = "0";
                 $res_falta_final = "0";
+
             if (isset($notas) and count($notas) > 0) 
             {
                 foreach ($notas as $notas) 
@@ -244,7 +293,7 @@ if (isset($_POST['crear']))
                         </div>
 
                         <div class="col-sm-2">
-                            <b>Periodo:</b> <?php echo $cabecera['id_grupo']; ?>
+                            <b>Periodo:</b> <?php echo $no_periodo1; ?>
                         </div>
 
                         <div class="col-sm-2">

@@ -893,6 +893,23 @@ class USER
         return $data;
     }
 
+
+    /**
+     * [Read_fecha_periodos description]
+     * @param [type] $id_anio_lectivo [description]
+     */
+    public function Read_fecha_periodos($id_anio_lectivo)
+    {
+        $query = $this->conn->prepare('SELECT * FROM periodo WHERE id_anio_lectivo = :id_anio_lectivo');
+        $query->bindParam(":id_anio_lectivo",$id_anio_lectivo);
+        $query->execute();
+        $data = array();
+        while ($row = $query->fetch(PDO::FETCH_ASSOC)) {
+            $data[] = $row;
+        }
+        return $data;
+    }
+
     /**
      * [Read_notas description]
      * @param [type] $id_asignatura [description]
