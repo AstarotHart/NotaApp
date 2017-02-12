@@ -866,7 +866,7 @@ class USER
      */
     public function Read_alumnos_grupo($id_docente)
     {
-        $query = $this->conn->prepare('SELECT * FROM alumno AL inner join grupo GR inner join grado GRA inner join sede S ON AL.id_grupo = GR.id_grupo AND GR.id_grado = GRA.id_grado AND s.id_sede = GRA.id_sede WHERE GR.id_docente = :id_docente ORDER BY AL.primer_apellido ');
+        $query = $this->conn->prepare('SELECT * FROM asignatura ASI inner join alumno AL ON AL.id_grupo = ASI.id_grupo WHERE ASI.id_docente = :id_docente ORDER BY AL.primer_apellido ');
         $query->bindParam(":id_docente",$id_docente);
         $query->execute();
         $data = array();
@@ -1174,7 +1174,7 @@ class USER
      */
     public function Read_alumno()
     {        
-        $query = $this->conn->prepare('SELECT * FROM alumno AL inner join sede S inner join grupo G inner join grado GR ON AL.id_sede = S.id_sede AND AL.id_grupo = G.id_grupo AND G.id_grado = GR.id_grado');
+        $query = $this->conn->prepare('SELECT * FROM alumno AL inner join sede S inner join grupo G inner join grado GR ON AL.id_sede = S.id_sede AND AL.id_grupo = G.id_grupo AND G.id_grado = GR.id_grado WHERE AL.id_estado = "1"');
         $query->execute();
         $data = array();
         while ($row = $query->fetch(PDO::FETCH_ASSOC)) {

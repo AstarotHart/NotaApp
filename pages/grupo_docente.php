@@ -1,10 +1,5 @@
-﻿<!DOCTYPE html>
-<html>
-
-<?php 
-
+﻿<?php 
 require_once("class.user.php");
-
 $user     = new USER();
 $cabecera = new USER();
 $nota     = new USER();
@@ -13,13 +8,13 @@ $logros   = new USER();
 $newLogro = new USER();
 $object   = new USER();
 
-$show_table= "none";
+$show_table_alumnos= "none";
+$show_table_logros= "none";
 
 if (isset($_POST['crear'])) 
 {
     $id_asignatura=$_POST['id_asignatura'];
     $logro=$_POST['logro'];
-
     /**
      * Llamada a funcion para actualizar los datos del docente
      */
@@ -29,7 +24,6 @@ if (isset($_POST['crear']))
         echo 'setTimeout(function () { swal("Logro Creado.","","success");';
        // echo 'setTimeout(function () {swal({title: "Datos Actualizados",text: "",timer: 2000,showConfirmButton: false});';
         echo '}, 1000);</script>';
-
      }
      else
      {
@@ -37,9 +31,7 @@ if (isset($_POST['crear']))
         echo 'setTimeout(function () { swal("Logro NO Creado.","","error");';
         echo '}, 1000);</script>';
      }
-
 }
-
  ?>
 
 <!-- Top Bar -->
@@ -48,14 +40,11 @@ if (isset($_POST['crear']))
 
 <!-- Menu -->
 <?php 
-
     include("../includes/menu.php");
-
     $users = $object->Read_alumnos_grupo($user_id);
     $cabecera = $object->Read_cabecera_grupo($user_id);
     
     $num = 1;
-
     // Design initial table header
     $data = '<table class="table table-bordered table-striped table-hover js-basic-example dataTable">
                         <thead>
@@ -76,43 +65,38 @@ if (isset($_POST['crear']))
                                 <th>Acciones</th>
                             </tr>
                         <thead>
-
                         <tbody>
-
                         ';
-
-
     // Cargar datos en un array con CABECERA
     if (count($cabecera) > 0) 
     {
                     
         foreach ($cabecera as $cabecera) 
         {
-            $show_table= "show";
+            $show_table_alumnos= "show";
         }
     } 
-
     //saber si la variable $cabecera['id_asignatura'] fue inicializada
     if (isset($cabecera['id_asignatura']))
     {
         //llamando a la funcion read logros para cargar los losgros por asignatura
         $logros = $object->read_logros($cabecera['id_asignatura']);
-        $res_logros = "";
+        $res_logros = "<ol>";
     }
     
-
     if (count($logros) > 0)
     {
         foreach ($logros as $logros)
         {
             $res_logros .='<li>' . '<b class="font-10">[' .$logros['id_logro']. ']</b> ' . $logros['descripcion']  .'</li>';
         }
+
+        $res_logros .= "</ol>";
     }
     else
     {
         $res_logros = "No hay logros para Mostrar.!!";
     }
-
     if (count($users) > 0) 
     {
                     
@@ -122,8 +106,8 @@ if (isset($_POST['crear']))
             {
                 $notas  = $object->Read_notas($cabecera['id_asignatura'],$users['id_alumno']);
                 $faltas = $object->Read_faltas($cabecera['id_asignatura'],$users['id_alumno']);
+                $show_table_alumnos = "show";
             }
-
                 $res_nota1      = "0";
                 $res_nota2      = "0";
                 $res_nota3      = "0";
@@ -137,8 +121,6 @@ if (isset($_POST['crear']))
                 $res_falta4      = "0";
                 $falta_final     = "0";
                 $res_falta_final = "0";
-
-
             if (isset($notas) and count($notas) > 0) 
             {
                 foreach ($notas as $notas) 
@@ -148,10 +130,8 @@ if (isset($_POST['crear']))
                     $res_nota3  = $notas['nota3'];
                     $res_nota4  = $notas['nota4'];
                     $nota_final = ($res_nota1+$res_nota2+$res_nota3+$res_nota4)/4;
-
                     $nota_final =  number_format($nota_final,1);  
                 }
-
                 if ($nota_final <= 2.9) 
                 {
                     $res_nota_final = '<p class="font-bold col-pink">'.$nota_final.'</p>';
@@ -162,7 +142,6 @@ if (isset($_POST['crear']))
                 }
                 
             }
-
             if (isset($faltas) and count($faltas) > 0) 
             {
                 foreach ($faltas as $faltas) 
@@ -173,7 +152,6 @@ if (isset($_POST['crear']))
                     $res_falta4  = $faltas['inasistencia_p4'];
                     $falta_final = ($res_falta1+$res_falta2+$res_falta3+$res_falta4);    
                 }
-
                 if ($falta_final >= "4") 
                 {
                     $res_falta_final = '<p class="font-bold col-pink">'.$falta_final.'</p>';
@@ -184,7 +162,6 @@ if (isset($_POST['crear']))
                 }
                 
             }
-
             if (isset($cabecera['id_asignatura']) and isset($cabecera['id_alumno']))
             {
                 //llamando a la funcion read logros para cargar los losgros por asignatura
@@ -192,7 +169,6 @@ if (isset($_POST['crear']))
                 $res_logros_alumno = "";
             }
             
-
             if (isset($logros_alumnos) and count($logros_alumnos) > 0)
             {
                 foreach ($logros_alumnos as $logros_alumnos)
@@ -204,8 +180,6 @@ if (isset($_POST['crear']))
             {
                 $res_logros_alumno = "No hay logros para Mostrar.!!";
             }
-
-
             if (isset($users['primer_apellido']) and isset($users['segundo_apellido']) and isset($users['nombres']) and isset($users['id_alumno']) and isset($cabecera['id_asignatura']) and isset($cabecera['id_anio_lectivo']))
             {
                 $data .= '
@@ -224,7 +198,6 @@ if (isset($_POST['crear']))
                         <td>' . $res_nota_final . '</td>
                         <td>' . $res_falta_final . '</td>
                         <td>
-
                             '.$res_logros_alumno.'
                             
                             <select class="form-control show-tick" multiple name="id_logros">
@@ -233,7 +206,6 @@ if (isset($_POST['crear']))
                                     </select>                                
                         </td>
                     </tr>';
-
                 $num++;
             }
             
@@ -246,7 +218,6 @@ if (isset($_POST['crear']))
     }
      
     $data .= '<tbody></table>';
-
 ?>
 <!-- end menu-->
 
@@ -264,28 +235,28 @@ if (isset($_POST['crear']))
                     </div>
                     <div class="body">
                         
+                        <div class="col-sm-2">
+                            <b>Grupo:</b> <?php echo $cabecera['descripcion_grupo'] ; ?>
+                        </div>
+
+                        <div class="col-sm-3">
+                            <b>Asignatura:</b> <?php echo $cabecera['nombre_asignatura']; ?>
+                        </div>
+
+                        <div class="col-sm-2">
+                            <b>Periodo:</b> <?php echo $cabecera['id_grupo']; ?>
+                        </div>
+
+                        <div class="col-sm-2">
+                            <b>Año Lectivo:</b> <?php echo $cabecera['id_anio_lectivo']; ?>
+                        </div>
+
+                        <div class="col-sm-2">
+                            <b>Intensidad Horaria:</b> <?php echo $cabecera['intensidad_horaria']; ?>
+                        </div>
+
                         <!-- Div mostrar u ocultar tablas -->
-                        <div  style="display: <?php echo $show_table; ?>;">
-                            <div class="col-sm-2">
-                                <b>Grupo:</b> <?php echo $cabecera['descripcion_grupo'] ; ?>
-                            </div>
-
-                            <div class="col-sm-3">
-                                <b>Asignatura:</b> <?php echo $cabecera['nombre_asignatura']; ?>
-                            </div>
-
-                            <div class="col-sm-2">
-                                <b>Periodo:</b> 1
-                            </div>
-
-                            <div class="col-sm-2">
-                                <b>Año Lectivo:</b> <?php echo $cabecera['id_anio_lectivo']; ?>
-                            </div>
-
-                            <div class="col-sm-2">
-                                <b>Intensidad Horaria:</b> <?php echo $cabecera['intensidad_horaria']; ?>
-                            </div>
-
+                        <div  style="display: <?php echo $show_table_alumnos; ?>;">
                             <div id="miTabla">
                                 <?php
                                     
@@ -296,24 +267,24 @@ if (isset($_POST['crear']))
                                     
                                 </tbody>
                             </table>
-
-                            <h5>Logros</h5>
-                            <blockquote class="m-b-25 font-12">
-                                
-                                <ol>
-                                    <?php echo $res_logros;?>
-                                </ol>
-                            <button type="button" class="btn bg-teal waves-effect" data-toggle="modal" data-target="#NewLogro">Nuevo Logro</button>
-
-                            </blockquote>
-
+                            
                             <blockquote class="blockquote-reverse m-b-25 font-12">
                                 <p><b>P.1</b>: Primer Periodo,<b>P.2</b>: Segundo Periodo,<b>P.3</b>: Tercer Periodo,<b>P.4</b>: Cuarto Periodo. <b>F. P.1</b>: Faltas Primer Periodo,<b>F. P.2</b>: Faltas Segundo Periodo,<b>F. P.3</b>: Faltas Tercer Periodo,<b>F. P.4</b>: Faltas Cuarto Periodo. </p>
                             </blockquote>
 
-                            <button id="enable" class="btn btn-default">enable / disable</button>
-
                         </div><!-- Fin DIV ocultar o mostrar tabla -->
+   
+
+                        <blockquote class="m-b-25 font-12">
+                            <h5>Logros</h5>
+                            <?php echo $res_logros;?>
+                        </blockquote>
+
+                        <button type="button" class="btn bg-teal waves-effect" data-toggle="modal" data-target="#NewLogro">Nuevo Logro</button>
+
+                        <button id="enable" class="btn btn-default">enable / disable</button>
+
+                        
                     </div>
                 </div>
             </div>
@@ -344,7 +315,6 @@ if (isset($_POST['crear']))
                 var x = $(this).closest('td').children('span').attr('id_alumno');
                 var y = $('.materia').val();
                 var z = $(this).closest('td').children('span');
-
                 if (w == "inasistencia_p1" || w == "inasistencia_p2" || w == "inasistencia_p3" || w == "inasistencia_p4" ) 
                 {
                     $.ajax({
@@ -379,20 +349,16 @@ if (isset($_POST['crear']))
                         }
                     })
                 }
-
                 
             });
     });
-
 </script>
 
 <script type="text/javascript">
     $(function(){
-
         //enable / disable
        $('#enable').click(function() {
            $('#miTabla #periodo1').editable('toggleDisabled');
-
        });
     });
 </script>

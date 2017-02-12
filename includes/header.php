@@ -267,7 +267,7 @@
     </nav>
 
     <body class="theme-teal">
-    <!-- Page Loader --
+    <!-- Page Loader -->
         <div class="page-loader-wrapper">
             <div class="loader">
                 <div class="md-preloader pl-size-md">
