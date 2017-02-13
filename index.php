@@ -103,9 +103,6 @@ if(isset($_POST['btn-login']))
                         <div class="col-xs-6">
                             <a href="sign-up.php">Registrate Ahora!</a>
                         </div>
-                        <div class="col-xs-6 align-right">
-                            <a href="forgot-password.html">Olvidaste tu clave?</a>
-                        </div>
                     </div>
                 </form>
             </div>

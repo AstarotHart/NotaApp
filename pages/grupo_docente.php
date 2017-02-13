@@ -97,35 +97,68 @@ if (isset($_POST['crear']))
             $cont_fechas++;
         }
 
-        //# periodos
-        $no_periodo1 = 1;
-        $no_periodo2 = 2;
-        $no_periodo3 = 3;
-        $no_periodo4 = 4;
+        if (count($fechas_periodos) > 0) 
+        {
+            //# periodos
+            $no_periodo1 = 1;
+            $no_periodo2 = 2;
+            $no_periodo3 = 3;
+            $no_periodo4 = 4;
 
-        //ids Peridos
-        $id_periodo1 = ((array_column($fechas_periodos, "id_periodo"))[0]);
-        $id_periodo2 = ((array_column($fechas_periodos, "id_periodo"))[1]);
-        $id_periodo3 = ((array_column($fechas_periodos, "id_periodo"))[2]);
-        $id_periodo4 = ((array_column($fechas_periodos, "id_periodo"))[3]);
+            //ids Peridos
+            $id_periodo1 = ((array_column($fechas_periodos, "id_periodo"))[0]);
+            $id_periodo2 = ((array_column($fechas_periodos, "id_periodo"))[1]);
+            $id_periodo3 = ((array_column($fechas_periodos, "id_periodo"))[2]);
+            $id_periodo4 = ((array_column($fechas_periodos, "id_periodo"))[3]);
 
-        //Fecha InicioPeridos
-        $inicio_periodo1 = ((array_column($fechas_periodos, "fecha_inicio"))[0]);
-        $inicio_periodo2 = ((array_column($fechas_periodos, "fecha_inicio"))[1]);
-        $inicio_periodo3 = ((array_column($fechas_periodos, "fecha_inicio"))[2]);
-        $inicio_periodo4 = ((array_column($fechas_periodos, "fecha_inicio"))[3]);
+            //Fecha InicioPeridos
+            $inicio_periodo1 = ((array_column($fechas_periodos, "fecha_inicio"))[0]);
+            $inicio_periodo2 = ((array_column($fechas_periodos, "fecha_inicio"))[1]);
+            $inicio_periodo3 = ((array_column($fechas_periodos, "fecha_inicio"))[2]);
+            $inicio_periodo4 = ((array_column($fechas_periodos, "fecha_inicio"))[3]);
 
-        //Fecha FinPeridos
-        $fin_periodo1 = ((array_column($fechas_periodos, "fecha_fin"))[0]);
-        $fin_periodo2 = ((array_column($fechas_periodos, "fecha_fin"))[1]);
-        $fin_periodo3 = ((array_column($fechas_periodos, "fecha_fin"))[2]);
-        $fin_periodo4 = ((array_column($fechas_periodos, "fecha_fin"))[3]);
+            //Fecha FinPeridos
+            $fin_periodo1 = ((array_column($fechas_periodos, "fecha_fin"))[0]);
+            $fin_periodo2 = ((array_column($fechas_periodos, "fecha_fin"))[1]);
+            $fin_periodo3 = ((array_column($fechas_periodos, "fecha_fin"))[2]);
+            $fin_periodo4 = ((array_column($fechas_periodos, "fecha_fin"))[3]);
 
-        //Fecha InicioPeridos
-        $desc_periodo1 = ((array_column($fechas_periodos, "desc_periodo"))[0]);
-        $desc_periodo2 = ((array_column($fechas_periodos, "desc_periodo"))[1]);
-        $desc_periodo3 = ((array_column($fechas_periodos, "desc_periodo"))[2]);
-        $desc_periodo4 = ((array_column($fechas_periodos, "desc_periodo"))[3]);
+            //Fecha InicioPeridos
+            $desc_periodo1 = ((array_column($fechas_periodos, "desc_periodo"))[0]);
+            $desc_periodo2 = ((array_column($fechas_periodos, "desc_periodo"))[1]);
+            $desc_periodo3 = ((array_column($fechas_periodos, "desc_periodo"))[2]);
+            $desc_periodo4 = ((array_column($fechas_periodos, "desc_periodo"))[3]);
+
+            $editar_tablas_p1="none";
+            $editar_tablas_p2="none";
+            $editar_tablas_p3="none";
+            $editar_tablas_p4="none";
+
+            date_default_timezone_set('America/Bogota');
+
+            $fechaHoy = date('Y-m-d');
+            //$fechaHoy = "2017-03-18";
+
+            //comparar fecha primer periodo
+            if ($fechaHoy > $inicio_periodo1 AND $fechaHoy < $fin_periodo1) 
+            {
+                $editar_tablas_p1 = "xedit";
+            }
+            elseif ($fechaHoy > $inicio_periodo2 AND $fechaHoy < $fin_periodo2) 
+            {
+                $editar_tablas_p2 = "xedit";
+            }
+            elseif ($fechaHoy > $inicio_periodo3 AND $fechaHoy < $fin_periodo3) 
+            {
+                $editar_tablas_p3 = "xedit";
+            }
+            elseif ($fechaHoy > $inicio_periodo4 AND $fechaHoy < $fin_periodo4) 
+            {
+                $editar_tablas_p4 = "xedit";
+            }
+        }
+
+
     }
 
 
@@ -138,7 +171,11 @@ if (isset($_POST['crear']))
             $res_logros .='<li>' . '<b class="font-10">[' .$logros['id_logro']. ']</b> ' . $logros['descripcion']  .'</li>';
         }
 
-        $res_logros .= "</ol>";
+        if (isset($res_logros)) 
+        {
+            $res_logros .= "</ol>";
+        }
+        
     }
     else
     {
@@ -236,14 +273,14 @@ if (isset($_POST['crear']))
                         <td>' . $num. '</td>
                         <td>' . $users['primer_apellido'] . ' ' .$users['segundo_apellido'] . ' ' .$users['nombres'] .'</td>
                         <td>' . $users['id_alumno'] . '</td>
-                        <td><span class="xedit" id="periodo1" id_alumno="'.$users['id_alumno'].'" name="nota1" materia="'.$cabecera['id_asignatura'].'" anio="'.$cabecera['id_anio_lectivo'].'">'.$res_nota1.'</span></td>
-                        <td><span tipo="falta" class="xedit" id="periodo1" id_alumno="'.$users['id_alumno'].'" name="inasistencia_p1" materia="'.$cabecera['id_asignatura'].'" anio="'.$cabecera['id_anio_lectivo'].'">'.$res_falta1.'</span></td>
-                        <td><span class="xedit" id="periodo2" id_alumno="'.$users['id_alumno'].'" name="nota2" materia="'.$cabecera['id_asignatura'].'" anio="'.$cabecera['id_anio_lectivo'].'">'.$res_nota2.'</span></td>
-                        <td><span class="xedit" id="periodo2" id_alumno="'.$users['id_alumno'].'" name="inasistencia_p2" materia="'.$cabecera['id_asignatura'].'" anio="'.$cabecera['id_anio_lectivo'].'">'.$res_falta2.'</span></td>
-                        <td><span class="xedit" id="periodo3" id_alumno="'.$users['id_alumno'].'" name="nota3" materia="'.$cabecera['id_asignatura'].'" anio="'.$cabecera['id_anio_lectivo'].'">'.$res_nota3.'</span></td>
-                        <td><span class="xedit" id="periodo3" id_alumno="'.$users['id_alumno'].'" name="inasistencia_p3" materia="'.$cabecera['id_asignatura'].'" anio="'.$cabecera['id_anio_lectivo'].'">'.$res_falta3.'</span></td>
-                        <td><span class="xedit" id="periodo4" id_alumno="'.$users['id_alumno'].'" name="nota4" materia="'.$cabecera['id_asignatura'].'" anio="'.$cabecera['id_anio_lectivo'].'">'.$res_nota4.'</span></td>
-                        <td><span class="xedit" id="periodo4" id_alumno="'.$users['id_alumno'].'" name="inasistencia_p4" materia="'.$cabecera['id_asignatura'].'" anio="'.$cabecera['id_anio_lectivo'].'">'.$res_falta4.'</span></td>
+                        <td><span class="'.$editar_tablas_p1.'" id="periodo1" id_alumno="'.$users['id_alumno'].'" name="nota1" materia="'.$cabecera['id_asignatura'].'" anio="'.$cabecera['id_anio_lectivo'].'">'.$res_nota1.'</span></td>
+                        <td><span tipo="falta" class="'.$editar_tablas_p1.'" id="periodo1" id_alumno="'.$users['id_alumno'].'" name="inasistencia_p1" materia="'.$cabecera['id_asignatura'].'" anio="'.$cabecera['id_anio_lectivo'].'">'.$res_falta1.'</span></td>
+                        <td><span class="'.$editar_tablas_p2.'" id="periodo2" id_alumno="'.$users['id_alumno'].'" name="nota2" materia="'.$cabecera['id_asignatura'].'" anio="'.$cabecera['id_anio_lectivo'].'">'.$res_nota2.'</span></td>
+                        <td><span class="'.$editar_tablas_p2.'" id="periodo2" id_alumno="'.$users['id_alumno'].'" name="inasistencia_p2" materia="'.$cabecera['id_asignatura'].'" anio="'.$cabecera['id_anio_lectivo'].'">'.$res_falta2.'</span></td>
+                        <td><span class="'.$editar_tablas_p3.'" id="periodo3" id_alumno="'.$users['id_alumno'].'" name="nota3" materia="'.$cabecera['id_asignatura'].'" anio="'.$cabecera['id_anio_lectivo'].'">'.$res_nota3.'</span></td>
+                        <td><span class="'.$editar_tablas_p3.'" id="periodo3" id_alumno="'.$users['id_alumno'].'" name="inasistencia_p3" materia="'.$cabecera['id_asignatura'].'" anio="'.$cabecera['id_anio_lectivo'].'">'.$res_falta3.'</span></td>
+                        <td><span class="'.$editar_tablas_p4.'" id="periodo4" id_alumno="'.$users['id_alumno'].'" name="nota4" materia="'.$cabecera['id_asignatura'].'" anio="'.$cabecera['id_anio_lectivo'].'">'.$res_nota4.'</span></td>
+                        <td><span class="'.$editar_tablas_p4.'" id="periodo4" id_alumno="'.$users['id_alumno'].'" name="inasistencia_p4" materia="'.$cabecera['id_asignatura'].'" anio="'.$cabecera['id_anio_lectivo'].'">'.$res_falta4.'</span></td>
                         <td>' . $res_nota_final . '</td>
                         <td>' . $res_falta_final . '</td>
                         <td>
@@ -252,7 +289,8 @@ if (isset($_POST['crear']))
                             <select class="form-control show-tick" multiple name="id_logros">
                                         <option value="">-- Seleccione Logros --</option> 
                                             '. $user = $object->combobox_logros($cabecera['id_asignatura']) .'
-                                    </select>                                
+                                    </select>                             
+
                         </td>
                     </tr>';
                 $num++;
@@ -282,31 +320,46 @@ if (isset($_POST['crear']))
                             Asignaturas <small>Lista de Estudientes Por Asignaturas</small>
                         </h2>
                     </div>
-                    <div class="body">
+                    <div class="body" >
                         
                         <div class="col-sm-2">
-                            <b>Grupo:</b> <?php echo $cabecera['descripcion_grupo'] ; ?>
+                            <b>Grupo:</b> <?php if (isset($cabecera['descripcion_grupo'])) 
+                            {
+                                 echo $cabecera['descripcion_grupo'];
+                            }else{echo " ";} ?>
                         </div>
 
                         <div class="col-sm-3">
-                            <b>Asignatura:</b> <?php echo $cabecera['nombre_asignatura']; ?>
+                            <b>Asignatura:</b> <?php if (isset($cabecera['nombre_asignatura'])) 
+                            {
+                                 echo $cabecera['nombre_asignatura'];
+                            }else{echo " ";} ?>
                         </div>
 
                         <div class="col-sm-2">
-                            <b>Periodo:</b> <?php echo $no_periodo1; ?>
+                            <b>Periodo:</b> <?php if (isset($id_periodo1)) 
+                            {
+                                 echo $id_periodo1;
+                            }else{echo " ";} ?>
                         </div>
 
                         <div class="col-sm-2">
-                            <b>Año Lectivo:</b> <?php echo $cabecera['id_anio_lectivo']; ?>
+                            <b>Año Lectivo:</b> <?php if (isset($cabecera['id_anio_lectivo'])) 
+                            {
+                                 echo $cabecera['id_anio_lectivo'];
+                            }else{echo " ";} ?>
                         </div>
 
                         <div class="col-sm-2">
-                            <b>Intensidad Horaria:</b> <?php echo $cabecera['intensidad_horaria']; ?>
+                            <b>Intensidad Horaria:</b> <?php if (isset($cabecera['intensidad_horaria'])) 
+                            {
+                                 echo $cabecera['intensidad_horaria'];
+                            }else{echo " ";} ?>
                         </div>
 
                         <!-- Div mostrar u ocultar tablas -->
                         <div  style="display: <?php echo $show_table_alumnos; ?>;">
-                            <div id="miTabla">
+                            <div id="miTabla" class="font-13">
                                 <?php
                                     
                                     echo $data; 
@@ -326,12 +379,22 @@ if (isset($_POST['crear']))
 
                         <blockquote class="m-b-25 font-12">
                             <h5>Logros</h5>
-                            <?php echo $res_logros;?>
+                            <?php
+                                if (isset($res_logros)) 
+                                {
+                                    echo $res_logros;
+                                
+                            
+                                echo "<div class='col-sm-3'>
+                                
+                                    <button type='button' class='btn bg-teal waves-effect' data-toggle='modal' data-target='#NewLogro'>Nuevo Logro</button>
+                                </div>";
+                                } 
+                            ?>
                         </blockquote>
 
-                        <button type="button" class="btn bg-teal waves-effect" data-toggle="modal" data-target="#NewLogro">Nuevo Logro</button>
 
-                        <button id="enable" class="btn btn-default">enable / disable</button>
+                        <!--<button id="enable" class="btn btn-default">enable / disable</button>-->
 
                         
                     </div>
@@ -354,6 +417,9 @@ if (isset($_POST['crear']))
 
 <!-- Funcion para editar FALTAS alumno-->
 <script type="text/javascript">
+
+    //setInterval("actualiza_contenido()", 1000);
+
     jQuery(document).ready(function() {  
             $.fn.editable.defaults.mode = 'popup';
             $('.xedit').editable();     
@@ -370,7 +436,7 @@ if (isset($_POST['crear']))
                         url: "update_falta.php?id="+x+"&data="+y+"&nota="+w+"&materia="+v+"&anio="+u,
                         type: 'GET',
                         success: function(s){
-                            //location.reload();
+                            location.reload();
                             if(s == 'status'){
                             $(z).html(y);}
                             if(s == 'error') {
@@ -410,6 +476,13 @@ if (isset($_POST['crear']))
            $('#miTabla #periodo1').editable('toggleDisabled');
        });
     });
+
+    $("[data-toggle=popover]").popover({
+    html: true, 
+    content: function() {
+          return $('#popover-content').html();
+        }
+});
 </script>
 
 

@@ -45,6 +45,7 @@
     <script src="../js/pages/ui/notifications.js"></script>
     <script src="../js/pages/ui/dialogs.js"></script>
     <script src="../js/pages/forms/basic-form-elements.js"></script>
+    <script src="../js/pages/ui/tooltips-popovers.js"></script>
 
     <!-- Demo Js -->
     <script src="../js/demo.js"></script>

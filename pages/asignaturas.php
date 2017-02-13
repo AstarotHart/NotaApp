@@ -14,13 +14,6 @@ if (isset($_POST['crear']))
     $porcentaje         = $_POST['porcentaje'];
     $id_grupo           = $_POST['id_grupo'];
 
-    echo "Id Docente: ".$id_docente."<br>";
-    echo "Id area: ".$id_area."<br>";
-    echo "nombre_asignatura: ".$nombre_asignatura."<br>";
-    echo "intensidad_horaria: ".$intensidad_horaria."<br>";
-    echo "porcentaje: ".$porcentaje."<br>";
-    echo "id_grupo: ".$id_grupo."<br>";
-
     /**
      * Llamada a funcion para actualizar los datos del docente
      */
