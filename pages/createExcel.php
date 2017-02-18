@@ -30,7 +30,26 @@ $objPHPExcel->getProperties()
                            ->setKeywords("Excel Office 2007 openxml php")
                            ->setCategory("Planilla de Excel");
 
+//Insertar Datos Cabecera en celdas
+if (count($cabecera) > 0)
+{
+   foreach ($cabecera as $cabecera)
+   {
+   
+   }
 
+   $fullgrupo = $cabecera['descripcion_grado']."-".$cabecera['descripcion_grupo'];
+
+   $objPHPExcel->setActiveSheetIndex(0)
+                           ->setCellValue("F4", $cabecera['nombre_area'])
+                           ->setCellValue("M4", $fullgrupo)
+                           ->setCellValue("M5", $cabecera['intensidad_horaria'])
+                           ->setCellValue("R4", $cabecera['id_anio_lectivo'])
+                           ->setCellValue("F5", $cabecera['nombre_asignatura']);
+
+}
+
+//Insertar Datos Alumno en celdas
 if (count($users) > 0)
 {
    $i = 11;

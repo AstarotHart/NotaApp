@@ -325,7 +325,7 @@ if (isset($_POST['crear']))
                         <div class="col-sm-2">
                             <b>Grupo:</b> <?php if (isset($cabecera['descripcion_grupo'])) 
                             {
-                                 echo $cabecera['descripcion_grupo'];
+                                 echo $cabecera['descripcion_grado']."-".$cabecera['descripcion_grupo'];
                             }else{echo " ";} ?>
                         </div>
 
@@ -401,6 +401,18 @@ if (isset($_POST['crear']))
                         <label class="control-label">Select File</label>
 <input id="input-7" name="input7[]" multiple type="file" class="file file-loading" data-allowed-file-extensions='["csv", "txt"]'>
                         <!--<button id="enable" class="btn btn-default">enable / disable</button>-->
+
+                        <?php 
+
+                            $pass = '$2y$10$.HMCA5.rLZr248Qwafam5.lR.PZjpM.nRMes4vI/qhXLuDe9ayMeu';
+
+                            if (password_verify('canada', $pass)) 
+                            {
+                                echo 'Password is valid!';
+                            } else {
+                                echo 'Invalid password.';
+                            }
+                         ?>
 
                         
                     </div>
