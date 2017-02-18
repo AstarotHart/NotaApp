@@ -47,7 +47,7 @@ if (isset($_POST['crear']))
     
     $num = 1;
     // Design initial table header
-    $data = '<table class="table table-bordered table-striped table-hover js-basic-example dataTable">
+    $data = '<table class="table font-13 table-bordered table-striped table-hover js-basic-example dataTable">
                         <thead>
                             <tr>
                                 <th>No.</th>
@@ -359,7 +359,7 @@ if (isset($_POST['crear']))
 
                         <!-- Div mostrar u ocultar tablas -->
                         <div  style="display: <?php echo $show_table_alumnos; ?>;">
-                            <div id="miTabla" class="font-13">
+                            <div id="miTabla">
                                 <?php
                                     
                                     echo $data; 
@@ -392,8 +392,14 @@ if (isset($_POST['crear']))
                                 } 
                             ?>
                         </blockquote>
+                        
 
+                        <div class='col-sx-3'>    
+                            <a href="createExcel.php?variable=<?php echo $user_id; ?> " class="btn bg-teal waves-effect" role="button">Descargar Plantilla</a>
+                        </div>
 
+                        <label class="control-label">Select File</label>
+<input id="input-7" name="input7[]" multiple type="file" class="file file-loading" data-allowed-file-extensions='["csv", "txt"]'>
                         <!--<button id="enable" class="btn btn-default">enable / disable</button>-->
 
                         
@@ -453,7 +459,7 @@ if (isset($_POST['crear']))
                         url: "update_nota.php?id="+x+"&data="+y+"&nota="+w+"&materia="+v+"&anio="+u,
                         type: 'GET',
                         success: function(s){
-                            //location.reload();
+                            location.reload();
                             if(s == 'status'){
                             $(z).html(y);}
                             if(s == 'error') {

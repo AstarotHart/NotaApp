@@ -189,9 +189,9 @@ if (isset($_POST['cambiar_pass']))
                                     <span>Docentes</span>
                                 </a>
                                 <ul class="ml-menu">
-                                    <li <?php if (isSite('director_grupo.php')) echo 'class="active"'; ?>>
+                                    <!-- <li <?php if (isSite('director_grupo.php')) echo 'class="active"'; ?>>
                                         <a href="../pages/director_grupo.php">Director Grupo</a>
-                                    </li>
+                                    </li> -->
                                     <li <?php if (isSite('grupo_docente.php')) echo 'class="active"'; ?>>
                                         <a href="../pages/grupo_docente.php">Grupos Docente </a>
                                     </li>
