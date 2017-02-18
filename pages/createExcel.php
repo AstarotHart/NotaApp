@@ -13,10 +13,12 @@ $cabecera = $object->Read_cabecera_grupo($user_id);
 
 
 /** Incluir la libreria PHPExcel */
+require_once '/../Classes/PHPExcel/IOFactory.php';
 require_once '/../Classes/PHPExcel.php';
 
-// Crea un nuevo objeto PHPExcel
-$objPHPExcel = new PHPExcel();
+//cargar plantilla
+$objPHPExcel = PHPExcel_IOFactory::createReader('Excel2007');
+$objPHPExcel = $objPHPExcel->load('plantillas/PlantillaNotas.xlsx'); // Empty Sheet
 
 // Establecer propiedades
 $objPHPExcel->getProperties()
@@ -28,20 +30,17 @@ $objPHPExcel->getProperties()
                            ->setKeywords("Excel Office 2007 openxml php")
                            ->setCategory("Planilla de Excel");
 
-// Agregar Informacion de cabecera
-$objPHPExcel->setActiveSheetIndex(0)
-                           ->setCellValue('A1', 'Nombres')
-                           ->setCellValue('B1', 'Codigo');
-
 
 if (count($users) > 0)
 {
-   $i = 2;
+   $i = 11;
+   $fullName = "";
    foreach ($users as $users)
    {
+      $fullName = $users['primer_apellido']." ".$users['segundo_apellido']." ".$users['nombres'];
       $objPHPExcel->setActiveSheetIndex(0)
-                           ->setCellValue("A$i", $users['nombres'])
-                           ->setCellValue("B$i", $users['id_alumno']);
+                           ->setCellValue("C$i", $fullName)
+                           ->setCellValue("F$i", $users['id_alumno']);
       $i++;
    }
 }
