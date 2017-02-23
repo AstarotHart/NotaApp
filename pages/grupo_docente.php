@@ -92,7 +92,6 @@ if (isset($_POST['crear']))
 <!-- Menu -->
 <?php 
     include("../includes/menu.php");
-    $users = $object->Read_alumnos_grupo($user_id);
     $cabecera = $object->Read_cabecera_grupo($user_id);
     
     $num = 1;
@@ -130,6 +129,8 @@ if (isset($_POST['crear']))
     //saber si la variable $cabecera['id_asignatura'] fue inicializada
     if (isset($cabecera['id_asignatura']))
     {
+        $users = $object->Read_alumnos_grupo($user_id,$cabecera['id_grupo']);
+
         //llamando a la funcion read logros para cargar los losgros por asignatura
         $logros = $object->read_logros($cabecera['id_asignatura']);
         $fechas = $object->Read_fecha_periodos($cabecera['id_anio_lectivo']);
@@ -378,10 +379,33 @@ if (isset($_POST['crear']))
         <div class="row clearfix">
             <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
                 <div class="card">
-                    <div class="header">
+                    <div class="header" style="padding-bottom: 10px;"">
                         <h2>
                             Asignaturas <small>Lista de Estudientes Por Asignaturas</small>
                         </h2>
+
+                        <!-- form para seleccionar GRUPO por ASIGNATURA -->
+                        <form style="margin-bottom: 2px;">
+                            <div class="row clearfix">
+                                <div class="col-lg-3 col-md-3 col-sm-3 col-xs-6">
+                                    <div class="form-group" style="margin-bottom: 2px;">
+                                        <div class="form-line">
+                                            <select class="form-control show-tick" name="sede">
+                                                    <option value="">-- Seleccione Grupo --</option>
+                                                    <?php 
+                                                        $user = $object->combobox_grupos_docente($user_id);
+                                                    ?>
+                                            </select>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-lg-6 col-md-6 col-sm-6 col-xs-12">
+                                    <button class="btn bg-teal waves-effect" type="submit" name="btn-signup">Aceptar</button>
+                                </div>
+                            </div>
+                        </form>
+
+
                     </div>
                     <div class="body" >
                         
@@ -450,7 +474,7 @@ if (isset($_POST['crear']))
                                                 <input type="checkbox" id="md_checkbox_26" class="filled-in chk-col-blue" checked />
                                                 <label for="md_checkbox_26">Seleccionar Para Todos.</label>
 
-                                                <button class="btn bg-green waves-effect" type="submit" name="crear_">Crear</button>
+                                                <button class="btn bg-green waves-effect" type="submit" name="crear_">Aceptar</button>
                                             </div>
 
                                         </form>

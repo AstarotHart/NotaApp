@@ -232,6 +232,23 @@ class USER
     }
 
     /**
+     * [combobox_grupos_docente description]
+     * @return [type] [description]
+     */
+    public function combobox_grupos_docente($id_docente)
+    {
+        $query = $this->conn->prepare("SELECT id_asignatura,nombre_asignatura FROM asignatura WHERE id_docente = :id_docente");
+        $query->bindParam(":id_docente", $id_docente); 
+        $query->execute();
+        
+        while($row=$query->fetch(PDO::FETCH_ASSOC))
+        {
+            echo '<option value="'.$row['id_asignatura'].'">'.$row['nombre_asignatura'].'</option>'; 
+        }
+
+    }
+
+    /**
      * [Read_sedes description]
      */
     public function Read_sedes()
@@ -864,10 +881,11 @@ class USER
      * [Read_alumnos_grupo description]
      * @param [type] $id_docente [description]
      */
-    public function Read_alumnos_grupo($id_docente)
+    public function Read_alumnos_grupo($id_docente,$id_grupo)
     {
-        $query = $this->conn->prepare('SELECT * FROM asignatura ASI inner join alumno AL ON AL.id_grupo = ASI.id_grupo WHERE ASI.id_docente = :id_docente ORDER BY AL.primer_apellido ');
+        $query = $this->conn->prepare('SELECT * FROM asignatura ASI inner join alumno AL ON AL.id_grupo = ASI.id_grupo WHERE ASI.id_docente = :id_docente AND ASI.id_grupo = :id_grupo ORDER BY AL.primer_apellido ');
         $query->bindParam(":id_docente",$id_docente);
+        $query->bindParam(":id_grupo",$id_grupo);
         $query->execute();
         $data = array();
         while ($row = $query->fetch(PDO::FETCH_ASSOC)) {
