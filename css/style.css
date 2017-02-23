@@ -3406,9 +3406,9 @@ section.content {
 
 /* Checkbox & Radio ============================ */
 [type="checkbox"] + label {
-  padding-left: 26px;
+  padding-left: 35px;
   height: 25px;
-  line-height: 21px;
+  line-height: 12px;
   font-size: 13px;
   font-weight: normal; }
 
@@ -7769,4 +7769,14 @@ a.editable-click:hover {
   -o-transition: background-color 1400ms ease-out;
   -ms-transition: background-color 1400ms ease-out;
   transition: background-color 1400ms ease-out;  
+}
+
+#fileselector {
+    margin: 10px; 
+}
+#upload-file-selector {
+    display:none;   
+}
+.margin-correction {
+    margin-right: 10px;   
 }

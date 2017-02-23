@@ -1,4 +1,54 @@
-﻿<?php 
+﻿<script>
+    function upload_image() 
+    {
+        var bar = $('#bar');
+        var percent = $('#percent');
+        
+        $('#myForm').ajaxForm({
+            beforeSubmit: function() {
+                document.getElementById("progress_div").style.display="block";
+                var percentVal = '0%';
+                bar.width(percentVal)
+                percent.html(percentVal);
+            },
+            uploadProgress: function(event, position, total, percentComplete) {
+                var percentVal = percentComplete + '%';
+                bar.width(percentVal)
+                percent.html(percentVal);
+            },
+            success: function() {
+                var percentVal = '100%';
+                bar.width(percentVal)
+                percent.html(percentVal);
+            },
+            complete: function(xhr) {
+                if(xhr.responseText)
+                {
+                    document.getElementById("output_image").innerHTML=xhr.responseText;
+                }
+            }
+        }); 
+    }
+</script> 
+
+
+<style>
+    #myForm 
+    { 
+    width:400px;
+    margin-top:50px;
+    margin: auto; 
+    background: #A9BCF5; 
+    border-radius: 10px; 
+    padding: 15px 
+    }
+
+    .progress {text-align:left;margin-top:20px;display:none; position:relative; width:400px; border: 1px solid #ddd; padding: 1px; border-radius: 3px; }
+    .bar { background-color:#2E64FE; width:0%; height:30px; border-radius: 3px; }
+    .percent { position:absolute; display:inline-block; top:8px; left:48%; }
+</style>
+
+<?php 
 require_once("class.user.php");
 $user     = new USER();
 $cabecera = new USER();
@@ -99,6 +149,9 @@ if (isset($_POST['crear']))
 
         if (count($fechas_periodos) > 0) 
         {
+            //Name Nota Upload Excel
+            $name_nota = "";
+
             //# periodos
             $no_periodo1 = 1;
             $no_periodo2 = 2;
@@ -143,18 +196,26 @@ if (isset($_POST['crear']))
             if ($fechaHoy > $inicio_periodo1 AND $fechaHoy < $fin_periodo1) 
             {
                 $editar_tablas_p1 = "xedit";
+                $name_nota = "nota1";
+                $name_falta = "inasistencia_p1";
             }
             elseif ($fechaHoy > $inicio_periodo2 AND $fechaHoy < $fin_periodo2) 
             {
                 $editar_tablas_p2 = "xedit";
+                $name_nota = "nota2";
+                $name_falta = "inasistencia_p2";
             }
             elseif ($fechaHoy > $inicio_periodo3 AND $fechaHoy < $fin_periodo3) 
             {
                 $editar_tablas_p3 = "xedit";
+                $name_nota = "nota3";
+                $name_falta = "inasistencia_p3";
             }
             elseif ($fechaHoy > $inicio_periodo4 AND $fechaHoy < $fin_periodo4) 
             {
                 $editar_tablas_p4 = "xedit";
+                $name_nota = "nota4";
+                $name_falta = "inasistencia_p4";
             }
         }
 
@@ -168,7 +229,9 @@ if (isset($_POST['crear']))
     {
         foreach ($logros as $logros)
         {
-            $res_logros .='<li>' . '<b class="font-10">[' .$logros['id_logro']. ']</b> ' . $logros['descripcion']  .'</li>';
+            $res_logros .='<input type="checkbox" id="basic_checkbox_1" value="' .$logros['id_logro']. '" />
+                                <label for="basic_checkbox_1 style="
+    margin-bottom: auto;"><li><b class="font-10">[' .$logros['id_logro']. ']</b> ' . $logros['descripcion']  .'</li></label><br>';
         }
 
         if (isset($res_logros)) 
@@ -359,6 +422,47 @@ if (isset($_POST['crear']))
 
                         <!-- Div mostrar u ocultar tablas -->
                         <div  style="display: <?php echo $show_table_alumnos; ?>;">
+
+                        <!-- Boton para cargar collpse de LOGOS -->
+
+                                <button class="btn bg-cyan waves-effect m-b-15" type="button" data-toggle="collapse" data-target="#collapseExample" aria-expanded="false"
+                                        aria-controls="collapseExample">
+                                    Logros
+                                </button>
+                            <div class="collapse" id="collapseExample">
+                                <div class="well">
+                                <!-- Mostrar Logros en un Quote-->
+                                    <blockquote class="m-b-25 font-12">
+                                        <h5>Logros</h5>
+
+                                        <form id="Area_new" method="POST">
+
+                                        <?php
+                                        
+                                            if (isset($res_logros)) 
+                                            {
+                                                echo $res_logros;
+                                            } 
+                                        ?>
+                                        <br>
+                                            <div class="col-sm-3">
+
+                                                <input type="checkbox" id="md_checkbox_26" class="filled-in chk-col-blue" checked />
+                                                <label for="md_checkbox_26">Seleccionar Para Todos.</label>
+
+                                                <button class="btn bg-green waves-effect" type="submit" name="crear_">Crear</button>
+                                            </div>
+
+                                        </form>
+                                        <!--Boton crear Nuevo Logro-->
+                                        <div class='col-sm-12 align-center'>
+                                            <button type='button' class='btn bg-teal waves-effect' data-toggle='modal' data-target='#NewLogro'>Nuevo Logro</button>
+                                        </div><br><br><br><br>
+                                        
+                                    </blockquote>
+                                </div>
+                            </div>
+
                             <div id="miTabla">
                                 <?php
                                     
@@ -377,43 +481,32 @@ if (isset($_POST['crear']))
                         </div><!-- Fin DIV ocultar o mostrar tabla -->
    
 
-                        <blockquote class="m-b-25 font-12">
-                            <h5>Logros</h5>
-                            <?php
-                                if (isset($res_logros)) 
-                                {
-                                    echo $res_logros;
-                                
-                            
-                                echo "<div class='col-sm-3'>
-                                
-                                    <button type='button' class='btn bg-teal waves-effect' data-toggle='modal' data-target='#NewLogro'>Nuevo Logro</button>
-                                </div>";
-                                } 
-                            ?>
-                        </blockquote>
+                        <!-- Collapse Upload File -->
+                        <div class="collapse" id="UploadFile" role="Upload_file">
+                            <button type="button" class="close" data-toggle="collapse" data-target="#UploadFile" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                            <div class="well">
+                                <form action="upload.php?id_asignatura=<?php echo $cabecera['id_asignatura']; ?>&anio_lectivo=<?php echo $cabecera['id_anio_lectivo']; ?>&name_nota=<?php echo $name_nota; ?>&name_falta=<?php echo $name_falta; ?>&id_user=<?php echo $user_id; ?>" id="myForm" name="frmupload" method="post" enctype="multipart/form-data">
+                                  <input type="file" id="upload_file" name="upload_file" />
+                                  <input type="submit" name='submit_image' value="Subir" onclick='upload_image();'/>
+                                </form>
+                                <div class='progress' id="progress_div">
+                                    <div class='bar' id='bar1'></div>
+                                    <div class='percent' id='percent1'>0%</div>
+                                </div>
+                                <div id='output_image'></div>
+                            </div>
+                        </div> 
                         
 
-                        <div class='col-sx-3'>    
+                        <div class='col-sx-12'>    
                             <a href="createExcel.php?variable=<?php echo $user_id; ?> " class="btn bg-teal waves-effect" role="button">Descargar Plantilla</a>
+                        
+                            <!-- subir archivos -->
+                            <button class="btn bg-teal waves-effect" type="button" data-toggle="collapse" data-target="#UploadFile" aria-expanded="false" aria-controls="UploadFile">
+                                Subir Archivo
+                            </button>
+
                         </div>
-
-                        <label class="control-label">Select File</label>
-<input id="input-7" name="input7[]" multiple type="file" class="file file-loading" data-allowed-file-extensions='["csv", "txt"]'>
-                        <!--<button id="enable" class="btn btn-default">enable / disable</button>-->
-
-                        <?php 
-
-                            $pass = '$2y$10$.HMCA5.rLZr248Qwafam5.lR.PZjpM.nRMes4vI/qhXLuDe9ayMeu';
-
-                            if (password_verify('canada', $pass)) 
-                            {
-                                echo 'Password is valid!';
-                            } else {
-                                echo 'Invalid password.';
-                            }
-                         ?>
-
                         
                     </div>
                 </div>
@@ -432,6 +525,9 @@ if (isset($_POST['crear']))
 
 <!-- Select Plugin Js -->
 <script src="../plugins/bootstrap-select/js/bootstrap-select.js"></script>
+
+<!-- Jquery Form -->
+<script src="../plugins/jquery.form.min.js"></script>
 
 <!-- Funcion para editar FALTAS alumno-->
 <script type="text/javascript">
@@ -454,7 +550,7 @@ if (isset($_POST['crear']))
                         url: "update_falta.php?id="+x+"&data="+y+"&nota="+w+"&materia="+v+"&anio="+u,
                         type: 'GET',
                         success: function(s){
-                            location.reload();
+                            //location.reload();
                             if(s == 'status'){
                             $(z).html(y);}
                             if(s == 'error') {
@@ -471,7 +567,7 @@ if (isset($_POST['crear']))
                         url: "update_nota.php?id="+x+"&data="+y+"&nota="+w+"&materia="+v+"&anio="+u,
                         type: 'GET',
                         success: function(s){
-                            location.reload();
+                            //location.reload();
                             if(s == 'status'){
                             $(z).html(y);}
                             if(s == 'error') {
@@ -504,7 +600,10 @@ if (isset($_POST['crear']))
 </script>
 
 
-<!-- Modal crear nueva ASIGNATURA -->
+
+
+
+<!-- Modal crear nuevo LOGRO -->
     <div class="modal fade" id="NewLogro" tabindex="-1" role="dialog">
         <div class="modal-dialog modal-sm" role="document">
             <div class="modal-content">
