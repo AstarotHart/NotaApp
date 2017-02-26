@@ -37,8 +37,17 @@
     <!-- Bootstrap Material Datetime Picker Plugin Js -->
     <script src="../plugins/bootstrap-material-datetimepicker/js/bootstrap-material-datetimepicker.js"></script>
 
+    <!-- Multi Select Plugin Js -->
+    <script src="../plugins/multi-select/js/jquery.multi-select.js"></script>
+    <!-- Bootstrap Colorpicker Js [Select Plugin] Js-->
+    <script src="../plugins/bootstrap-colorpicker/js/bootstrap-colorpicker.js"></script>
+    <!-- Dropzone Plugin Js       [Select Plugin] Js-->
+    <script src="../plugins/dropzone/dropzone.js"></script>
+    <!-- Input Mask Plugin Js     [Select Plugin] Js-->
+    <script src="../plugins/jquery-inputmask/jquery.inputmask.bundle.js"></script>
+
     <!-- Custom Js -->
-    <script src="../js/admin.js"></script>
+    <script src="../js/admin.js"></script
     <script src="../js/pages/forms/form-wizard.js"></script>
     <script src="../js/pages/tables/jquery-datatable.js"></script>
     <script src="../js/pages/cards/basic.js"></script>
@@ -46,6 +55,7 @@
     <script src="../js/pages/ui/dialogs.js"></script>
     <script src="../js/pages/forms/basic-form-elements.js"></script>
     <script src="../js/pages/ui/tooltips-popovers.js"></script>
+    <script src="../js/pages/forms/advanced-form-elements.js"></script>
 
     <!-- Demo Js -->
     <script src="../js/demo.js"></script>
@@ -60,6 +70,7 @@
     <script src="../plugins/jquery-datatable/extensions/export/vfs_fonts.js"></script>
     <script src="../plugins/jquery-datatable/extensions/export/buttons.html5.min.js"></script>
     <script src="../plugins/jquery-datatable/extensions/export/buttons.print.min.js"></script>
+
 
 </body>
 

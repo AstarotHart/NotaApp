@@ -46,6 +46,16 @@ $(function () {
     //Multi-select
     $('#optgroup').multiSelect({ selectableOptgroup: true });
 
+    $('#select-all').click(function(){
+      $('#optgroup').multiSelect('select_all');
+      return false;
+    });
+    
+    $('#deselect-all').click(function(){
+      $('#optgroup').multiSelect('deselect_all');
+      return false;
+    });
+
     //noUISlider
     var sliderBasic = document.getElementById('nouislider_basic_example');
     noUiSlider.create(sliderBasic, {

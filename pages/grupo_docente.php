@@ -50,25 +50,30 @@
 
 <?php 
 require_once("class.user.php");
-$user     = new USER();
-$cabecera = new USER();
-$nota     = new USER();
-$falta    = new USER();
-$logros   = new USER();
-$newLogro = new USER();
-$object   = new USER();
-$fechas   = new USER();
+
+$user           = new USER();
+$cabecera       = new USER();
+$logros_alumnos = new USER();
+$nota           = new USER();
+$falta          = new USER();
+$logros         = new USER();
+$newLogro       = new USER();
+$object         = new USER();
+$fechas         = new USER();
+$asig_id        = new USER();
+
 
 $show_table_alumnos= "none";
 $show_table_logros= "none";
 
+//saber si el boton CREAR de logro a sifo inicializado
 if (isset($_POST['crear'])) 
 {
     $id_asignatura=$_POST['id_asignatura'];
     $logro=$_POST['logro'];
-    /**
-     * Llamada a funcion para actualizar los datos del docente
-     */
+    
+     //Llamada a funcion para crear nuevo LOGRO
+     
     if(($newLogro->register_logros($id_asignatura,$logro))==true)
     {
         echo '<script type="text/javascript">';
@@ -83,6 +88,45 @@ if (isset($_POST['crear']))
         echo '}, 1000);</script>';
      }
 }
+
+//saber si el boton CREAR de logro a sifo inicializado
+if (isset($_POST['asignar_logros'])) 
+{
+    $id_logros=$_POST['select_logros'];
+    $id_alumnos=$_POST['select_alumnos'];
+    
+    $logros_insert = "";
+
+    foreach ($id_logros as $id_logros) 
+    {
+       $logros_insert .= $id_logros.", "; 
+    }
+
+    $logros_insert .=".";
+
+    foreach ($id_alumnos as $id_alumnos)
+    {
+        $logros_alumnos->register_logros_alumno($id_asignatura,$id_alumno,$id_anio_lectivo,$logros_insert);
+    }
+    
+     
+    if($logros_alumnos==true)
+    {
+        echo '<script type="text/javascript">';
+        echo 'setTimeout(function () { swal("Logro Creado.","","success");';
+       // echo 'setTimeout(function () {swal({title: "Datos Actualizados",text: "",timer: 2000,showConfirmButton: false});';
+        echo '}, 1000);</script>';
+     }
+     else
+     {
+        echo '<script type="text/javascript">';
+        echo 'setTimeout(function () { swal("Logro NO Creado.","","error");';
+        echo '}, 1000);</script>';
+     }
+     
+}
+
+
  ?>
 
 <!-- Top Bar -->
@@ -92,9 +136,26 @@ if (isset($_POST['crear']))
 <!-- Menu -->
 <?php 
     include("../includes/menu.php");
-    $cabecera = $object->Read_cabecera_grupo($user_id);
+
+    //saber si el boton CREAR de logro a sifo inicializado
+if (isset($_POST['btn-select-GR'])) 
+{
+    $_SESSION['id_asignatura']=$_POST['id_asignatura'];    
+}
+
+if (isset($_SESSION['id_asignatura']))
+{
+    $id_asignatura = $_SESSION['id_asignatura'];
+}
+
+
+if (isset($id_asignatura))
+{
+    $cabecera = $object->Read_cabecera_grupo($user_id,$id_asignatura);
     
     $num = 1;
+
+    $data_select = "";
     // Design initial table header
     $data = '<table class="table font-13 table-bordered table-striped table-hover js-basic-example dataTable">
                         <thead>
@@ -129,7 +190,7 @@ if (isset($_POST['crear']))
     //saber si la variable $cabecera['id_asignatura'] fue inicializada
     if (isset($cabecera['id_asignatura']))
     {
-        $users = $object->Read_alumnos_grupo($user_id,$cabecera['id_grupo']);
+        $users = $object->Read_alumnos_grupo($user_id,$id_asignatura);
 
         //llamando a la funcion read logros para cargar los losgros por asignatura
         $logros = $object->read_logros($cabecera['id_asignatura']);
@@ -219,22 +280,19 @@ if (isset($_POST['crear']))
                 $name_falta = "inasistencia_p4";
             }
         }
-
-
     }
 
-
-
-    
+    // Saber si logros ha sido inicializado
     if (count($logros) > 0)
     {
+        $i=1;
         foreach ($logros as $logros)
         {
-            $res_logros .='<input type="checkbox" id="basic_checkbox_1" value="' .$logros['id_logro']. '" />
-                                <label for="basic_checkbox_1 style="
-    margin-bottom: auto;"><li><b class="font-10">[' .$logros['id_logro']. ']</b> ' . $logros['descripcion']  .'</li></label><br>';
+            $res_logros .='<option value="' .$logros['id_logro']. '">' .$logros['id_logro']. '</option>';
+            $i++;
         }
 
+        // Saber si res_logros ha sido inicializado
         if (isset($res_logros)) 
         {
             $res_logros .= "</ol>";
@@ -243,8 +301,10 @@ if (isset($_POST['crear']))
     }
     else
     {
-        $res_logros = "No hay logros para Mostrar.!!";
+        $res_logros = "No hay logros para Mostrar.";
     }
+
+    // Sber si USERS esta vacio
     if (count($users) > 0) 
     {
                     
@@ -328,7 +388,7 @@ if (isset($_POST['crear']))
             }
             else
             {
-                $res_logros_alumno = "No hay logros para Mostrar.!!";
+                $res_logros_alumno = "No hay logros.";
             }
             if (isset($users['primer_apellido']) and isset($users['segundo_apellido']) and isset($users['nombres']) and isset($users['id_alumno']) and isset($cabecera['id_asignatura']) and isset($cabecera['id_anio_lectivo']))
             {
@@ -348,20 +408,17 @@ if (isset($_POST['crear']))
                         <td>' . $res_nota_final . '</td>
                         <td>' . $res_falta_final . '</td>
                         <td>
-                            '.$res_logros_alumno.'
-                            
-                            <select class="form-control show-tick" multiple name="id_logros">
-                                        <option value="">-- Seleccione Logros --</option> 
-                                            '. $user = $object->combobox_logros($cabecera['id_asignatura']) .'
-                                    </select>                             
+                            '.$res_logros_alumno.'                             
 
                         </td>
                     </tr>';
                 $num++;
+
+                $data_select .= '<option value="' . $users['id_alumno'] . '">' . $users['primer_apellido'] . ' ' .$users['segundo_apellido'] . ' ' .$users['nombres'] .'</option>';
             }
             
         }
-    } 
+    }
     else 
     {
         // records not found
@@ -369,6 +426,8 @@ if (isset($_POST['crear']))
     }
      
     $data .= '<tbody></table>';
+}
+
 ?>
 <!-- end menu-->
 
@@ -385,12 +444,12 @@ if (isset($_POST['crear']))
                         </h2>
 
                         <!-- form para seleccionar GRUPO por ASIGNATURA -->
-                        <form style="margin-bottom: 2px;">
+                        <form style="margin-bottom: 2px;" method="POST">
                             <div class="row clearfix">
                                 <div class="col-lg-3 col-md-3 col-sm-3 col-xs-6">
                                     <div class="form-group" style="margin-bottom: 2px;">
                                         <div class="form-line">
-                                            <select class="form-control show-tick" name="sede">
+                                            <select class="form-control show-tick" name="id_asignatura">
                                                     <option value="">-- Seleccione Grupo --</option>
                                                     <?php 
                                                         $user = $object->combobox_grupos_docente($user_id);
@@ -400,7 +459,7 @@ if (isset($_POST['crear']))
                                     </div>
                                 </div>
                                 <div class="col-lg-6 col-md-6 col-sm-6 col-xs-12">
-                                    <button class="btn bg-teal waves-effect" type="submit" name="btn-signup">Aceptar</button>
+                                    <button class="btn bg-teal waves-effect" type="submit" name="btn-select-GR">Aceptar</button>
                                 </div>
                             </div>
                         </form>
@@ -408,11 +467,13 @@ if (isset($_POST['crear']))
 
                     </div>
                     <div class="body" >
-                        
+                     
+            <?php   if (isset($id_asignatura))
+                    { ?>   
                         <div class="col-sm-2">
                             <b>Grupo:</b> <?php if (isset($cabecera['descripcion_grupo'])) 
                             {
-                                 echo $cabecera['descripcion_grado']."-".$cabecera['descripcion_grupo'];
+                                echo $cabecera['descripcion_grado']."-".$cabecera['descripcion_grupo'];
                             }else{echo " ";} ?>
                         </div>
 
@@ -454,36 +515,48 @@ if (isset($_POST['crear']))
                                     Logros
                                 </button>
                             <div class="collapse" id="collapseExample">
-                                <div class="well">
+                                <div class="well m-b-25 font-12">
                                 <!-- Mostrar Logros en un Quote-->
-                                    <blockquote class="m-b-25 font-12">
-                                        <h5>Logros</h5>
+                                    <h5>Logros</h5>
 
-                                        <form id="Area_new" method="POST">
+                                    <form id="check_logros" method="POST">
+                                        <div class="demo-checkbox">
+                                            <select name="select_logros[]" size="3" multiple="multiple" tabindex="1">
 
                                         <?php
-                                        
+                                            
                                             if (isset($res_logros)) 
                                             {
                                                 echo $res_logros;
                                             } 
                                         ?>
+                                        </select>
+                                        </div>
                                         <br>
-                                            <div class="col-sm-3">
 
-                                                <input type="checkbox" id="md_checkbox_26" class="filled-in chk-col-blue" checked />
-                                                <label for="md_checkbox_26">Seleccionar Para Todos.</label>
-
-                                                <button class="btn bg-green waves-effect" type="submit" name="crear_">Aceptar</button>
-                                            </div>
-
-                                        </form>
-                                        <!--Boton crear Nuevo Logro-->
-                                        <div class='col-sm-12 align-center'>
-                                            <button type='button' class='btn bg-teal waves-effect' data-toggle='modal' data-target='#NewLogro'>Nuevo Logro</button>
-                                        </div><br><br><br><br>
+                                    <!-- Multi Select Alumnos para LOGROS-->
                                         
-                                    </blockquote>
+                                        <select id="optgroup" name="select_alumnos[]" class="ms" multiple="multiple">
+                                        <?php
+                                            echo $data_select;
+                                         ?>
+                                        </select>
+
+                                        <div class="btn-group btn-group-xs" role="group" aria-label="Extra-small button group">
+                                            <button type="button" class="btn bg-blue waves-effect" id="select-all">Todos</button>
+                                            <button type="button" class="btn bg-red waves-effect" id="deselect-all">Ninguno</button>
+                                        </div>
+                                        
+                                        <div class='col-sm-12 align-right'>
+                                            <button class="btn bg-green waves-effect" type="submit" name="asignar_logros">Aceptar</button>
+                                        </div>
+
+                                    </form>
+                                    <!--Boton crear Nuevo Logro-->
+                                    <div class='col-sm-12 align-center'>
+                                        <button type='button' class='btn bg-teal waves-effect' data-toggle='modal' data-target='#NewLogro'>Nuevo Logro</button>
+                                    </div>                               
+
                                 </div>
                             </div>
 
@@ -523,7 +596,7 @@ if (isset($_POST['crear']))
                         
 
                         <div class='col-sx-12'>    
-                            <a href="createExcel.php?variable=<?php echo $user_id; ?> " class="btn bg-teal waves-effect" role="button">Descargar Plantilla</a>
+                            <a href="createExcel.php?variable=<?php echo $user_id; ?>&id_asignatura=<?php echo $id_asignatura;?> " class="btn bg-teal waves-effect" role="button">Descargar Plantilla</a>
                         
                             <!-- subir archivos -->
                             <button class="btn bg-teal waves-effect" type="button" data-toggle="collapse" data-target="#UploadFile" aria-expanded="false" aria-controls="UploadFile">
@@ -537,7 +610,7 @@ if (isset($_POST['crear']))
             </div>
         </div>
         <!-- #END# Lista Docentes -->
-
+<?php } ?>
     </div>
 </section>
 

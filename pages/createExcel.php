@@ -7,9 +7,10 @@ $cabecera = new USER();
 $object   = new USER();
 
 $user_id = $_REQUEST['variable'];
+$id_asignatura = $_REQUEST['id_asignatura'];
 
-$users = $object->Read_alumnos_grupo($user_id);
-$cabecera = $object->Read_cabecera_grupo($user_id);
+$users = $object->Read_alumnos_grupo($user_id,$id_asignatura);
+$cabecera = $object->Read_cabecera_grupo($user_id,$id_asignatura);
 
 
 /** Incluir la libreria PHPExcel */

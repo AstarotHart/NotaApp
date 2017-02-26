@@ -237,13 +237,13 @@ class USER
      */
     public function combobox_grupos_docente($id_docente)
     {
-        $query = $this->conn->prepare("SELECT id_asignatura,nombre_asignatura FROM asignatura WHERE id_docente = :id_docente");
+        $query = $this->conn->prepare("SELECT * FROM asignatura ASI inner join grado GRA inner join grupo GRU ON ASI.id_grupo = GRU.id_grupo AND GRA.id_grado = GRU.id_grado WHERE ASI.id_docente = :id_docente");
         $query->bindParam(":id_docente", $id_docente); 
         $query->execute();
         
         while($row=$query->fetch(PDO::FETCH_ASSOC))
         {
-            echo '<option value="'.$row['id_asignatura'].'">'.$row['nombre_asignatura'].'</option>'; 
+            echo '<option value="'.$row['id_asignatura'].'">'.$row['nombre_asignatura'].' '.$row['descripcion_grado'].'-'.$row['descripcion_grupo'].'</option>'; 
         }
 
     }
@@ -881,11 +881,11 @@ class USER
      * [Read_alumnos_grupo description]
      * @param [type] $id_docente [description]
      */
-    public function Read_alumnos_grupo($id_docente,$id_grupo)
+    public function Read_alumnos_grupo($id_docente,$id_asignatura)
     {
-        $query = $this->conn->prepare('SELECT * FROM asignatura ASI inner join alumno AL ON AL.id_grupo = ASI.id_grupo WHERE ASI.id_docente = :id_docente AND ASI.id_grupo = :id_grupo ORDER BY AL.primer_apellido ');
+        $query = $this->conn->prepare('SELECT * FROM asignatura ASI inner join alumno AL ON AL.id_grupo = ASI.id_grupo WHERE ASI.id_docente = :id_docente AND ASI.id_asignatura = :id_asignatura ORDER BY AL.primer_apellido ');
         $query->bindParam(":id_docente",$id_docente);
-        $query->bindParam(":id_grupo",$id_grupo);
+        $query->bindParam(":id_asignatura",$id_asignatura);
         $query->execute();
         $data = array();
         while ($row = $query->fetch(PDO::FETCH_ASSOC)) {
@@ -899,10 +899,11 @@ class USER
      * [Read_alumnos_grupo description]
      * @param [type] $id_docente [description]
      */
-    public function Read_cabecera_grupo($id_docente)
+    public function Read_cabecera_grupo($id_docente,$id_asignatura)
     {
-        $query = $this->conn->prepare('SELECT * FROM grupo GRU  inner join asignatura ASI inner join area A inner join grado GRA ON ASI.id_grupo = GRU.id_grupo AND ASI.id_area = A.id_area AND GRA.id_grado = GRU.id_grado WHERE ASI.id_docente = :id_docente ');
+        $query = $this->conn->prepare('SELECT * FROM grupo GRU  inner join asignatura ASI inner join area A inner join grado GRA ON ASI.id_grupo = GRU.id_grupo AND ASI.id_area = A.id_area AND GRA.id_grado = GRU.id_grado WHERE ASI.id_docente = :id_docente AND ASI.id_asignatura = :id_asignatura ');
         $query->bindParam(":id_docente",$id_docente);
+        $query->bindParam(":id_asignatura",$id_asignatura);
         $query->execute();
         $data = array();
         while ($row = $query->fetch(PDO::FETCH_ASSOC)) {
@@ -1050,7 +1051,15 @@ class USER
         }
     }
 
-
+    /**
+     * [update_faltas description]
+     * @param  [type] $id_alumno  [description]
+     * @param  [type] $name_falta [description]
+     * @param  [type] $falta      [description]
+     * @param  [type] $materia    [description]
+     * @param  [type] $anio       [description]
+     * @return [type]             [description]
+     */
     public function update_faltas($id_alumno,$name_falta,$falta,$materia,$anio)
     {
         try
@@ -1200,6 +1209,36 @@ class USER
         {
             echo $e->getMessage();
         }               
+    }
+
+    /**
+     * [register_logros_alumno description]
+     * @param  [type] $id_asignatura   [description]
+     * @param  [type] $id_alumno       [description]
+     * @param  [type] $id_anio_lectivo [description]
+     * @param  [type] $id_logros       [description]
+     * @return [type]                  [description]
+     */
+    public function register_logros_alumno($id_asignatura,$id_alumno,$id_anio_lectivo,$id_logros)
+    {
+        try
+        {
+            $stmt = $this->conn->prepare("INSERT INTO alumnos_logros(id_asignatura,id_alumno,id_anio_lectivo,id_logros) 
+                                          VALUES(:id_logro,:id_asignatura,:id_anio_lectivo,:logro)");
+                                                  
+            $stmt->bindparam(":id_asignatura", $id_asignatura);
+            $stmt->bindparam(":id_alumno", $id_alumno);
+            $stmt->bindparam(":id_anio_lectivo", $id_anio_lectivo);
+            $stmt->bindparam(":logros", $logros);                                 
+                
+            $stmt->execute();   
+            
+            return $stmt;   
+        }
+        catch(PDOException $e)
+        {
+            echo $e->getMessage();
+        }  
     }
 
 /* -------------F U N C I O N E S  A L U M N O ----------*/
