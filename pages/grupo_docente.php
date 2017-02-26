@@ -1,4 +1,4 @@
-﻿<script>
+<script>
     function upload_image() 
     {
         var bar = $('#bar');
@@ -63,8 +63,9 @@ $fechas         = new USER();
 $asig_id        = new USER();
 
 
-$show_table_alumnos= "none";
-$show_table_logros= "none";
+$show_table_alumnos = "none";
+$show_table_logros  = "none";
+$res_logros_alumno  = " ";
 
 //saber si el boton CREAR de logro a sifo inicializado
 if (isset($_POST['crear'])) 
@@ -193,9 +194,10 @@ if (isset($id_asignatura))
         $users = $object->Read_alumnos_grupo($user_id,$id_asignatura);
 
         //llamando a la funcion read logros para cargar los losgros por asignatura
-        $logros = $object->read_logros($cabecera['id_asignatura']);
-        $fechas = $object->Read_fecha_periodos($cabecera['id_anio_lectivo']);
-        $res_logros = "<ol>";
+        $logros      = $object->read_logros($cabecera['id_asignatura']);
+        $fechas      = $object->Read_fecha_periodos($cabecera['id_anio_lectivo']);
+        $list_logros = "<ol>";
+        $res_logros  = " ";
     }
 
     // cargar Informacion Periodos
@@ -288,6 +290,7 @@ if (isset($id_asignatura))
         $i=1;
         foreach ($logros as $logros)
         {
+            $list_logros .=$res_logros .='<li>' . '<b class="font-10">[' .$logros['id_logro']. ']</b> ' . $logros['descripcion']  .'</li>';
             $res_logros .='<option value="' .$logros['id_logro']. '">' .$logros['id_logro']. '</option>';
             $i++;
         }
@@ -295,7 +298,7 @@ if (isset($id_asignatura))
         // Saber si res_logros ha sido inicializado
         if (isset($res_logros)) 
         {
-            $res_logros .= "</ol>";
+            $list_logros .= "</ol>";
         }
         
     }
@@ -352,6 +355,7 @@ if (isset($id_asignatura))
                 }
                 
             }
+
             if (isset($faltas) and count($faltas) > 0) 
             {
                 foreach ($faltas as $faltas) 
@@ -372,24 +376,30 @@ if (isset($id_asignatura))
                 }
                 
             }
-            if (isset($cabecera['id_asignatura']) and isset($cabecera['id_alumno']))
-            {
+
+            // Saber si $id_asignatura & $cabecera['id_alumno'] han sido inicializados
+            if (isset($id_asignatura) and isset($users['id_alumno']))
+            {                
                 //llamando a la funcion read logros para cargar los losgros por asignatura
-                $logros_alumnos = $object->Read_logros_alumno($cabecera['id_asignatura'],$users['id_alumno']);
-                $res_logros_alumno = "";
+                $logros_alumnos = $object->Read_logros_alumno($id_asignatura,$users['id_alumno']);                
             }
-            
+
+            /** Saber si $logros_alunos han sido inicializados y hay registros encontrados**/
             if (isset($logros_alumnos) and count($logros_alumnos) > 0)
             {
+                //echo "entro en el Saber si logros_alunos <br>";
+                //echo "logros alumno: ".$logros_alumno."<br>";
                 foreach ($logros_alumnos as $logros_alumnos)
                 {
-                    $res_logros_alumno =$logros_alumnos['id_logros']. '<br>';
+                    $res_logros_alumno = $logros_alumnos['id_logros']. '<br>';
                 }
             }
             else
             {
                 $res_logros_alumno = "No hay logros.";
             }
+
+            //saber si se han iniciado las variables de alumno
             if (isset($users['primer_apellido']) and isset($users['segundo_apellido']) and isset($users['nombres']) and isset($users['id_alumno']) and isset($cabecera['id_asignatura']) and isset($cabecera['id_anio_lectivo']))
             {
                 $data .= '
@@ -409,7 +419,6 @@ if (isset($id_asignatura))
                         <td>' . $res_falta_final . '</td>
                         <td>
                             '.$res_logros_alumno.'                             
-
                         </td>
                     </tr>';
                 $num++;
@@ -442,7 +451,7 @@ if (isset($id_asignatura))
                         <h2>
                             Asignaturas <small>Lista de Estudientes Por Asignaturas</small>
                         </h2>
-
+                        
                         <!-- form para seleccionar GRUPO por ASIGNATURA -->
                         <form style="margin-bottom: 2px;" method="POST">
                             <div class="row clearfix">
@@ -463,13 +472,13 @@ if (isset($id_asignatura))
                                 </div>
                             </div>
                         </form>
-
-
                     </div>
+
+
                     <div class="body" >
-                     
-            <?php   if (isset($id_asignatura))
-                    { ?>   
+                        <?php   
+                        if (isset($id_asignatura))
+                        { ?>   
                         <div class="col-sm-2">
                             <b>Grupo:</b> <?php if (isset($cabecera['descripcion_grupo'])) 
                             {
@@ -504,79 +513,91 @@ if (isset($id_asignatura))
                                  echo $cabecera['intensidad_horaria'];
                             }else{echo " ";} ?>
                         </div>
+                        <br><br>
+                    
 
-                        <!-- Div mostrar u ocultar tablas -->
-                        <div  style="display: <?php echo $show_table_alumnos; ?>;">
+            <!-- Div mostrar u ocultar tablas -->
+                <div  style="display: <?php echo $show_table_alumnos; ?>;">
 
+                    <div class="card">
+                        <div class="body" style="padding-top: 10px;">
+                        
                         <!-- Boton para cargar collpse de LOGOS -->
+                            <div class='col-sm-12'>
+                                <button class="btn bg-cyan waves-effect" type="button" data-toggle="collapse" data-target="#collapseExample" aria-expanded="false" aria-controls="collapseExample">Logros</button>
 
-                                <button class="btn bg-cyan waves-effect m-b-15" type="button" data-toggle="collapse" data-target="#collapseExample" aria-expanded="false"
-                                        aria-controls="collapseExample">
-                                    Logros
-                                </button>
+                                <button type='button' class='btn bg-teal waves-effect' data-toggle='modal' data-target='#NewLogro'>Nuevo Logro</button>
+                            </div>
+
+                            <!--Boton crear Nuevo Logro-->
+                            
+
                             <div class="collapse" id="collapseExample">
-                                <div class="well m-b-25 font-12">
                                 <!-- Mostrar Logros en un Quote-->
-                                    <h5>Logros</h5>
-
-                                    <form id="check_logros" method="POST">
-                                        <div class="demo-checkbox">
-                                            <select name="select_logros[]" size="3" multiple="multiple" tabindex="1">
-
-                                        <?php
-                                            
-                                            if (isset($res_logros)) 
-                                            {
-                                                echo $res_logros;
-                                            } 
-                                        ?>
-                                        </select>
-                                        </div>
-                                        <br>
-
-                                    <!-- Multi Select Alumnos para LOGROS-->
+                                <h5>Logros</h5>
+                                <blockquote class="font-12">
+                                    <?php
                                         
-                                        <select id="optgroup" name="select_alumnos[]" class="ms" multiple="multiple">
-                                        <?php
-                                            echo $data_select;
-                                         ?>
-                                        </select>
+                                        if (isset($list_logros)) 
+                                        {
+                                            echo $list_logros;
+                                        } 
+                                    ?>
+                                </blockquote>
 
-                                        <div class="btn-group btn-group-xs" role="group" aria-label="Extra-small button group">
-                                            <button type="button" class="btn bg-blue waves-effect" id="select-all">Todos</button>
-                                            <button type="button" class="btn bg-red waves-effect" id="deselect-all">Ninguno</button>
-                                        </div>
+                                <!-- SlectBox Logros -->
+                                <form id="check_logros" method="POST">
+
+                                    <div class="demo-checkbox">
+                                        <select name="select_logros[]" size="3" multiple="multiple" tabindex="1">
+                                    <?php
                                         
-                                        <div class='col-sm-12 align-right'>
-                                            <button class="btn bg-green waves-effect" type="submit" name="asignar_logros">Aceptar</button>
-                                        </div>
+                                        if (isset($res_logros)) 
+                                        {
+                                            echo $res_logros;
+                                        } 
+                                    ?>
+                                        </select>
+                                    </div>
 
-                                    </form>
-                                    <!--Boton crear Nuevo Logro-->
-                                    <div class='col-sm-12 align-center'>
-                                        <button type='button' class='btn bg-teal waves-effect' data-toggle='modal' data-target='#NewLogro'>Nuevo Logro</button>
-                                    </div>                               
+                                    <br>
 
-                                </div>
+                                <!-- Multi Select Alumnos para LOGROS-->
+                                    
+                                    <select id="optgroup" name="select_alumnos[]" class="ms" multiple="multiple">
+                                    <?php
+                                        echo $data_select;
+                                     ?>
+                                    </select>
+
+                                    <div class="btn-group btn-group-xs" role="group" aria-label="Extra-small button group">
+                                        <button type="button" class="btn bg-blue waves-effect" id="select-all">Todos</button>
+                                        <button type="button" class="btn bg-red waves-effect" id="deselect-all">Ninguno</button>
+                                    </div>
+                                    
+                                    <div class='col-sm-12 align-right'>
+                                        <button class="btn bg-green waves-effect" type="submit" name="asignar_logros">Aceptar</button>
+                                    </div>
+
+                                </form>                            
                             </div>
 
-                            <div id="miTabla">
-                                <?php
-                                    
-                                    echo $data; 
-                                     
-                                ?>
-                            </div>
-                                    
+                        </div>
+                    </div>
+                </div><!-- Fin div SHOW-->
+
+                <div class="card" >
+                    <div class="body" >
+
+                        <div id="miTabla">
+                                <?php echo $data; ?>
                                 </tbody>
                             </table>
-                            
-                            <blockquote class="blockquote-reverse m-b-25 font-12">
-                                <p><b>P.1</b>: Primer Periodo,<b>P.2</b>: Segundo Periodo,<b>P.3</b>: Tercer Periodo,<b>P.4</b>: Cuarto Periodo. <b>F. P.1</b>: Faltas Primer Periodo,<b>F. P.2</b>: Faltas Segundo Periodo,<b>F. P.3</b>: Faltas Tercer Periodo,<b>F. P.4</b>: Faltas Cuarto Periodo. </p>
-                            </blockquote>
-
-                        </div><!-- Fin DIV ocultar o mostrar tabla -->
-   
+                        </div>
+                                
+                        <blockquote class="blockquote-reverse m-b-25 font-12">
+                            <p><b>P.1</b>: Primer Periodo,<b>P.2</b>: Segundo Periodo,<b>P.3</b>: Tercer Periodo,<b>P.4</b>: Cuarto Periodo. <b>F. P.1</b>: Faltas Primer Periodo,<b>F. P.2</b>: Faltas Segundo Periodo,<b>F. P.3</b>: Faltas Tercer Periodo,<b>F. P.4</b>: Faltas Cuarto Periodo. </p>
+                        </blockquote>
 
                         <!-- Collapse Upload File -->
                         <div class="collapse" id="UploadFile" role="Upload_file">
@@ -602,11 +623,14 @@ if (isset($id_asignatura))
                             <button class="btn bg-teal waves-effect" type="button" data-toggle="collapse" data-target="#UploadFile" aria-expanded="false" aria-controls="UploadFile">
                                 Subir Archivo
                             </button>
-
                         </div>
                         
                     </div>
                 </div>
+
+                </div>
+                </div>
+
             </div>
         </div>
         <!-- #END# Lista Docentes -->
