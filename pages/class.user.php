@@ -1126,7 +1126,7 @@ class USER
 
             }
 
-                return true;            
+            return true;            
         }
 
         catch(PDOException $e)
@@ -1221,23 +1221,67 @@ class USER
      */
     public function register_logros_alumno($id_asignatura,$id_alumno,$id_anio_lectivo,$id_logros)
     {
+        echo "<br><br><br>";
+
+        echo "Id_ASI: ".$id_asignatura."<br>";
+        echo "Id_AL: ".$id_alumno."<br>";
+        echo "Id_ANIO: ".$id_anio_lectivo."<br>";
+        echo "Id_LOGROS: ".$id_logros."<br>";
+
+        $res ="false";
+
+
         try
         {
-            $stmt = $this->conn->prepare("INSERT INTO alumnos_logros(id_asignatura,id_alumno,id_anio_lectivo,id_logros) 
-                                          VALUES(:id_logro,:id_asignatura,:id_anio_lectivo,:logro)");
+            $stmt1 = $this->conn->prepare("SELECT id_alumno FROM alumnos_logros WHERE id_alumno=:id_alumno AND id_asignatura=:id_asignatura AND id_anio_lectivo=:id_anio_lectivo");
+
+            $stmt1->execute(array(
+                                  ':id_alumno'   => $id_alumno,
+                                  ':id_asignatura' => $id_asignatura,
+                                  ':id_anio_lectivo'   => $id_anio_lectivo 
+                                    ));
+
+
+            $userRow=$stmt1->fetch(PDO::FETCH_ASSOC);
+
+            if($stmt1->rowCount() == 1)
+            {
+                echo "Encontro DATO, actualizando<br>";
+
+                $stmt=$this->conn->prepare("UPDATE alumnos_logros SET id_logros = :id_logros WHERE id_alumno=:id_alumno AND id_asignatura=:id_asignatura AND id_anio_lectivo=:id_anio_lectivo");
+
+                $stmt->bindparam(":id_asignatura", $id_asignatura);
+                $stmt->bindparam(":id_anio_lectivo", $id_anio_lectivo);
+                $stmt->bindparam(":id_alumno", $id_alumno);
+                $stmt->bindparam(":id_logros", $id_logros);
+
+                $stmt->execute();
+
+                $res = "true";
+            }
+            else
+            {
+                echo "No encontro DATO, Ingresando<br>";
+                $stmt2 = $this->conn->prepare("INSERT INTO alumnos_logros(id_asignatura,id_alumno,id_anio_lectivo,id_logros) 
+                                          VALUES(:id_asignatura,:id_alumno,:id_anio_lectivo,:id_logros)");
                                                   
-            $stmt->bindparam(":id_asignatura", $id_asignatura);
-            $stmt->bindparam(":id_alumno", $id_alumno);
-            $stmt->bindparam(":id_anio_lectivo", $id_anio_lectivo);
-            $stmt->bindparam(":logros", $logros);                                 
-                
-            $stmt->execute();   
-            
-            return $stmt;   
+                $stmt2->bindparam(":id_asignatura", $id_asignatura);
+                $stmt2->bindparam(":id_alumno", $id_alumno);
+                $stmt2->bindparam(":id_anio_lectivo", $id_anio_lectivo);
+                $stmt2->bindparam(":id_logros", $id_logros);                                  
+                    
+                $stmt2->execute();   
+
+                $res = "true";
+            }
+        echo "<br><br><br>";
+            return $res;           
         }
+
         catch(PDOException $e)
         {
             echo $e->getMessage();
+            return false;
         }  
     }
 

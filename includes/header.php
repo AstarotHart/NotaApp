@@ -25,37 +25,37 @@
     <!-- Bootstrap Core Css -->
     <link href="../plugins/bootstrap/css/bootstrap.css" rel="stylesheet">
 
-    <!-- Bootstrap Material Datetime Picker Css --
+    <!-- Bootstrap Material Datetime Picker Css -->
     <link href="../plugins/bootstrap-material-datetimepicker/css/bootstrap-material-datetimepicker.css" rel="stylesheet" />
 
-    <!-- Waves Effect Css --
+    <!-- Waves Effect Css -->
     <link href="../plugins/node-waves/waves.css" rel="stylesheet" />
 
-    <!--WaitMe Css--
+    <!--WaitMe Css-->
     <link href="../plugins/waitme/waitMe.css" rel="stylesheet" />
 
-    <!-- Animation Css --
+    <!-- Animation Css -->
     <link href="../plugins/animate-css/animate.css" rel="stylesheet" />
 
-    <!-- Preloader Css --
+    <!-- Preloader Css -->
     <link href="../plugins/material-design-preloader/md-preloader.css" rel="stylesheet" />
 
-    <!-- Morris Chart Css--
+    <!-- Morris Chart Css-->
     <link href="../plugins/morrisjs/morris.css" rel="stylesheet" />
 
-    <!-- Custom Css --
+    <!-- Custom Css -->
     <link href="../css/style.css" rel="stylesheet">
 
-    <!-- Sweet Alert Css --
+    <!-- Sweet Alert Css -->
     <link href="../plugins/sweetalert/sweetalert.css" rel="stylesheet" />
 
-    <!-- Bootstrap Select Css --
+    <!-- Bootstrap Select Css -->
     <link href="../plugins/bootstrap-select/css/bootstrap-select.css" rel="stylesheet" />
 
-    <!-- Multi Select Css --
+    <!-- Multi Select Css -->
     <link href="../plugins/multi-select/css/multi-select.css" rel="stylesheet">
 
-    <!-- JQuery DataTable Css --
+    <!-- JQuery DataTable Css -->
     <link href="../plugins/jquery-datatable/skin/bootstrap/css/dataTables.bootstrap.css" rel="stylesheet">
 
 

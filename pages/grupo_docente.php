@@ -95,6 +95,8 @@ if (isset($_POST['asignar_logros']))
 {
     $id_logros=$_POST['select_logros'];
     $id_alumnos=$_POST['select_alumnos'];
+    $id_asig = $_POST['id_asignatura'];
+    $id_anio_lec= $_POST['id_anio_lectivo'];
     
     $logros_insert = "";
 
@@ -107,7 +109,12 @@ if (isset($_POST['asignar_logros']))
 
     foreach ($id_alumnos as $id_alumnos)
     {
-        $logros_alumnos->register_logros_alumno($id_asignatura,$id_alumno,$id_anio_lectivo,$logros_insert);
+        echo "Id_ASI: ".$id_asig."<br>";
+        echo "Id_AL: ".$id_alumnos."<br>";
+        echo "Id_ANIO: ".$id_anio_lec."<br>";
+        echo "Id_LOGROS: ".$logros_insert."<br>";
+
+        $logros_alumnos->register_logros_alumno($id_asig,$id_alumnos,$id_anio_lec,$logros_insert);
     }
     
      
@@ -139,15 +146,15 @@ if (isset($_POST['asignar_logros']))
     include("../includes/menu.php");
 
     //saber si el boton CREAR de logro a sifo inicializado
-if (isset($_POST['btn-select-GR'])) 
-{
-    $_SESSION['id_asignatura']=$_POST['id_asignatura'];    
-}
+    if (isset($_POST['btn-select-GR'])) 
+    {
+        $_SESSION['id_asignatura']=$_POST['id_asignatura'];    
+    }
 
-if (isset($_SESSION['id_asignatura']))
-{
-    $id_asignatura = $_SESSION['id_asignatura'];
-}
+    if (isset($_SESSION['id_asignatura']))
+    {
+        $id_asignatura = $_SESSION['id_asignatura'];
+    }
 
 
 if (isset($id_asignatura))
@@ -187,7 +194,8 @@ if (isset($id_asignatura))
         {
             $show_table_alumnos= "show";
         }
-    } 
+    }
+
     //saber si la variable $cabecera['id_asignatura'] fue inicializada
     if (isset($cabecera['id_asignatura']))
     {
@@ -199,6 +207,8 @@ if (isset($id_asignatura))
         $list_logros = "<ol>";
         $res_logros  = " ";
     }
+
+    echo "Numero de ALumnos ".count($users);
 
     // cargar Informacion Periodos
     if (count($fechas) > 0)
@@ -290,13 +300,15 @@ if (isset($id_asignatura))
         $i=1;
         foreach ($logros as $logros)
         {
-            $list_logros .=$res_logros .='<li>' . '<b class="font-10">[' .$logros['id_logro']. ']</b> ' . $logros['descripcion']  .'</li>';
+            $list_logros .='<li>' . '<b class="font-10">[' .$logros['id_logro']. ']</b> ' . $logros['descripcion']  .'</li>';
+
             $res_logros .='<option value="' .$logros['id_logro']. '">' .$logros['id_logro']. '</option>';
+
             $i++;
         }
 
         // Saber si res_logros ha sido inicializado
-        if (isset($res_logros)) 
+        if (isset($List_logros)) 
         {
             $list_logros .= "</ol>";
         }
@@ -380,15 +392,12 @@ if (isset($id_asignatura))
             // Saber si $id_asignatura & $cabecera['id_alumno'] han sido inicializados
             if (isset($id_asignatura) and isset($users['id_alumno']))
             {                
-                //llamando a la funcion read logros para cargar los losgros por asignatura
                 $logros_alumnos = $object->Read_logros_alumno($id_asignatura,$users['id_alumno']);                
             }
 
             /** Saber si $logros_alunos han sido inicializados y hay registros encontrados**/
             if (isset($logros_alumnos) and count($logros_alumnos) > 0)
             {
-                //echo "entro en el Saber si logros_alunos <br>";
-                //echo "logros alumno: ".$logros_alumno."<br>";
                 foreach ($logros_alumnos as $logros_alumnos)
                 {
                     $res_logros_alumno = $logros_alumnos['id_logros']. '<br>';
@@ -548,6 +557,10 @@ if (isset($id_asignatura))
                                 <!-- SlectBox Logros -->
                                 <form id="check_logros" method="POST">
 
+                                <!-- enviar de manera oculta datos id_asignatura e id_anio_lectivo --> 
+                                    <input type="hidden" class="form-control" name="id_asignatura" value="<?php echo $cabecera['id_asignatura']; ?>">
+                                    <input type="hidden" class="form-control" name="id_anio_lectivo" value="<?php echo $cabecera['id_anio_lectivo']; ?>">
+
                                     <div class="demo-checkbox">
                                         <select name="select_logros[]" size="3" multiple="multiple" tabindex="1">
                                     <?php
@@ -652,9 +665,6 @@ if (isset($id_asignatura))
 
 <!-- Funcion para editar FALTAS alumno-->
 <script type="text/javascript">
-
-    //setInterval("actualiza_contenido()", 1000);
-
     jQuery(document).ready(function() {  
             $.fn.editable.defaults.mode = 'popup';
             $('.xedit').editable();     
@@ -671,7 +681,7 @@ if (isset($id_asignatura))
                         url: "update_falta.php?id="+x+"&data="+y+"&nota="+w+"&materia="+v+"&anio="+u,
                         type: 'GET',
                         success: function(s){
-                            //location.reload();
+                            location.reload();
                             if(s == 'status'){
                             $(z).html(y);}
                             if(s == 'error') {
@@ -688,7 +698,7 @@ if (isset($id_asignatura))
                         url: "update_nota.php?id="+x+"&data="+y+"&nota="+w+"&materia="+v+"&anio="+u,
                         type: 'GET',
                         success: function(s){
-                            //location.reload();
+                            location.reload();
                             if(s == 'status'){
                             $(z).html(y);}
                             if(s == 'error') {

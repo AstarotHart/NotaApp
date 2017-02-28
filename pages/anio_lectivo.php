@@ -5,7 +5,6 @@ $object = new USER();
 
 $show_table= "none";
 
-echo "FUCK";
 
 if (isset($_POST['crear'])) 
 {
@@ -53,6 +52,21 @@ if (isset($_POST['crear']))
     <?php include("../includes/menu.php");?>
     <!-- end menu-->
 
+    <?php 
+
+    //saber si el boton CREAR de logro a sifo inicializado
+    if (isset($_POST['btn-select-SEDE'])) 
+    {
+        $_SESSION['id_sede']=$_POST['id_sede'];    
+    }
+
+    if (isset($_SESSION['id_sede']))
+    {
+        $id_sede = $_SESSION['id_sede'];
+    }
+
+     ?>
+
     <section class="content">
         <div class="container-fluid">
 
@@ -71,13 +85,38 @@ if (isset($_POST['crear']))
                                     </a>
                                 </li>
                             </ul>
+
+                            <!-- form para seleccionar GRUPO por ASIGNATURA -->
+                            <form style="margin-bottom: 2px;" method="POST">
+                                <div class="row clearfix">
+                                    <div class="col-lg-3 col-md-3 col-sm-3 col-xs-6">
+                                        <div class="form-group" style="margin-bottom: 2px;">
+                                            <div class="form-line">
+                                                <select class="form-control show-tick" name="id_sede">
+                                                        <?php 
+                                                            $user = $object->combobox_sede();
+                                                        ?>
+                                                </select>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-lg-6 col-md-6 col-sm-6 col-xs-12">
+                                        <button class="btn bg-teal waves-effect" type="submit" name="btn-select-SEDE">Aceptar</button>
+                                    </div>
+                                </div>
+                            </form>
+
                         </div>
                     <div class="body">
 
-                    <?php 
-                        $anios = $object->Read_anio_lectivo();
+                    <?php
+
+                    if (isset($id_sede))
+                    {
+                        $anios = $object->Read_anio_lectivo($id_sede);
                                  
                             if (count($anios) > 0) $show_table= "show";
+                    } 
                     ?>
 
                         <!-- Div mostrar u ocultar tablas -->

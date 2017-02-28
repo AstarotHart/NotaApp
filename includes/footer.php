@@ -37,6 +37,9 @@
     <!-- Bootstrap Material Datetime Picker Plugin Js -->
     <script src="../plugins/bootstrap-material-datetimepicker/js/bootstrap-material-datetimepicker.js"></script>
 
+    <!-- Jquery CountTo Plugin Js -->
+    <script src="../plugins/jquery-countto/jquery.countTo.js"></script>
+
     <!-- Multi Select Plugin Js -->
     <script src="../plugins/multi-select/js/jquery.multi-select.js"></script>
     <!-- Bootstrap Colorpicker Js [Select Plugin] Js-->
@@ -47,7 +50,7 @@
     <script src="../plugins/jquery-inputmask/jquery.inputmask.bundle.js"></script>
 
     <!-- Custom Js -->
-    <script src="../js/admin.js"></script
+    <script src="../js/admin.js"></script>
     <script src="../js/pages/forms/form-wizard.js"></script>
     <script src="../js/pages/tables/jquery-datatable.js"></script>
     <script src="../js/pages/cards/basic.js"></script>
@@ -56,6 +59,7 @@
     <script src="../js/pages/forms/basic-form-elements.js"></script>
     <script src="../js/pages/ui/tooltips-popovers.js"></script>
     <script src="../js/pages/forms/advanced-form-elements.js"></script>
+    <script src="../js/pages/widgets/infobox/infobox-2.js"></script>
 
     <!-- Demo Js -->
     <script src="../js/demo.js"></script>
