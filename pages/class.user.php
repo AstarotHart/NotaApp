@@ -1286,6 +1286,34 @@ class USER
     }
 
     /**
+     * [update_logro description]
+     * @param  [type] $id_logro [description]
+     * @param  [type] $logro    [description]
+     * @param  [type] $materia  [description]
+     * @return [type]           [description]
+     */
+    public function update_logro($id_logro,$logro,$id_asignatura)
+    {
+        try 
+        {
+            $stmt=$this->conn->prepare("UPDATE logros SET descripcion=:logro WHERE id_logro=:id_logro AND id_asignatura=:id_asignatura");
+
+            $stmt->bindparam(":id_logro", $id_logro);
+            $stmt->bindparam(":id_asignatura", $id_asignatura);
+            $stmt->bindparam(":logro", $logro);
+
+            $stmt->execute();
+
+            return true;
+        } 
+        catch (PDOException $e) 
+        {
+            echo $e->getMessage();
+            return false;
+        }
+    }
+
+    /**
      * [Delete_logro description]
      * @param [type] $id_logro [description]
      */

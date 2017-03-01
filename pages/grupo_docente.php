@@ -58,6 +58,7 @@ $nota           = new USER();
 $falta          = new USER();
 $logros         = new USER();
 $newLogro       = new USER();
+$updateLogro    = new USER();
 $object         = new USER();
 $fechas         = new USER();
 $asig_id        = new USER();
@@ -127,6 +128,34 @@ if (isset($_POST['asignar_logros']))
         echo '}, 1000);</script>';
      }
      
+}
+
+//saber si el botonACTUALIZR_LOGROS ha sido inicializado
+if (isset($_POST['actualizar_logro'])) 
+{
+    $id_logro=$_POST['id_logro'];
+    $logro=$_POST['logro'];
+    $id_asignatura=$_POST['id_asignatura'];
+
+    echo "id_logro ".$id_logro."<br>";
+    echo "id_asignatura ".$id_asignatura."<br>";
+    echo "Logro ".$logro."<br>";
+    
+     //Llamada a funcion para crear nuevo LOGRO
+     
+    if(($updateLogro->update_logro($id_logro,$logro,$id_asignatura))==true)
+    {
+        echo '<script type="text/javascript">';
+        echo 'setTimeout(function () { swal("Logro Actualizado.","","success");';
+       // echo 'setTimeout(function () {swal({title: "Datos Actualizados",text: "",timer: 2000,showConfirmButton: false});';
+        echo '}, 1000);</script>';
+     }
+     else
+     {
+        echo '<script type="text/javascript">';
+        echo 'setTimeout(function () { swal("Logro NO Actualizado.","","error");';
+        echo '}, 1000);</script>';
+     }
 }
 
 
@@ -300,7 +329,7 @@ if (isset($id_asignatura))
                             <div class="btn-group dropdown">
                                 <i class="material-icons" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">more_horiz</i>
                                 <ul class="dropdown-menu pull-left">
-                                    <li><a class="open-EditRow" data-toggle="modal" data-target="#Update-Logro" data-id="'.$logros['id_logro'].'" data-desc="'.$logros['descripcion'].'"><i class="material-icons">mode_edit</i>Editar</a></li>
+                                    <li><a class="open-EditRow" data-toggle="modal" data-target="#Update-Logro" data-id="'.$logros['id_logro'].'" data-desc="'.$logros['descripcion'].'" data-asig="'.$id_asignatura.'"><i class="material-icons">mode_edit</i>Editar</a></li>
                                     <li><a data-toggle="modal" data-target="#New_Pass"><i class="material-icons">delete</i>Eliminar</a></li>
                                 </ul>
                             </div>
@@ -815,9 +844,11 @@ if (isset($id_asignatura))
 <!-- test datos to modal-->
 <script type="text/javascript">
     $('.open-EditRow').click(function(){
-       var selected_id = $(this).attr('data-id');
+       var id_logro = $(this).attr('data-id');
        var desc = $(this).attr('data-desc');
-       $('#Area_new #id_logro').val(selected_id);
+       var asig = $(this).attr('data-asig');
+       $('#Area_new #id_logro').val(id_logro);
+       $('#Area_new #id_asignatura').val(asig);
        $('#Area_new #desc_logro').val(desc);
     });
 </script>
@@ -825,7 +856,7 @@ if (isset($id_asignatura))
 
 <!-- Modal crear nuevo LOGRO -->
     <div class="modal fade" id="NewLogro" tabindex="-1" role="dialog">
-        <div class="modal-dialog modal-sm" role="document">
+        <div class="modal-dialog" role="document">
             <div class="modal-content">
                 <div class="modal-header">
                     <h4 class="modal-title" id="Actu_DatosLabel">Crear Nuevo Logro</h4>
@@ -840,7 +871,7 @@ if (isset($id_asignatura))
                                 <i class="material-icons">assignment</i>
                             </span>
                             <div class="form-line">
-                                <textarea name="logro" cols="30" rows="6" class="form-control no-resize" maxlength="150" required autofocus></textarea>
+                                <textarea name="logro" cols="20" rows="4" class="form-control no-resize" maxlength="250" placeholder="Max-255 caracteres" required></textarea>
                             </div>
                         </div>
                         
@@ -866,7 +897,8 @@ if (isset($id_asignatura))
                 <div class="modal-body">
                     <form id="Area_new" method="POST">
 
-                        <input type="text" class="form-control" name="id_logro" id="id_logro">
+                        <input type="hidden" class="form-control" name="id_logro" id="id_logro">
+                        <input type="hidden" class="form-control" name="id_asignatura" id="id_asignatura">
           
                         <div class="input-group">
                             <span class="input-group-addon">
@@ -878,7 +910,7 @@ if (isset($id_asignatura))
                         </div>
                         
                         <div class="modal-footer">
-                            <button class="btn btn-block btn-lg bg-teal waves-effect" type="submit" name="crear">Crear</button>
+                            <button class="btn btn-block btn-lg bg-teal waves-effect" type="submit" name="actualizar_logro">Actualizar</button>
                             <button type="button" class="btn btn-block btn-lg bg-amber waves-effect" data-dismiss="modal">Cancelar</button>
                         </div>
 
