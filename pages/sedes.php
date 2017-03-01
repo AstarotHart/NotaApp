@@ -15,7 +15,7 @@ if (isset($_POST['crear']))
     if(($sede->register_sedes($nombre_sede))==true)
     {
         echo '<script type="text/javascript">';
-        echo 'setTimeout(function () { swal("Area Creada","","success");';
+        echo 'setTimeout(function () { swal("Sede Creada","","success");';
        // echo 'setTimeout(function () {swal({title: "Datos Actualizados",text: "",timer: 2000,showConfirmButton: false});';
         echo '}, 1000);</script>';
 
@@ -23,7 +23,7 @@ if (isset($_POST['crear']))
      else
      {
         echo '<script type="text/javascript">';
-        echo 'setTimeout(function () { swal("Area NO Creada","","error");';
+        echo 'setTimeout(function () { swal("Sede NO Creada","","error");';
         echo '}, 1000);</script>';
      }
 

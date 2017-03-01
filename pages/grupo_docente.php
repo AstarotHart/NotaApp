@@ -90,7 +90,7 @@ if (isset($_POST['crear']))
      }
 }
 
-//saber si el boton CREAR de logro a sifo inicializado
+//saber si el boton CREAR de logro a sido inicializado
 if (isset($_POST['asignar_logros'])) 
 {
     $id_logros=$_POST['select_logros'];
@@ -109,11 +109,6 @@ if (isset($_POST['asignar_logros']))
 
     foreach ($id_alumnos as $id_alumnos)
     {
-        echo "Id_ASI: ".$id_asig."<br>";
-        echo "Id_AL: ".$id_alumnos."<br>";
-        echo "Id_ANIO: ".$id_anio_lec."<br>";
-        echo "Id_LOGROS: ".$logros_insert."<br>";
-
         $logros_alumnos->register_logros_alumno($id_asig,$id_alumnos,$id_anio_lec,$logros_insert);
     }
     
@@ -121,14 +116,14 @@ if (isset($_POST['asignar_logros']))
     if($logros_alumnos==true)
     {
         echo '<script type="text/javascript">';
-        echo 'setTimeout(function () { swal("Logro Creado.","","success");';
+        echo 'setTimeout(function () { swal("Logro Asignados.","","success");';
        // echo 'setTimeout(function () {swal({title: "Datos Actualizados",text: "",timer: 2000,showConfirmButton: false});';
         echo '}, 1000);</script>';
      }
      else
      {
         echo '<script type="text/javascript">';
-        echo 'setTimeout(function () { swal("Logro NO Creado.","","error");';
+        echo 'setTimeout(function () { swal("Logro NO Asignados.","","error");';
         echo '}, 1000);</script>';
      }
      
@@ -300,7 +295,16 @@ if (isset($id_asignatura))
         $i=1;
         foreach ($logros as $logros)
         {
-            $list_logros .='<li>' . '<b class="font-10">[' .$logros['id_logro']. ']</b> ' . $logros['descripcion']  .'</li>';
+            $list_logros .='<li>' . '<b class="font-10">[' .$logros['id_logro']. ']</b> ' . $logros['descripcion']  .'
+                            
+                            <div class="btn-group dropdown">
+                                <i class="material-icons" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">more_horiz</i>
+                                <ul class="dropdown-menu pull-left">
+                                    <li><a class="open-EditRow" data-toggle="modal" data-target="#Update-Logro" data-id="'.$logros['id_logro'].'" data-desc="'.$logros['descripcion'].'"><i class="material-icons">mode_edit</i>Editar</a></li>
+                                    <li><a data-toggle="modal" data-target="#New_Pass"><i class="material-icons">delete</i>Eliminar</a></li>
+                                </ul>
+                            </div>
+                            </li>';
 
             $res_logros .='<option value="' .$logros['id_logro']. '">' .$logros['id_logro']. '</option>';
 
@@ -730,8 +734,93 @@ if (isset($id_asignatura))
 });
 </script>
 
+<!-- funcion CRUD logros-->
+<script type="text/javascript">
+    function objetoAjax()
+    {
+        var xmlhttp=false;
+        try {
+            xmlhttp = new ActiveXObject("Msxml2.XMLHTTP");
+        } catch (e) {
+            try {
+                xmlhttp = new ActiveXObject("Microsoft.XMLHTTP");
+            } catch (E) {
+                xmlhttp = false;
+            }
+        }
+        if (!xmlhttp && typeof XMLHttpRequest!='undefined') {
+            xmlhttp = new XMLHttpRequest();
+        }
+        return xmlhttp;
+    }
+
+    function Registrar(idP, accion)
+    {
+        nombres = document.frmClientes.nombres.value;
+        ocupacion = document.frmClientes.ocupacion.value;
+        telefono = document.frmClientes.telefono.value;
+        sitioweb = document.frmClientes.sitioweb.value;
+        ajax = objetoAjax();
+
+        if(accion=='N')
+        {
+            ajax.open("POST", "clases/registrar.php", true);
+        }
+        else if(accion=='E')
+        {
+            ajax.open("POST", "clases/actualizar.php", true);
+        }
 
 
+        ajax.onreadystatechange=function() 
+        {
+            if (ajax.readyState==4) 
+            {
+                alert('Los datos fueron guardados con exito!');
+                window.location.reload(true);
+            }
+        }
+
+        ajax.setRequestHeader("Content-Type","application/x-www-form-urlencoded");
+        ajax.send("nombres="+nombres+"&ocupacion="+ocupacion+"&telefono="+telefono+"&sitioweb="+sitioweb+"&idP="+idP)
+    }
+
+
+    function Eliminar(idP)
+    {
+        if(confirm("En realizad desea eliminar este registro?"))
+        {
+            ajax = objetoAjax();
+            ajax.open("POST", "clases/eliminar.php", true);
+    
+            ajax.onreadystatechange=function() 
+            {
+                if (ajax.readyState==4)
+                {
+                    alert('El registro fue eliminado con exito!');
+                    window.location.reload(true);
+                }
+            }
+
+            ajax.setRequestHeader("Content-Type","application/x-www-form-urlencoded");
+            ajax.send("idP="+idP)
+        }
+        else
+        {
+            //Sin acciones
+        }
+    }
+</script>
+
+<!-- test datos to modal-->
+<script type="text/javascript">
+    $('.open-EditRow').click(function(){
+       var selected_id = $(this).attr('data-id');
+       var desc = $(this).attr('data-desc');
+       $('#Area_new #id_logro').val(selected_id);
+       $('#Area_new #desc_logro').val(desc);
+    });
+</script>
 
 
 <!-- Modal crear nuevo LOGRO -->
@@ -745,12 +834,46 @@ if (isset($id_asignatura))
                     <form id="Area_new" method="POST">
 
                         <input type="hidden" class="form-control" name="id_asignatura" value="<?php echo $cabecera['id_asignatura']; ?>">
+          
                         <div class="input-group">
                             <span class="input-group-addon">
                                 <i class="material-icons">assignment</i>
                             </span>
                             <div class="form-line">
                                 <textarea name="logro" cols="30" rows="6" class="form-control no-resize" maxlength="150" required autofocus></textarea>
+                            </div>
+                        </div>
+                        
+                        <div class="modal-footer">
+                            <button class="btn btn-block btn-lg bg-teal waves-effect" type="submit" name="crear">Crear</button>
+                            <button type="button" class="btn btn-block btn-lg bg-amber waves-effect" data-dismiss="modal">Cancelar</button>
+                        </div>
+
+                    </form>
+                </div>
+                
+            </div>
+        </div>
+    </div>
+
+<!-- Modal ACTUALIZAR  LOGRO -->
+    <div class="modal fade" id="Update-Logro" tabindex="-1" role="dialog">
+        <div class="modal-dialog modal-sm" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h4 class="modal-title" id="Actu_DatosLabel">Actualizar Logro</h4>
+                </div>
+                <div class="modal-body">
+                    <form id="Area_new" method="POST">
+
+                        <input type="text" class="form-control" name="id_logro" id="id_logro">
+          
+                        <div class="input-group">
+                            <span class="input-group-addon">
+                                <i class="material-icons">assignment</i>
+                            </span>
+                            <div class="form-line">
+                                <textarea id="desc_logro" name="logro" cols="30" rows="6" class="form-control no-resize" maxlength="150" required autofocus></textarea>
                             </div>
                         </div>
                         

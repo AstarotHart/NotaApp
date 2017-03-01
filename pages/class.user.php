@@ -1285,6 +1285,17 @@ class USER
         }  
     }
 
+    /**
+     * [Delete_logro description]
+     * @param [type] $id_logro [description]
+     */
+    public function Delete_logro($id_logro)
+    {
+        $query = $this->conn->prepare("DELETE FROM logros WHERE id_logro = :id_logro");
+        $query->bindParam("id", $user_id, PDO::PARAM_STR);
+        $query->execute();
+    }
+
 /* -------------F U N C I O N E S  A L U M N O ----------*/
     
     /**
