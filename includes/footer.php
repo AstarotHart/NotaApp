@@ -19,8 +19,11 @@
     <!-- Jquery CountTo Plugin Js -->
     <script src="../plugins/jquery-countto/jquery.countTo.js"></script>
 
-    <!-- Sweet Alert Plugin Js -->
+    <!-- Sweet Alert Plugin Js --
     <script src="../plugins/sweetalert/sweetalert.min.js"></script>
+
+    <!-- -->
+    <script src="../plugins/swal2/sweetalert2.min.js"></script>
 
     <!-- Wait Me Plugin Js -->
     <script src="../plugins/waitme/waitMe.js"></script>

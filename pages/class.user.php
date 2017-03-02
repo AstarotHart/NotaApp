@@ -1319,9 +1319,20 @@ class USER
      */
     public function Delete_logro($id_logro)
     {
-        $query = $this->conn->prepare("DELETE FROM logros WHERE id_logro = :id_logro");
-        $query->bindParam("id", $user_id, PDO::PARAM_STR);
-        $query->execute();
+        try
+        {
+            $query = $this->conn->prepare("DELETE FROM logros WHERE id_logro = :id_logro");
+            $query->bindParam("id_logro", $id_logro, PDO::PARAM_STR);
+            $query->execute();
+
+            return true;   
+        }
+        catch (PDOException $e) 
+        {
+            echo $e->getMessage();
+            return false;
+        }
+        
     }
 
 /* -------------F U N C I O N E S  A L U M N O ----------*/

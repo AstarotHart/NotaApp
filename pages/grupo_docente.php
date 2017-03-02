@@ -79,8 +79,7 @@ if (isset($_POST['crear']))
     if(($newLogro->register_logros($id_asignatura,$logro))==true)
     {
         echo '<script type="text/javascript">';
-        echo 'setTimeout(function () { swal("Logro Creado.","","success");';
-       // echo 'setTimeout(function () {swal({title: "Datos Actualizados",text: "",timer: 2000,showConfirmButton: false});';
+        echo 'setTimeout(function () { swal("Logro Creado!","","success");';
         echo '}, 1000);</script>';
      }
      else
@@ -136,10 +135,6 @@ if (isset($_POST['actualizar_logro']))
     $id_logro=$_POST['id_logro'];
     $logro=$_POST['logro'];
     $id_asignatura=$_POST['id_asignatura'];
-
-    echo "id_logro ".$id_logro."<br>";
-    echo "id_asignatura ".$id_asignatura."<br>";
-    echo "Logro ".$logro."<br>";
     
      //Llamada a funcion para crear nuevo LOGRO
      
@@ -164,6 +159,8 @@ if (isset($_POST['actualizar_logro']))
 <!-- Top Bar -->
 <?php include("../includes/header.php");?>
 <!-- #Top Bar -->
+
+
 
 <!-- Menu -->
 <?php 
@@ -330,7 +327,11 @@ if (isset($id_asignatura))
                                 <i class="material-icons" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">more_horiz</i>
                                 <ul class="dropdown-menu pull-left">
                                     <li><a class="open-EditRow" data-toggle="modal" data-target="#Update-Logro" data-id="'.$logros['id_logro'].'" data-desc="'.$logros['descripcion'].'" data-asig="'.$id_asignatura.'"><i class="material-icons">mode_edit</i>Editar</a></li>
-                                    <li><a data-toggle="modal" data-target="#New_Pass"><i class="material-icons">delete</i>Eliminar</a></li>
+                                    <li><a id="del_logro" data-id="'.$logros['id_logro'].'" href="javascript:void(0)"><i class="material-icons">delete</i>Eliminar</a>
+                                    </li>
+                                    <li>
+                                        <a class="btn btn-sm btn-danger" id="del_logro" data-id="'.$logros['id_logro'].'" href="javascript:void(0)"><i class="glyphicon glyphicon-trash"></i></a>
+                                    </li>
                                 </ul>
                             </div>
                             </li>';
@@ -763,83 +764,6 @@ if (isset($id_asignatura))
 });
 </script>
 
-<!-- funcion CRUD logros-->
-<script type="text/javascript">
-    function objetoAjax()
-    {
-        var xmlhttp=false;
-        try {
-            xmlhttp = new ActiveXObject("Msxml2.XMLHTTP");
-        } catch (e) {
-            try {
-                xmlhttp = new ActiveXObject("Microsoft.XMLHTTP");
-            } catch (E) {
-                xmlhttp = false;
-            }
-        }
-        if (!xmlhttp && typeof XMLHttpRequest!='undefined') {
-            xmlhttp = new XMLHttpRequest();
-        }
-        return xmlhttp;
-    }
-
-    function Registrar(idP, accion)
-    {
-        nombres = document.frmClientes.nombres.value;
-        ocupacion = document.frmClientes.ocupacion.value;
-        telefono = document.frmClientes.telefono.value;
-        sitioweb = document.frmClientes.sitioweb.value;
-        ajax = objetoAjax();
-
-        if(accion=='N')
-        {
-            ajax.open("POST", "clases/registrar.php", true);
-        }
-        else if(accion=='E')
-        {
-            ajax.open("POST", "clases/actualizar.php", true);
-        }
-
-
-        ajax.onreadystatechange=function() 
-        {
-            if (ajax.readyState==4) 
-            {
-                alert('Los datos fueron guardados con exito!');
-                window.location.reload(true);
-            }
-        }
-
-        ajax.setRequestHeader("Content-Type","application/x-www-form-urlencoded");
-        ajax.send("nombres="+nombres+"&ocupacion="+ocupacion+"&telefono="+telefono+"&sitioweb="+sitioweb+"&idP="+idP)
-    }
-
-
-    function Eliminar(idP)
-    {
-        if(confirm("En realizad desea eliminar este registro?"))
-        {
-            ajax = objetoAjax();
-            ajax.open("POST", "clases/eliminar.php", true);
-    
-            ajax.onreadystatechange=function() 
-            {
-                if (ajax.readyState==4)
-                {
-                    alert('El registro fue eliminado con exito!');
-                    window.location.reload(true);
-                }
-            }
-
-            ajax.setRequestHeader("Content-Type","application/x-www-form-urlencoded");
-            ajax.send("idP="+idP)
-        }
-        else
-        {
-            //Sin acciones
-        }
-    }
-</script>
 
 <!-- test datos to modal-->
 <script type="text/javascript">
@@ -851,6 +775,66 @@ if (isset($id_asignatura))
        $('#Area_new #id_asignatura').val(asig);
        $('#Area_new #desc_logro').val(desc);
     });
+</script>
+
+<!-- Borrar LOGRO con sweetalert corfirm-->
+
+
+<script>
+    $(document).ready(function(){
+        
+        readProducts(); /* it will load products when document loads */
+        
+        $(document).on('click', '#del_logro', function(e){
+            
+            var id_logro = $(this).data('id');
+            SwalDelete(id_logro);
+            e.preventDefault();
+        });
+        
+    });
+    
+    function SwalDelete(id_logro){
+        
+        swal({
+            title: 'Estas Seguro?',
+            text: "El Logro sera borrado permanentemente!",
+            type: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#3085d6',
+            cancelButtonColor: '#d33',
+            confirmButtonText: 'Si, Borrar!',
+            showLoaderOnConfirm: true,
+              
+            preConfirm: function() {
+              return new Promise(function(resolve) {
+                   
+                 $.ajax({
+                    url: 'delete_logro.php',
+                    type: 'POST',
+                    data: 'id_logro='+id_logro,
+                    dataType: 'json'
+                 })
+                 .done(function(response){
+                    swal('Borrado!', response.message, response.status);
+                    readProducts();
+                    location.reload();
+                 })
+                 .fail(function(){
+                    swal('Oops...', 'Something went wrong with ajax !', 'error');
+                    location.reload();
+                 });
+              });
+            },
+            allowOutsideClick: false              
+        }); 
+        
+    }
+    
+    function readProducts(){
+        $('#load-products').load('read.php');   
+    }
+    
 </script>
 
 

@@ -46,8 +46,11 @@
     <!-- Custom Css -->
     <link href="../css/style.css" rel="stylesheet">
 
-    <!-- Sweet Alert Css -->
+    <!-- Sweet Alert Css --
     <link href="../plugins/sweetalert/sweetalert.css" rel="stylesheet" />
+
+    <!-- -->
+    <link rel="stylesheet" href="../plugins/swal2/sweetalert2.min.css" type="text/css" />
 
     <!-- Bootstrap Select Css -->
     <link href="../plugins/bootstrap-select/css/bootstrap-select.css" rel="stylesheet" />
