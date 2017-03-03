@@ -4,8 +4,12 @@
 <?php 
 
 require_once("class.user.php");
-$user = new USER();
-$object = new USER();
+
+$user                    = new USER();
+$object                  = new USER();
+$cabecera_director       = new USER();
+$cabecera_tabla_director = new USER();
+$ini_asignatura          = new USER();
 
 if (isset($_POST['new_pass_docente_admin']))
 {
@@ -37,8 +41,50 @@ if (isset($_POST['new_pass_docente_admin']))
     <!-- #Top Bar -->
 
     <!-- Menu -->
-    <?php include("../includes/menu.php");?>
+    <?php include("../includes/menu.php");
+
+    $cadena = "instituro Estrada";
+
+    $cabecera_director = $object->cabecera_director($user_id);
+
+    $ini_asignatura = $object->iniciales_asignaturas($cadena);
+
+// Cargar datos en un array con CABECERA
+    if (count($cabecera_director) > 0) 
+    {
+                    
+        foreach ($cabecera_director as $cabecera_director) 
+        {
+            
+        }
+
+        $cabecera_tabla_director = $object->cabecera_tabla_director($cabecera_director['id_grupo']);
+
+        $data = '<table class="table font-13 table-bordered table-striped table-hover js-basic-example dataTable">
+                        <thead>
+                            <tr>';
+
+        if (count($cabecera_tabla_director) > 0) 
+        {
+            foreach ($cabecera_tabla_director as $cabecera_tabla_director) 
+            {
+                $ini_asignatura = $object->iniciales_asignaturas($cabecera_tabla_director['nombre_asignatura']);
+                $data .='<th>'.$ini_asignatura.'</th>';
+            }
+        }
+
+        $data .= '         </tr>
+                        <thead>
+                        <tbody>
+                        ';
+    }
+
+    
+
+
+    ?>
     <!-- end menu-->
+
 
     <section class="content">
         <div class="container-fluid">
@@ -55,11 +101,11 @@ if (isset($_POST['new_pass_docente_admin']))
                         <div class="body">
 
                             <div class="col-sm-3">
-                                <b>Grupo:</b> 11-2
+                                <b>Grupo:</b> <?php echo $cabecera_director['descripcion_grado']."-".$cabecera_director['descripcion_grupo'] ?>
                             </div>
 
                             <div class="col-sm-3">
-                                <b>Sede:</b> Instituto Estrada
+                                <b>Sede:</b> <?php echo $ini_asignatura ; ?>
                             </div>
 
                             <div class="col-sm-3">
@@ -71,34 +117,9 @@ if (isset($_POST['new_pass_docente_admin']))
                             </div>
                                 <?php
                                  
-                                // Design initial table header
-                                $data = '<table class="table table-bordered table-striped table-hover js-basic-example dataTable">
-                                                    <thead>
-                                                        <tr>
-                                                            <th>No.</th>
-                                                            <th>Nombre Estudiente</th>
-                                                            <th>Ci.Nat</th>
-                                                            <th>Ed.Amb</th>
-                                                            <th>Matem</th>
-                                                            <th>Geome</th>
-                                                            <th>Espa</th>
-                                                            <th>Ingl</th>
-                                                            <th>Cin.Soc</th>
-                                                            <th>Tec.Imfo</th>
-                                                            <th>Ed.Etic</th>
-                                                            <th>Ed.Reli</th>
-                                                            <th>Ed.Art</th>
-                                                            <th>Ed.Fis</th>
-                                                            <th>Empr</th>
-                                                        </tr>
-                                                    <thead>
-
-                                                    <tbody>
-
-                                                    ';
+                                 echo $data;
                                  
-                                 
-                                $users = $object->Read_docente();
+                                $users = $object->Read_alumnos_dir_grupo($cabecera_director['id_grupo']);
                                 $num = 1;
                                  
                                 if (count($users) > 0) {

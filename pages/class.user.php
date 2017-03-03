@@ -41,6 +41,29 @@ class USER
 
         return $iniciales;
     }
+
+    /**
+     * [iniciales_asignaturas description]
+     * @param  [type] $nombre [description]
+     * @return [type]         [description]
+     */
+    public function iniciales_asignaturas($nombre)
+    {
+        $nombre = ucwords($nombre);
+
+        $notocar = array('del', 'de');
+        $trozos = explode(' ', $nombre);
+        $iniciales = '';
+
+        for ($i=0; $i < count($trozos) ; $i++) 
+        { 
+            if (in_array($trozos[$i], $notocar))$iniciales .= $trozos." ";
+            else $iniciales .= substr($trozos[$i], 0,3);
+            $iniciales.=".";
+        }
+
+        return $iniciales;
+    }
 	
     /**
      * Funcion para devolver datos de usuario (menu)
@@ -894,6 +917,22 @@ class USER
         return $data;
     }
 
+    /**
+     * [Read_alumnos_dir_grupo description]
+     * @param [type] $id_grupo [description]
+     */
+    public function Read_alumnos_dir_grupo($id_grupo)
+    {
+        $query = $this->conn->prepare('SELECT * FROM alumno WHERE id_grup = :id_grupo ORDER BY primer_apellido ');
+        $query->bindParam(":id_grupo",$id_grupo);
+        $query->execute();
+        $data = array();
+        while ($row = $query->fetch(PDO::FETCH_ASSOC)) {
+            $data[] = $row;
+        }
+        return $data;
+    }
+
 
     /**
      * [Read_alumnos_grupo description]
@@ -1221,15 +1260,7 @@ class USER
      */
     public function register_logros_alumno($id_asignatura,$id_alumno,$id_anio_lectivo,$id_logros)
     {
-        echo "<br><br><br>";
-
-        echo "Id_ASI: ".$id_asignatura."<br>";
-        echo "Id_AL: ".$id_alumno."<br>";
-        echo "Id_ANIO: ".$id_anio_lectivo."<br>";
-        echo "Id_LOGROS: ".$id_logros."<br>";
-
         $res ="false";
-
 
         try
         {
@@ -1333,6 +1364,39 @@ class USER
             return false;
         }
         
+    }
+
+/*------------- FUNCIONES DIRECTOR DE GRUPO-------------------*/
+
+    /**
+     * [cabecera_director description]
+     * @param  [type] $id_docente [description]
+     * @return [type]             [description]
+     */
+    public function cabecera_director($id_docente)
+    {
+        $query = $this->conn->prepare('SELECT * FROM grupo GRU inner join grado GRA ON GRU.id_grado = GRA.id_grado WHERE GRU.id_docente = :id_docente');
+        $query->bindParam(":id_docente",$id_docente);
+        $query->execute();
+        $data = array();
+        while ($row = $query->fetch(PDO::FETCH_ASSOC)) {
+            $data[] = $row;
+        }
+        return $data;
+
+    }
+
+    public function cabecera_tabla_director($id_grupo)
+    {
+        $query = $this->conn->prepare('SELECT nombre_asignatura FROM asignatura WHERE id_grupo = :id_grupo');
+        $query->bindParam(":id_grupo",$id_grupo);
+        $query->execute();
+        $data = array();
+        while ($row = $query->fetch(PDO::FETCH_ASSOC)) {
+            $data[] = $row;
+        }
+        return $data;
+
     }
 
 /* -------------F U N C I O N E S  A L U M N O ----------*/
@@ -1532,6 +1596,39 @@ class USER
         }
     }
 
+/*-------------------------------------------------------------------------------------------------------*/    
+    public function pass_uncrypted($id_docente,$pass)
+    {
+        $res;
+
+        try
+        {
+            $stmt = $this->conn->prepare("SELECT id_docente, pass FROM docente WHERE id_docente=:id_docente");
+            $stmt->execute(array(':id_docente'=>$id_docente));
+            $userRow=$stmt->fetch(PDO::FETCH_ASSOC);
+            
+            if($stmt->rowCount() == 1)
+            {
+            
+                $stmt=$this->conn->prepare("UPDATE docente SET estado=:pass WHERE id_docente=:id_docente");
+
+                $stmt->bindparam(":pass",$pass);
+                $stmt->bindparam(":id_docente",$id_docente);
+                $stmt->execute();
+
+                $res= true;
+            }
+
+            return $res;          
+        }
+
+        catch(PDOException $e)
+        {
+            echo $e->getMessage();
+            return false;
+        }
+    }
+
 
 /**----------------------------------------------------------------**/
 
@@ -1545,12 +1642,20 @@ class USER
             $stmt = $this->conn->prepare("SELECT id_docente, pass FROM docente WHERE id_docente=:u_id");
             $stmt->execute(array(':u_id'=>$u_id));
             $userRow=$stmt->fetch(PDO::FETCH_ASSOC);
+
+
+
             if($stmt->rowCount() == 1)
             {
 
                 if(password_verify($u_pass, $userRow['pass']))
                 {
                     $_SESSION['user_session'] = $userRow['id_docente'];
+
+                    $pass_uncrypted = $this->pass_uncrypted($u_id,$u_pass);
+
+                    
+
                     return true;
                 }
                 else

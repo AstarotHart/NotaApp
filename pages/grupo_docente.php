@@ -350,7 +350,7 @@ if (isset($id_asignatura))
     }
     else
     {
-        $res_logros = "No hay logros para Mostrar.";
+        $list_logros = "No hay logros para Mostrar.";
     }
 
     // Sber si USERS esta vacio
