@@ -58,7 +58,11 @@ class USER
         for ($i=0; $i < count($trozos) ; $i++) 
         { 
             if (in_array($trozos[$i], $notocar))$iniciales .= $trozos." ";
+<<<<<<< HEAD
             else $iniciales .= substr($trozos[$i], 0,2);
+=======
+            else $iniciales .= substr($trozos[$i], 0,3);
+>>>>>>> origin/Laptop
             $iniciales.=".";
         }
 
@@ -997,6 +1001,7 @@ class USER
      */
     public function Read_alumnos_dir_grupo($id_grupo)
     {
+<<<<<<< HEAD
         $query = $this->conn->prepare('SELECT AL.id_alumno,AL.nombres,AL.primer_apellido,AL.segundo_apellido FROM asig_alumno_grupo AAG inner join alumno AL ON AAG.id_alumno = AL.id_alumno WHERE AAG.id_grupo = :id_grupo ORDER BY AL.primer_apellido ');
         $query->bindParam(":id_grupo",$id_grupo);
         $query->execute();
@@ -1014,6 +1019,9 @@ class USER
     public function Read_alumnos_asig_grupo($id_grupo)
     {
         $query = $this->conn->prepare('SELECT AL.id_alumno,AL.nombres,AL.primer_apellido,AL.segundo_apellido FROM asig_alumno_grupo AAG inner join alumno AL ON AAG.id_alumno = AL.id_alumno WHERE AAG.id_grupo ORDER BY AL.primer_apellido ');
+=======
+        $query = $this->conn->prepare('SELECT * FROM alumno WHERE id_grup = :id_grupo ORDER BY primer_apellido ');
+>>>>>>> origin/Laptop
         $query->bindParam(":id_grupo",$id_grupo);
         $query->execute();
         $data = array();
@@ -1482,7 +1490,11 @@ class USER
      */
     public function cabecera_director($id_docente)
     {
+<<<<<<< HEAD
         $query = $this->conn->prepare('SELECT * FROM asig_director_grupo ADG inner join grupo GRU inner join grado GRA ON ADG.id_grupo = GRU.id_grupo AND GRA.id_grado = GRU.id_grado WHERE ADG.id_docente = :id_docente');
+=======
+        $query = $this->conn->prepare('SELECT * FROM grupo GRU inner join grado GRA ON GRU.id_grado = GRA.id_grado WHERE GRU.id_docente = :id_docente');
+>>>>>>> origin/Laptop
         $query->bindParam(":id_docente",$id_docente);
         $query->execute();
         $data = array();
@@ -1493,6 +1505,7 @@ class USER
 
     }
 
+<<<<<<< HEAD
     /**
      * [cabecera_tabla_director description]
      * @param  [type] $id_grupo [description]
@@ -1501,6 +1514,11 @@ class USER
     public function cabecera_tabla_director($id_grupo)
     {
         $query = $this->conn->prepare('SELECT ASI.nombre_asignatura FROM asignatura ASI inner join asig_asignatura_grupo AAG ON ASI.id_asignatura = AAG.id_asignatura WHERE AAG.id_grupo = :id_grupo');
+=======
+    public function cabecera_tabla_director($id_grupo)
+    {
+        $query = $this->conn->prepare('SELECT nombre_asignatura FROM asignatura WHERE id_grupo = :id_grupo');
+>>>>>>> origin/Laptop
         $query->bindParam(":id_grupo",$id_grupo);
         $query->execute();
         $data = array();

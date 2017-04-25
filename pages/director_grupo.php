@@ -6,7 +6,10 @@ $object                  = new USER();
 $cabecera_director       = new USER();
 $cabecera_tabla_director = new USER();
 $ini_asignatura          = new USER();
+<<<<<<< HEAD
 $alumnos_grupo          = new USER();
+=======
+>>>>>>> origin/Laptop
 
 if (isset($_POST['new_pass_docente_admin']))
 {
@@ -51,6 +54,7 @@ if (isset($_POST['new_pass_docente_admin']))
             
         }
 
+<<<<<<< HEAD
         $cabecera_tabla_director = $object->cabecera_tabla_director($cabecera_director['id_grupo']);
 
         $data = "";
@@ -68,6 +72,34 @@ if (isset($_POST['new_pass_docente_admin']))
         if (count($cabecera_tabla_director) > 0) 
         {
             $contadorr = 1;
+=======
+    <!-- Menu -->
+    <?php include("../includes/menu.php");
+
+    $cadena = "instituro Estrada";
+
+    $cabecera_director = $object->cabecera_director($user_id);
+
+    $ini_asignatura = $object->iniciales_asignaturas($cadena);
+
+// Cargar datos en un array con CABECERA
+    if (count($cabecera_director) > 0) 
+    {
+                    
+        foreach ($cabecera_director as $cabecera_director) 
+        {
+            
+        }
+
+        $cabecera_tabla_director = $object->cabecera_tabla_director($cabecera_director['id_grupo']);
+
+        $data = '<table class="table font-13 table-bordered table-striped table-hover js-basic-example dataTable">
+                        <thead>
+                            <tr>';
+
+        if (count($cabecera_tabla_director) > 0) 
+        {
+>>>>>>> origin/Laptop
             foreach ($cabecera_tabla_director as $cabecera_tabla_director) 
             {
                 $ini_asignatura = $object->iniciales_asignaturas($cabecera_tabla_director['nombre_asignatura']);
@@ -75,12 +107,24 @@ if (isset($_POST['new_pass_docente_admin']))
             }
         }
 
+<<<<<<< HEAD
         $data .= '          </tr>
+=======
+        $data .= '         </tr>
+>>>>>>> origin/Laptop
                         <thead>
                         <tbody>
                         ';
     }
+<<<<<<< HEAD
 ?>
+=======
+
+    
+
+
+    ?>
+>>>>>>> origin/Laptop
     <!-- end menu-->
 
 
@@ -99,12 +143,22 @@ if (isset($_POST['new_pass_docente_admin']))
 
                         <div class="body">
 
+<<<<<<< HEAD
                             <div class="card">
                                 <div class="body">
 
                                     <div class="col-sm-3">
                                         <b>Grupo:</b> <?php echo $cabecera_director['descripcion_grado']."-".$cabecera_director['descripcion_grupo'] ?>
                                     </div>
+=======
+                            <div class="col-sm-3">
+                                <b>Grupo:</b> <?php echo $cabecera_director['descripcion_grado']."-".$cabecera_director['descripcion_grupo'] ?>
+                            </div>
+
+                            <div class="col-sm-3">
+                                <b>Sede:</b> <?php echo $ini_asignatura ; ?>
+                            </div>
+>>>>>>> origin/Laptop
 
                                     <div class="col-sm-3">
                                         <b>Sede:</b> <?php echo $cabecera_director['id_sede'] ; ?>
@@ -123,7 +177,13 @@ if (isset($_POST['new_pass_docente_admin']))
                                 <?php
                                 
                                  
+<<<<<<< HEAD
                                 $alumnos_grupo = $object->Read_alumnos_dir_grupo($cabecera_director['id_grupo']);
+=======
+                                 echo $data;
+                                 
+                                $users = $object->Read_alumnos_dir_grupo($cabecera_director['id_grupo']);
+>>>>>>> origin/Laptop
                                 $num = 1;
 
                                 
