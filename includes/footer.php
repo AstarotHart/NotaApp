@@ -19,8 +19,8 @@
     <!-- Jquery CountTo Plugin Js -->
     <script src="../plugins/jquery-countto/jquery.countTo.js"></script>
 
-    <!-- Sweet Alert Plugin Js --
-    <script src="../plugins/sweetalert/sweetalert.min.js"></script>
+    <!-- QuickSearch Plugin Js -->
+    <script src="../plugins/jquery-quicksearch/jquery.quicksearch.js"></script>
 
     <!-- -->
     <script src="../plugins/swal2/sweetalert2.min.js"></script>
@@ -77,6 +77,7 @@
     <script src="../plugins/jquery-datatable/extensions/export/vfs_fonts.js"></script>
     <script src="../plugins/jquery-datatable/extensions/export/buttons.html5.min.js"></script>
     <script src="../plugins/jquery-datatable/extensions/export/buttons.print.min.js"></script>
+    <script src="../plugins/jquery-datatable/dataTables.responsive.min.js"></script>
 
 
 </body>

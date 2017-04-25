@@ -32,8 +32,16 @@ if(isset($_POST['btn-login']))
     <meta charset="UTF-8">
     <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
     <title>NotaApp - Administrador de Calificaciones</title>
+    
     <!-- Favicon-->
-    <link rel="icon" href="favicon.ico" type="image/x-icon">
+    <link rel="apple-touch-icon" sizes="180x180" href="images/favicon/apple-touch-icon.png">
+    <link rel="icon" type="image/png" href="images/favicon/favicon-32x32.png" sizes="32x32">
+    <link rel="icon" type="image/png" href="images/favicon/favicon-16x16.png" sizes="16x16">
+    <link rel="manifest" href="images/favicon/manifest.json">
+    <link rel="mask-icon" href="images/favicon/safari-pinned-tab.svg" color="#5bbad5">
+    <meta name="apple-mobile-web-app-title" content="NotaApp">
+    <meta name="application-name" content="NotaApp">
+    <meta name="theme-color" content="#ffffff">
 
     <!-- Google Fonts -->
     <link href="css/google-fonts.css" rel="stylesheet" type="text/css">
@@ -83,7 +91,7 @@ if(isset($_POST['btn-login']))
                             <i class="material-icons">person</i>
                         </span>
                         <div class="form-line">
-                            <input type="text" class="form-control" name="u_id" placeholder="Usuario" required autofocus>
+                            <input type="text" class="form-control" name="u_id" placeholder="CC" required autofocus>
                         </div>
                     </div>
                     <div class="input-group">

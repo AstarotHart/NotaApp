@@ -7,17 +7,18 @@ $show_table= "none";
 
 if (isset($_POST['crear'])) 
 {
-    $id_docente         =$_POST['id_docente'];
-    $id_area            =$_POST['id_area'];
-    $nombre_asignatura  =$_POST['nombre_asignatura'];
+    $id_docente         = $_POST['id_docente'];
+    $id_area            = $_POST['id_area'];
+    $nombre_asignatura  = $_POST['nombre_asignatura'];
     $intensidad_horaria = $_POST['intensidad_horaria'];
     $porcentaje         = $_POST['porcentaje'];
     $id_grupo           = $_POST['id_grupo'];
+    $id_anio_lectivo    = $_POST['id_anio_lectivo'];
 
     /**
      * Llamada a funcion para actualizar los datos del docente
      */
-    if(($asignatura->register_asignaturas($id_docente,$id_area,$nombre_asignatura,$intensidad_horaria,$porcentaje,$id_grupo))==true)
+    if(($asignatura->register_asignaturas($id_docente,$id_area,$nombre_asignatura,$intensidad_horaria,$porcentaje,$id_grupo,$id_anio_lectivo))==true)
     {
         echo '<script type="text/javascript">';
         echo 'setTimeout(function () { swal("Asignatura Creada","","success");';
@@ -32,6 +33,29 @@ if (isset($_POST['crear']))
         echo '}, 1000);</script>';
      }
 
+}
+
+//saber si el boton ASIGNAR_DOCENTE_ASIGNATURA ha sido inicializado
+if (isset($_POST['actualizar_logro'])) 
+{
+    $id_logro_act=$_POST['id_logro'];
+    $logro=$_POST['logro'];
+    $id_asignatura=$_POST['id_asignatura'];
+    
+     //Llamada a funcion para crear nuevo LOGRO
+     
+    if(($updateLogro->update_logro($id_logro_act,$logro,$id_asignatura))==true)
+    {
+        echo '<script type="text/javascript">';
+        echo 'setTimeout(function () { swal("Logro Actualizado.","","success");';
+        echo '}, 1000);</script>';
+     }
+     else
+     {
+        echo '<script type="text/javascript">';
+        echo 'setTimeout(function () { swal("Logro NO Actualizado.","","error");';
+        echo '}, 1000);</script>';
+     }
 }
 
  ?>
@@ -79,7 +103,7 @@ if (isset($_POST['crear']))
                             <?php
                                  
                                 // Design initial table header
-                                $data = '<table class="table table-bordered table-striped table-hover js-basic-example dataTable">
+                                $data = '<table class="table table-bordered table-striped table-hover js-basic-example dataTable display nowrap"" cellspacing="0" width="100%">
                                                     <thead>
                                                         <tr>
                                                             <th>Codigo</th>
@@ -113,9 +137,8 @@ if (isset($_POST['crear']))
                                                         <td>' . $asignatura['porcentaje'] . '</td>
                                                         <td>
                                                             <div class="btn-group" role="group">
-                                                                <button data-toggle="modal" data-target="#view-modal" data-id="'.$asignatura['id_asignatura'].'" id="getUser" class="btn btn-primary btn-xs waves-effect"><i class="material-icons">info_outline    </i></button>
 
-                                                                <button type="submit" class="btn btn-warning btn-xs waves-effect" data-toggle="modal" data-target="#Detallesarea" name="Detalles" onclick="' . $asignatura['id_asignatura'] . '"><i class="material-icons">mode_edit</i></button>
+                                                                <button type="submit" class="btn btn-warning btn-xs waves-effect" data-toggle="modal" data-target="#Asignar_docente" name="Detalles" onclick="' . $asignatura['id_asignatura'] . '"><i class="material-icons">mode_edit</i></button>
 
                                                                 <button type="submit" class="btn btn-danger btn-xs waves-effect" data-toggle="modal" data-target="#Detallesarea" name="Detalles" onclick="' . $asignatura['id_asignatura'] . '"><i class="material-icons">delete</i></button>
                                                             </div>
@@ -272,6 +295,46 @@ if (isset($_POST['crear']))
             });
         })
         // code to get all records from table via select box
+        
+
+        //----------FUNCION SELECCIONAR ANIO LECTIVO--------------
+
+        function getAllGrupo(){
+            
+            $.ajax
+            ({
+                url: 'getAnioLectivo.php',
+                data: 'action=showAll',
+                cache: false,
+                success: function(r)
+                {
+                    $("#display3").html(r);
+                }
+            });         
+        }
+        
+        getAllArea();
+        // function to get all records from table
+
+        // code to get all records from table via select box
+        $("#getDocentes").change(function()
+        {               
+            var id = $(this).find(":selected").val();
+
+            var dataString = 'action='+ id;
+                    
+            $.ajax
+            ({
+                url: 'getAnioLectivo.php',
+                data: dataString,
+                cache: false,
+                success: function(r)
+                {
+                    $("#display4").html(r);
+                } 
+            });
+        })
+        // code to get all records from table via select box
     });
     </script>
 
@@ -279,6 +342,110 @@ if (isset($_POST['crear']))
 
     <!-- Modal crear nueva ASIGNATURA -->
     <div class="modal fade" id="New_Area" tabindex="-1" role="dialog">
+        <div class="modal-dialog modal-sm" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h4 class="modal-title" id="Actu_DatosLabel">Crear Nueva Asignatura</h4>
+                </div>
+                <div class="modal-body">
+                    <form id="Area_new" method="POST">
+
+                        <div class="input-group">
+                            <span class="input-group-addon">
+                                <i class="material-icons">account_balance</i>
+                            </span>
+                            <div class="form-line">
+                                <select class="form-control show-tick" name="id_sede" id="getDocentes">
+                                        <option value="">-- Seleccione Sede --</option>
+                                        <?php 
+                                            $user = $object->combobox_sede();
+                                        ?>
+                            </select>
+                            </div>
+                        </div>
+
+                        <div class="input-group">
+                            <span class="input-group-addon">
+                                <i class="material-icons">person</i>
+                            </span>
+                            <div class="form-line">
+                                <select class="form-control show-tick" name="id_anio_lectivo" id="display4">
+                                        
+                            </select>
+                            </div>
+                        </div>
+                        
+                        <div class="input-group">
+                            <span class="input-group-addon">
+                                <i class="material-icons">person</i>
+                            </span>
+                            <div class="form-line">
+                                <select class="form-control show-tick" name="id_docente" id="display">
+                                        
+                            </select>
+                            </div>
+                        </div>
+
+                        <div class="input-group">
+                            <span class="input-group-addon">
+                                <i class="material-icons">dns</i>
+                            </span>
+                            <div class="form-line">
+                                <select class="form-control show-tick" name="id_area" id="display2">
+                            </select>
+                            </div>
+                        </div>
+                        
+                        <div class="input-group">
+                            <span class="input-group-addon">
+                                <i class="material-icons">label</i>
+                            </span>
+                            <div class="form-line">
+                                <select class="form-control show-tick" name="id_grupo" id="display3">
+                            </select>
+                            </div>
+                        </div>
+
+                        <div class="input-group">
+                            <span class="input-group-addon">
+                                <i class="material-icons">assignment</i>
+                            </span>
+                            <div class="form-line">
+                                <input type="text" class="form-control" name="nombre_asignatura" placeholder="Nombre Asignatura" required autofocus>
+                            </div>
+                        </div>
+                        <div class="input-group">
+                            <span class="input-group-addon">
+                                <i class="material-icons">watch_later</i>
+                            </span>
+                            <div class="form-line">
+                                <input type="text" class="form-control" name="intensidad_horaria" placeholder="Intesidad Horaria" required autofocus>
+                            </div>
+                        </div>
+                        <div class="input-group">
+                            <span class="input-group-addon">
+                                <i class="material-icons">show_chart</i>
+                            </span>
+                            <div class="form-line">
+                                <input type="number" min="0" max="100" value="50" class="form-control" name="porcentaje" placeholder="Porcentaje" required autofocus>
+                            </div>
+                        </div>
+                        
+                        <div class="modal-footer">
+                            <button class="btn btn-block btn-lg bg-teal waves-effect" type="submit" name="crear">Crear</button>
+                            <button type="button" class="btn btn-block btn-lg bg-amber waves-effect" data-dismiss="modal">Cancelar</button>
+                        </div>
+
+                    </form>
+                </div>
+                
+            </div>
+        </div>
+    </div>
+
+
+    <!-- Modal Accignar Docente a Asignatura -->
+    <div class="modal fade" id="Asignar_docente" tabindex="-1" role="dialog">
         <div class="modal-dialog modal-sm" role="document">
             <div class="modal-content">
                 <div class="modal-header">

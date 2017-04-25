@@ -15,8 +15,16 @@
     <meta http-equiv="X-UA-Compatible" content="IE=Edge">
     <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
     <title>NotaApp - Administrador de Calificaciones</title>
+    
     <!-- Favicon-->
-    <link rel="icon" href="favicon.ico" type="image/x-icon">
+    <link rel="apple-touch-icon" sizes="180x180" href="../images/favicon/apple-touch-icon.png">
+    <link rel="icon" type="image/png" href="../images/favicon/favicon-32x32.png" sizes="32x32">
+    <link rel="icon" type="image/png" href="../images/favicon/favicon-16x16.png" sizes="16x16">
+    <link rel="manifest" href="../images/favicon/manifest.json">
+    <link rel="mask-icon" href="../images/favicon/safari-pinned-tab.svg" color="#5bbad5">
+    <meta name="apple-mobile-web-app-title" content="NotaApp">
+    <meta name="application-name" content="NotaApp">
+    <meta name="theme-color" content="#ffffff">
 
     <!-- Google Fonts -->
     <link href="../css/google-fonts.css" rel="stylesheet" type="text/css">
@@ -60,6 +68,9 @@
 
     <!-- JQuery DataTable Css -->
     <link href="../plugins/jquery-datatable/skin/bootstrap/css/dataTables.bootstrap.css" rel="stylesheet">
+
+    <!-- JQuery DataTable Css -->
+    <link href="../plugins/jquery-datatable/skin/bootstrap/css/responsive.dataTables.min.css" rel="stylesheet">
 
 
 
@@ -109,17 +120,17 @@
             </div>
             <div class="collapse navbar-collapse" id="navbar-collapse">
                 <ul class="nav navbar-nav navbar-right">
-                    <!-- Call Search -->
+                    <!-- Call Search --
                     <li><a href="javascript:void(0);" class="js-search" data-close="true"><i class="material-icons">search</i></a></li>
                     <!-- #END# Call Search -->
                     <!-- Notifications -->
                     <li class="dropdown">
                         <a href="javascript:void(0);" class="dropdown-toggle" data-toggle="dropdown" role="button">
                             <i class="material-icons">notifications</i>
-                            <span class="label-count">7</span>
+                            <span class="label-count">1</span>
                         </a>
                         <ul class="dropdown-menu">
-                            <li class="header">NOTIFICATIONS</li>
+                            <li class="header">NOTIFICACIONES</li>
                             <li class="body">
                                 <ul class="menu">
                                     <li>
@@ -128,100 +139,23 @@
                                                 <i class="material-icons">person_add</i>
                                             </div>
                                             <div class="menu-info">
-                                                <h4>12 new members joined</h4>
+                                                <h4>Fin Primer Periodo</h4>
                                                 <p>
-                                                    <i class="material-icons">access_time</i> 14 mins ago
+                                                    <i class="material-icons">access_time</i> Hoy
                                                 </p>
                                             </div>
                                         </a>
                                     </li>
-                                    <li>
-                                        <a href="javascript:void(0);">
-                                            <div class="icon-circle bg-cyan">
-                                                <i class="material-icons">add_shopping_cart</i>
-                                            </div>
-                                            <div class="menu-info">
-                                                <h4>4 sales made</h4>
-                                                <p>
-                                                    <i class="material-icons">access_time</i> 22 mins ago
-                                                </p>
-                                            </div>
-                                        </a>
-                                    </li>
-                                    <li>
-                                        <a href="javascript:void(0);">
-                                            <div class="icon-circle bg-red">
-                                                <i class="material-icons">delete_forever</i>
-                                            </div>
-                                            <div class="menu-info">
-                                                <h4><b>Nancy Doe</b> deleted account</h4>
-                                                <p>
-                                                    <i class="material-icons">access_time</i> 3 hours ago
-                                                </p>
-                                            </div>
-                                        </a>
-                                    </li>
-                                    <li>
-                                        <a href="javascript:void(0);">
-                                            <div class="icon-circle bg-orange">
-                                                <i class="material-icons">mode_edit</i>
-                                            </div>
-                                            <div class="menu-info">
-                                                <h4><b>Nancy</b> changed name</h4>
-                                                <p>
-                                                    <i class="material-icons">access_time</i> 2 hours ago
-                                                </p>
-                                            </div>
-                                        </a>
-                                    </li>
-                                    <li>
-                                        <a href="javascript:void(0);">
-                                            <div class="icon-circle bg-blue-grey">
-                                                <i class="material-icons">comment</i>
-                                            </div>
-                                            <div class="menu-info">
-                                                <h4><b>John</b> commented your post</h4>
-                                                <p>
-                                                    <i class="material-icons">access_time</i> 4 hours ago
-                                                </p>
-                                            </div>
-                                        </a>
-                                    </li>
-                                    <li>
-                                        <a href="javascript:void(0);">
-                                            <div class="icon-circle bg-light-green">
-                                                <i class="material-icons">cached</i>
-                                            </div>
-                                            <div class="menu-info">
-                                                <h4><b>John</b> updated status</h4>
-                                                <p>
-                                                    <i class="material-icons">access_time</i> 3 hours ago
-                                                </p>
-                                            </div>
-                                        </a>
-                                    </li>
-                                    <li>
-                                        <a href="javascript:void(0);">
-                                            <div class="icon-circle bg-purple">
-                                                <i class="material-icons">settings</i>
-                                            </div>
-                                            <div class="menu-info">
-                                                <h4>Settings updated</h4>
-                                                <p>
-                                                    <i class="material-icons">access_time</i> Yesterday
-                                                </p>
-                                            </div>
-                                        </a>
-                                    </li>
+                                    
                                 </ul>
                             </li>
                             <li class="footer">
-                                <a href="javascript:void(0);">View All Notifications</a>
+                                <a href="javascript:void(0);">Ver todas las notificaciones</a>
                             </li>
                         </ul>
                     </li>
                     <!-- #END# Notifications -->
-                    <!-- Tasks -->
+                    <!-- Tasks --
                     <li class="dropdown">
                         <a href="javascript:void(0);" class="dropdown-toggle" data-toggle="dropdown" role="button">
                             <i class="material-icons">flag</i>

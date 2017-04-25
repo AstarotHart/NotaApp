@@ -58,38 +58,21 @@
                     <div class="card">
                         <div class="header">
                             <h2>
-                                LINKS IN ALERTS
-                                <small>Use the <code>.alert-link</code> utility class to quickly provide matching colored links within any alert.</small>
+                                ALERTAS Y AVISOS
                             </h2>
                         </div>
                         <div class="body">
 
-                            <div class="alert alert-warning">
-                                <strong>Atención!</strong> No se ha creado aun un <strong>Año lectivo</strong> <a href="javascript:void(0);" class="alert-link">Click Aqui para crearlo</a>.
+                            <div class="alert alert-info">
+                                <strong>Aviso!</strong> En <strong>15</strong> dias se finalizara el <strong>periodo academico.</strong>
                             </div>
 
                             <div class="alert alert-warning">
-                                <strong>Atención!</strong> No se ha creado aun <strong>Periodos</strong> <a href="javascript:void(0);" class="alert-link">Click Aqui para crearlo</a>.
+                                <strong>Atención!</strong> En <strong>10</strong> dias se finalizara el <strong>periodo academico.</strong>
                             </div>
 
-                            <div class="alert alert-warning">
-                                <strong>Atención!</strong> No se ha creado aun <strong>Sedes</strong> <a href="javascript:void(0);" class="alert-link">Click Aqui para crearlo</a>.
-                            </div>
-
-                            <div class="alert alert-warning">
-                                <strong>Atención!</strong> No se ha creado aun <strong>Areas</strong> <a href="javascript:void(0);" class="alert-link">Click Aqui para crearlo</a>.
-                            </div>
-
-                            <div class="alert alert-warning">
-                                <strong>Atención!</strong> No se ha creado aun <strong>Asignaturas</strong> <a href="javascript:void(0);" class="alert-link">Click Aqui para crearlo</a>.
-                            </div>
-
-                            <div class="alert alert-warning">
-                                <strong>Atención!</strong> No se ha creado aun <strong>Grados</strong> <a href="javascript:void(0);" class="alert-link">Click Aqui para crearlo</a>.
-                            </div>
-
-                            <div class="alert alert-warning">
-                                <strong>Atención!</strong> No se ha creado aun <strong>Grupos</strong> <a href="javascript:void(0);" class="alert-link">Click Aqui para crearlo</a>.
+                            <div class="alert alert-danger">
+                                <strong>Atención!</strong>En <strong>3</strong> dias se finalizara el <strong>periodo academico.</strong>
                             </div>
 
                         </div>

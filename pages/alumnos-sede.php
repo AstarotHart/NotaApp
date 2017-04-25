@@ -4,6 +4,7 @@ $anios = new USER();
 $object = new USER();
 
 $show_table= "none";
+$num = 1;
 
 
 if (isset($_POST['crear'])) 
@@ -76,7 +77,7 @@ if (isset($_POST['crear']))
                     <div class="card">
                         <div class="header">
                             <h2>
-                                Año Lectivo <small>Lista de Años lectivo por sede</small>
+                                Asignar Alumnos a Grupos <small>Lista de alumnos por sede educativa</small>
                             </h2>
                             <ul class="header-dropdown m-r--5">
                                 <li>
@@ -113,9 +114,9 @@ if (isset($_POST['crear']))
 
                     if (isset($id_sede))
                     {
-                        $anios = $object->Read_anio_lectivo_sede($id_sede);
+                        $alumnos = $object->Read_alumno_sede($id_sede);
                                  
-                            if (count($anios) > 0) $show_table= "show";
+                            if (count($alumnos) > 0) $show_table= "show";
                     } 
                     ?>
 
@@ -126,49 +127,40 @@ if (isset($_POST['crear']))
                             <?php
                                  
                                 // Design initial table header
-                                $data = '<table class="table table-bordered table-striped table-hover js-basic-example dataTable">
-                                                    <thead>
-                                                        <tr>
-                                                            <th>Codigo</th>
-                                                            <th>Sede</th>
-                                                            <th>Descripcion</th>
-                                                            <th>Fecha Inicio</th>
-                                                            <th>Fecha Finalizacion</th>
-                                                            <th>Acciones</th>
-                                                        </tr>
-                                                    <thead>
-
-                                                    <tbody>
-
-                                                    ';
+                                $data = '<table class="table font-13 table-bordered table-striped table-hover js-basic-example dataTable display nowrap"" cellspacing="0" width="100%">
+                                            <thead>
+                                                <tr>
+                                                    <th>No.</th>
+                                                    <th>Nombre Estudiente</th>
+                                                    <th>Codigo</th>
+                                                    <th>Sede</th>
+                                                </tr>
+                                            <thead>
+                                            <tbody>
+                                            ';
 
                                  
-                                if (count($anios) > 0) 
+                                if (count($alumnos) > 0) 
                                 {
-                                    foreach ($anios as $anio) {
-                                        $data .=    '<tr>
-        
-                                                        <td>' . $anio['id_anio_lectivo'] . '</td>
-                                                        <td>' . $anio['descripcion_sede'] . '</td>
-                                                        <td>' . $anio['descripcion_anio_lectivo'] . '</td>
-                                                        <td>' . $anio['fecha_inicio'] . '</td>
-                                                        <td>' . $anio['fecha_fin'] . '</td>
-                                                        <td>
-                                                            <div class="btn-group" role="group">
-                                                                <button data-toggle="modal" data-target="#view-modal" data-id="'.$anio['id_anio_lectivo'].'" id="getUser" class="btn btn-primary btn-xs waves-effect"><i class="material-icons">info_outline    </i></button>
-
-                                                                <button type="submit" class="btn btn-warning btn-xs waves-effect" data-toggle="modal" data-target="#Detallesarea" name="Detalles" onclick="' . $anio['id_anio_lectivo'] . '"><i class="material-icons">mode_edit</i></button>
-
-                                                                <button type="submit" class="btn btn-danger btn-xs waves-effect" data-toggle="modal" data-target="#Detallesarea" name="Detalles" onclick="' . $anio['id_anio_lectivo'] . '"><i class="material-icons">delete</i></button>
-                                                            </div>
-                                                        
-                                                        </td>
-                                                    </tr>';
+                                    foreach ($alumnos as $alumno) {
+                                        $data .= '
+                                                <tr>
+                                                    <td>' . $num. '</td>
+                                                    <td>' . $alumno['primer_apellido'] . ' ' .$alumno['segundo_apellido'] . ' ' .$alumno['nombres'] .'</td>
+                                                    <td>' . $alumno['id_alumno'] . '</td>
+                                                    <td>' . $alumno['id_sede'] . '</td>
+                                                </tr>';
+                                            $num++;
 
                                     }
                                 }
+                                else 
+                                {
+                                    // records not found
+                                    $data .= '<tr><td colspan="6">No hay registros para mostrar!</td></tr>';
+                                }
                                  
-                                $data .= '<tbody></table>';
+                                $data .= '</tbody></table>';
                                  
                                 echo $data;
                                 

@@ -62,6 +62,7 @@ $updateLogro    = new USER();
 $object         = new USER();
 $fechas         = new USER();
 $asig_id        = new USER();
+$alumnos_grupo  = new USER();
 
 
 $show_table_alumnos = "none";
@@ -97,6 +98,7 @@ if (isset($_POST['asignar_logros']))
     $id_alumnos=$_POST['select_alumnos'];
     $id_asig = $_POST['id_asignatura'];
     $id_anio_lec= $_POST['id_anio_lectivo'];
+
     
     $logros_insert = "";
 
@@ -109,6 +111,11 @@ if (isset($_POST['asignar_logros']))
 
     foreach ($id_alumnos as $id_alumnos)
     {
+        echo "ID LOGRO: ".$id_logros."<br>";
+        echo "ID ALUMNO: ".$id_alumnos."<br>";
+        echo "ID ASIG: ".$id_asig."<br>";
+        echo "ID ANIO: ".$id_anio_lec."<br>";
+
         $logros_alumnos->register_logros_alumno($id_asig,$id_alumnos,$id_anio_lec,$logros_insert);
     }
     
@@ -117,7 +124,6 @@ if (isset($_POST['asignar_logros']))
     {
         echo '<script type="text/javascript">';
         echo 'setTimeout(function () { swal("Logro Asignados.","","success");';
-       // echo 'setTimeout(function () {swal({title: "Datos Actualizados",text: "",timer: 2000,showConfirmButton: false});';
         echo '}, 1000);</script>';
      }
      else
@@ -132,17 +138,16 @@ if (isset($_POST['asignar_logros']))
 //saber si el botonACTUALIZR_LOGROS ha sido inicializado
 if (isset($_POST['actualizar_logro'])) 
 {
-    $id_logro=$_POST['id_logro'];
+    $id_logro_act=$_POST['id_logro'];
     $logro=$_POST['logro'];
     $id_asignatura=$_POST['id_asignatura'];
     
      //Llamada a funcion para crear nuevo LOGRO
      
-    if(($updateLogro->update_logro($id_logro,$logro,$id_asignatura))==true)
+    if(($updateLogro->update_logro($id_logro_act,$logro,$id_asignatura))==true)
     {
         echo '<script type="text/javascript">';
         echo 'setTimeout(function () { swal("Logro Actualizado.","","success");';
-       // echo 'setTimeout(function () {swal({title: "Datos Actualizados",text: "",timer: 2000,showConfirmButton: false});';
         echo '}, 1000);</script>';
      }
      else
@@ -186,7 +191,7 @@ if (isset($id_asignatura))
 
     $data_select = "";
     // Design initial table header
-    $data = '<table class="table font-13 table-bordered table-striped table-hover js-basic-example dataTable">
+    $data = '<table class="table font-13 table-bordered table-striped table-hover js-basic-example dataTable display nowrap"" cellspacing="0" width="100%">
                         <thead>
                             <tr>
                                 <th>No.</th>
@@ -200,9 +205,9 @@ if (isset($id_asignatura))
                                 <th>F. P3</th>
                                 <th>P. 4</th>
                                 <th>F. P4</th>
-                                <th>NOTA FINAL</th>
+                                <th>NOTA PARCIAL</th>
                                 <th>FALTAS TOTALES</th>
-                                <th>Acciones</th>
+                                <th>Logros</th>
                             </tr>
                         <thead>
                         <tbody>
@@ -217,19 +222,20 @@ if (isset($id_asignatura))
         }
     }
 
-    //saber si la variable $cabecera['id_asignatura'] fue inicializada
-    if (isset($cabecera['id_asignatura']))
+    //saber si la variable $id_asignatura fue inicializada
+    if (isset($id_asignatura))
     {
-        $users = $object->Read_alumnos_grupo($user_id,$id_asignatura);
+        $alumnos_grupo = $object->Read_alumnos_grupo($user_id,$id_asignatura);
 
         //llamando a la funcion read logros para cargar los losgros por asignatura
-        $logros      = $object->read_logros($cabecera['id_asignatura']);
+        $logros      = $object->read_logros($id_asignatura);
         $fechas      = $object->Read_fecha_periodos($cabecera['id_anio_lectivo']);
         $list_logros = "<ol>";
         $res_logros  = " ";
+        
     }
 
-    echo "Numero de ALumnos ".count($users);
+    //echo "Numero de ALumnos ".count($alumnos_grupo);
 
     // cargar Informacion Periodos
     if (count($fechas) > 0)
@@ -350,19 +356,19 @@ if (isset($id_asignatura))
     }
     else
     {
-        $res_logros = "No hay logros para Mostrar.";
+        $list_logros = "No hay logros para Mostrar.";
     }
 
-    // Sber si USERS esta vacio
-    if (count($users) > 0) 
+    // Sber si alumnos_grupo esta vacio
+    if (count($alumnos_grupo) > 0) 
     {
                     
-        foreach ($users as $users) 
+        foreach ($alumnos_grupo as $alumnos_grupo) 
         {
-            $notas  = $object->Read_notas($cabecera['id_asignatura'],$users['id_alumno']);
-            $faltas = $object->Read_faltas($cabecera['id_asignatura'],$users['id_alumno']);
+            $notas  = $object->Read_notas($id_asignatura,$alumnos_grupo['id_alumno']);
+            $faltas = $object->Read_faltas($id_asignatura,$alumnos_grupo['id_alumno']);
 
-            if (isset($cabecera['id_asignatura']) and isset($cabecera['id_alumno']))
+            if (isset($id_asignatura) and isset($cabecera['id_alumno']))
             {
                 $show_table_alumnos = "show";
             }
@@ -424,9 +430,9 @@ if (isset($id_asignatura))
             }
 
             // Saber si $id_asignatura & $cabecera['id_alumno'] han sido inicializados
-            if (isset($id_asignatura) and isset($users['id_alumno']))
+            if (isset($id_asignatura) and isset($alumnos_grupo['id_alumno']))
             {                
-                $logros_alumnos = $object->Read_logros_alumno($id_asignatura,$users['id_alumno']);                
+                $logros_alumnos = $object->Read_logros_alumno($id_asignatura,$alumnos_grupo['id_alumno']);                
             }
 
             /** Saber si $logros_alunos han sido inicializados y hay registros encontrados**/
@@ -443,21 +449,21 @@ if (isset($id_asignatura))
             }
 
             //saber si se han iniciado las variables de alumno
-            if (isset($users['primer_apellido']) and isset($users['segundo_apellido']) and isset($users['nombres']) and isset($users['id_alumno']) and isset($cabecera['id_asignatura']) and isset($cabecera['id_anio_lectivo']))
+            if (isset($alumnos_grupo['primer_apellido']) and isset($alumnos_grupo['segundo_apellido']) and isset($alumnos_grupo['nombres']) and isset($alumnos_grupo['id_alumno']) and isset($id_asignatura) and isset($cabecera['id_anio_lectivo']))
             {
                 $data .= '
                     <tr>
                         <td>' . $num. '</td>
-                        <td>' . $users['primer_apellido'] . ' ' .$users['segundo_apellido'] . ' ' .$users['nombres'] .'</td>
-                        <td>' . $users['id_alumno'] . '</td>
-                        <td><span class="'.$editar_tablas_p1.'" id="periodo1" id_alumno="'.$users['id_alumno'].'" name="nota1" materia="'.$cabecera['id_asignatura'].'" anio="'.$cabecera['id_anio_lectivo'].'">'.$res_nota1.'</span></td>
-                        <td><span tipo="falta" class="'.$editar_tablas_p1.'" id="periodo1" id_alumno="'.$users['id_alumno'].'" name="inasistencia_p1" materia="'.$cabecera['id_asignatura'].'" anio="'.$cabecera['id_anio_lectivo'].'">'.$res_falta1.'</span></td>
-                        <td><span class="'.$editar_tablas_p2.'" id="periodo2" id_alumno="'.$users['id_alumno'].'" name="nota2" materia="'.$cabecera['id_asignatura'].'" anio="'.$cabecera['id_anio_lectivo'].'">'.$res_nota2.'</span></td>
-                        <td><span class="'.$editar_tablas_p2.'" id="periodo2" id_alumno="'.$users['id_alumno'].'" name="inasistencia_p2" materia="'.$cabecera['id_asignatura'].'" anio="'.$cabecera['id_anio_lectivo'].'">'.$res_falta2.'</span></td>
-                        <td><span class="'.$editar_tablas_p3.'" id="periodo3" id_alumno="'.$users['id_alumno'].'" name="nota3" materia="'.$cabecera['id_asignatura'].'" anio="'.$cabecera['id_anio_lectivo'].'">'.$res_nota3.'</span></td>
-                        <td><span class="'.$editar_tablas_p3.'" id="periodo3" id_alumno="'.$users['id_alumno'].'" name="inasistencia_p3" materia="'.$cabecera['id_asignatura'].'" anio="'.$cabecera['id_anio_lectivo'].'">'.$res_falta3.'</span></td>
-                        <td><span class="'.$editar_tablas_p4.'" id="periodo4" id_alumno="'.$users['id_alumno'].'" name="nota4" materia="'.$cabecera['id_asignatura'].'" anio="'.$cabecera['id_anio_lectivo'].'">'.$res_nota4.'</span></td>
-                        <td><span class="'.$editar_tablas_p4.'" id="periodo4" id_alumno="'.$users['id_alumno'].'" name="inasistencia_p4" materia="'.$cabecera['id_asignatura'].'" anio="'.$cabecera['id_anio_lectivo'].'">'.$res_falta4.'</span></td>
+                        <td>' . $alumnos_grupo['primer_apellido'] . ' ' .$alumnos_grupo['segundo_apellido'] . ' ' .$alumnos_grupo['nombres'] .'</td>
+                        <td>' . $alumnos_grupo['id_alumno'] . '</td>
+                        <td><span class="'.$editar_tablas_p1.'" id="periodo1" id_alumno="'.$alumnos_grupo['id_alumno'].'" name="nota1" materia="'.$id_asignatura.'" anio="'.$cabecera['id_anio_lectivo'].'">'.$res_nota1.'</span></td>
+                        <td><span tipo="falta" class="'.$editar_tablas_p1.'" id="periodo1" id_alumno="'.$alumnos_grupo['id_alumno'].'" name="inasistencia_p1" materia="'.$id_asignatura.'" anio="'.$cabecera['id_anio_lectivo'].'">'.$res_falta1.'</span></td>
+                        <td><span class="'.$editar_tablas_p2.'" id="periodo2" id_alumno="'.$alumnos_grupo['id_alumno'].'" name="nota2" materia="'.$id_asignatura.'" anio="'.$cabecera['id_anio_lectivo'].'">'.$res_nota2.'</span></td>
+                        <td><span class="'.$editar_tablas_p2.'" id="periodo2" id_alumno="'.$alumnos_grupo['id_alumno'].'" name="inasistencia_p2" materia="'.$id_asignatura.'" anio="'.$cabecera['id_anio_lectivo'].'">'.$res_falta2.'</span></td>
+                        <td><span class="'.$editar_tablas_p3.'" id="periodo3" id_alumno="'.$alumnos_grupo['id_alumno'].'" name="nota3" materia="'.$id_asignatura.'" anio="'.$cabecera['id_anio_lectivo'].'">'.$res_nota3.'</span></td>
+                        <td><span class="'.$editar_tablas_p3.'" id="periodo3" id_alumno="'.$alumnos_grupo['id_alumno'].'" name="inasistencia_p3" materia="'.$id_asignatura.'" anio="'.$cabecera['id_anio_lectivo'].'">'.$res_falta3.'</span></td>
+                        <td><span class="'.$editar_tablas_p4.'" id="periodo4" id_alumno="'.$alumnos_grupo['id_alumno'].'" name="nota4" materia="'.$id_asignatura.'" anio="'.$cabecera['id_anio_lectivo'].'">'.$res_nota4.'</span></td>
+                        <td><span class="'.$editar_tablas_p4.'" id="periodo4" id_alumno="'.$alumnos_grupo['id_alumno'].'" name="inasistencia_p4" materia="'.$id_asignatura.'" anio="'.$cabecera['id_anio_lectivo'].'">'.$res_falta4.'</span></td>
                         <td>' . $res_nota_final . '</td>
                         <td>' . $res_falta_final . '</td>
                         <td>
@@ -466,7 +472,7 @@ if (isset($id_asignatura))
                     </tr>';
                 $num++;
 
-                $data_select .= '<option value="' . $users['id_alumno'] . '">' . $users['primer_apellido'] . ' ' .$users['segundo_apellido'] . ' ' .$users['nombres'] .'</option>';
+                $data_select .= '<option value="' . $alumnos_grupo['id_alumno'] . '">' . $alumnos_grupo['primer_apellido'] . ' ' .$alumnos_grupo['segundo_apellido'] . ' ' .$alumnos_grupo['nombres'] .'</option>';
             }
             
         }
@@ -477,7 +483,7 @@ if (isset($id_asignatura))
         $data .= '<tr><td colspan="6">No hay registros para mostrar!</td></tr>';
     }
      
-    $data .= '<tbody></table>';
+    $data .= '</tbody></table>';
 }
 
 ?>
@@ -592,7 +598,7 @@ if (isset($id_asignatura))
                                 <form id="check_logros" method="POST">
 
                                 <!-- enviar de manera oculta datos id_asignatura e id_anio_lectivo --> 
-                                    <input type="hidden" class="form-control" name="id_asignatura" value="<?php echo $cabecera['id_asignatura']; ?>">
+                                    <input type="hidden" class="form-control" name="id_asignatura" value="<?php echo $id_asignatura; ?>">
                                     <input type="hidden" class="form-control" name="id_anio_lectivo" value="<?php echo $cabecera['id_anio_lectivo']; ?>">
 
                                     <div class="demo-checkbox">
@@ -611,10 +617,10 @@ if (isset($id_asignatura))
 
                                 <!-- Multi Select Alumnos para LOGROS-->
                                     
-                                    <select id="optgroup" name="select_alumnos[]" class="ms" multiple="multiple">
-                                    <?php
-                                        echo $data_select;
-                                     ?>
+                                    <select multiple id="optgroup" name="select_alumnos[]" class="searchable" multiple="multiple">
+                                        <?php
+                                            echo $data_select;
+                                         ?>
                                     </select>
 
                                     <div class="btn-group btn-group-xs" role="group" aria-label="Extra-small button group">
@@ -650,7 +656,7 @@ if (isset($id_asignatura))
                         <div class="collapse" id="UploadFile" role="Upload_file">
                             <button type="button" class="close" data-toggle="collapse" data-target="#UploadFile" aria-label="Close"><span aria-hidden="true">&times;</span></button>
                             <div class="well">
-                                <form action="upload.php?id_asignatura=<?php echo $cabecera['id_asignatura']; ?>&anio_lectivo=<?php echo $cabecera['id_anio_lectivo']; ?>&name_nota=<?php echo $name_nota; ?>&name_falta=<?php echo $name_falta; ?>&id_user=<?php echo $user_id; ?>" id="myForm" name="frmupload" method="post" enctype="multipart/form-data">
+                                <form action="upload.php?id_asignatura=<?php echo $id_asignatura; ?>&anio_lectivo=<?php echo $cabecera['id_anio_lectivo']; ?>&name_nota=<?php echo $name_nota; ?>&name_falta=<?php echo $name_falta; ?>&id_user=<?php echo $user_id; ?>" id="myForm" name="frmupload" method="post" enctype="multipart/form-data">
                                   <input type="file" id="upload_file" name="upload_file" />
                                   <input type="submit" name='submit_image' value="Subir" onclick='upload_image();'/>
                                 </form>
@@ -848,7 +854,7 @@ if (isset($id_asignatura))
                 <div class="modal-body">
                     <form id="Area_new" method="POST">
 
-                        <input type="hidden" class="form-control" name="id_asignatura" value="<?php echo $cabecera['id_asignatura']; ?>">
+                        <input type="hidden" class="form-control" name="id_asignatura" value="<?php echo $id_asignatura; ?>">
           
                         <div class="input-group">
                             <span class="input-group-addon">
