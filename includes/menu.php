@@ -129,13 +129,13 @@ if (isset($_POST['cambiar_pass']))
                         </li>
 
                         <div  style="display: <?php echo $show_menu_admin; ?>;">
-                            <li <?php if (isSite('alumnos-grupo.php','anio_lectivo.php','periodo.php', 'areas.php','asignaturas.php', 'grado.php', 'grupos.php', 'docentes.php' )) echo 'class="active"'; ?>>
+                            <li <?php if (isSite('alumnos_grupo.php','anio_lectivo.php','periodo.php', 'areas.php','asignaturas.php', 'grado.php', 'grupos.php', 'docentes.php' )) echo 'class="active"'; ?>>
                                 <a href="javascript:void(0);" class="menu-toggle">
                                     <i class="material-icons">domain</i>
                                     <span>Administracion</span>
                                 </a>
                                 <ul class="ml-menu">
-                                    <li <?php if (isSite('alumnos-sede.php','alumnos-grupo.php','anio_lectivo.php','periodo.php', 'areas.php','asignaturas.php', 'grado.php', 'grupos.php', 'docentes.php' )) echo 'class="active"'; ?>>
+                                    <li <?php if (isSite('alumnos-sede.php','alumnos_grupo.php','asignatura_docente.php','docente_asignatura.php', 'asignar_directorgrupo.php', 'sedes.php', 'anio_lectivo.php', 'periodo.php', 'areas.php', 'asignaturas.php', 'grado.php', 'grupos.php', 'docentes.php')) echo 'class="active"'; ?>>
                                         <a href="javascript:void(0);" class="menu-toggle">
                                             <span>Asignar</span>
                                         </a>
@@ -143,17 +143,17 @@ if (isset($_POST['cambiar_pass']))
                                             <li <?php if (isSite('alumnos-sede.php')) echo 'class="active"'; ?>>
                                                 <a href="../pages/alumnos-sede.php">Alumno - Sede</a>
                                             </li>
-                                            <li <?php if (isSite('alumnos-grupo.php')) echo 'class="active"'; ?>>
-                                                <a href="../pages/alumnos-grupo.php">Alumno - Grupo</a>
+                                            <li <?php if (isSite('alumnos_grupo.php')) echo 'class="active"'; ?>>
+                                                <a href="../pages/alumnos_grupo.php">Alumno - Grupo</a>
                                             </li>
-                                            <li <?php if (isSite('anio_lectivo.php')) echo 'class="active"'; ?>>
-                                                <a href="../pages/anio_lectivo.php">Asignatura - Grupo</a>
+                                            <li <?php if (isSite('asignatura_grupo.php')) echo 'class="active"'; ?>>
+                                                <a href="../pages/asignatura_grupo.php">Asignatura - Grupo</a>
                                             </li>
-                                            <li <?php if (isSite('periodo.php')) echo 'class="active"'; ?>>
-                                                <a href="../pages/periodo.php">Docente - Asignatura</a>
+                                            <li <?php if (isSite('docente_asignatura.php')) echo 'class="active"'; ?>>
+                                                <a href="../pages/docente_asignatura.php">Docente - Asignatura</a>
                                             </li>
-                                            <li <?php if (isSite('areas.php')) echo 'class="active"'; ?>>
-                                                <a href="../pages/areas.php">Director Grupo</a>
+                                            <li <?php if (isSite('asignar_directorgrupo.php')) echo 'class="active"'; ?>>
+                                                <a href="../pages/asignar_directorgrupo.php">Director Grupo</a>
                                             </li>
                                         </ul>
                                     </li>

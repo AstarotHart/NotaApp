@@ -158,6 +158,40 @@ class USER
     /* -------------F U N C I O N E S  A D M I N I S T R A D O R ----------*/
 
     /**
+     * [anio_lectivo_activo description]
+     * @param  [type] $id_estado [description]
+     * @return [type]            [description]
+     */
+    public function anio_lectivo_activo($id_estado)
+    {
+        $query = $this->conn->prepare('SELECT * FROM anio_lectivo WHERE id_estado = :id_estado');
+        $query->bindParam(":id_estado",$id_estado);
+        $query->execute();
+        $data = array();
+        while ($row = $query->fetch(PDO::FETCH_ASSOC)) {
+            $data[] = $row;
+        }
+        return $data;
+    }
+
+    /**
+     * [nombre_sede description]
+     * @param  [type] $id_sede [description]
+     * @return [type]          [description]
+     */
+    public function nombre_sede($id_sede)
+    {
+        $query = $this->conn->prepare('SELECT * FROM sede WHERE id_sede = :id_sede');
+        $query->bindParam(":id_sede",$id_sede);
+        $query->execute();
+        $data = array();
+        while ($row = $query->fetch(PDO::FETCH_ASSOC)) {
+            $data[] = $row;
+        }
+        return $data;
+    }
+
+    /**
      * Combobox para cargar SEDES
      */
     public function combobox_sede()
@@ -852,8 +886,8 @@ class USER
 		{
 			$new_password = password_hash($pass, PASSWORD_DEFAULT);
 
-			$stmt = $this->conn->prepare("INSERT INTO docente(id_docente,id_tipo_usuario,nombres,prim_apellido,seg_apellido,email,pass,id_sede) 
-		                                  VALUES(:cc,:id_tipo,:nombre,:prim_ape,:seg_ape,:email,:new_password,:id_sede)");
+			$stmt = $this->conn->prepare("INSERT INTO docente(id_docente,id_tipo_usuario,nombres,prim_apellido,seg_apellido,email,pass,id_sede,estado) 
+		                                  VALUES(:cc,:id_tipo,:nombre,:prim_ape,:seg_ape,:email,:new_password,:id_sede, 1)");
 												  
 			$stmt->bindparam(":cc", $cc);
             $stmt->bindparam(":id_tipo", $id_tipo);
@@ -1021,6 +1055,22 @@ class USER
     {
         $query = $this->conn->prepare('SELECT AL.id_alumno,AL.nombres,AL.primer_apellido,AL.segundo_apellido FROM asig_alumno_grupo AAG inner join alumno AL ON AAG.id_alumno = AL.id_alumno WHERE AAG.id_grupo = :id_grupo ORDER BY AL.primer_apellido ');
         $query->bindParam(":id_grupo",$id_grupo);
+        $query->execute();
+        $data = array();
+        while ($row = $query->fetch(PDO::FETCH_ASSOC)) {
+            $data[] = $row;
+        }
+        return $data;
+    }
+
+    /**
+     * [Read_docente_asig_grupo description]
+     * @param [type] $id_sede [description]
+     */
+    public function Read_docente_asig_grupo($id_sede)
+    {
+        $query = $this->conn->prepare('SELECT * FROM docente DOC inner join sede SE ON DOC.id_sede = SE.id_sede WHERE DOC.id_sede = :id_sede AND DOC.id_tipo_usuario = 3 ORDER BY DOC.prim_apellido');
+        $query->bindParam(":id_sede",$id_sede);
         $query->execute();
         $data = array();
         while ($row = $query->fetch(PDO::FETCH_ASSOC)) {
@@ -1472,6 +1522,66 @@ class USER
     }
 
     /**
+     * [asignar_director_grupo description]
+     * @param  [type] $id_docente      [description]
+     * @param  [type] $id_grupo        [description]
+     * @param  [type] $id_anio_lectivo [description]
+     * @return [type]                  [description]
+     */
+    public function asignar_director_grupo($id_docente,$id_grupo,$id_anio_lectivo)
+    {
+        $res ="false";
+
+        try
+        {
+            $stmt1 = $this->conn->prepare("SELECT id_docente FROM asig_director_grupo WHERE id_docente=:id_docente AND id_anio_lectivo=:id_anio_lectivo");
+
+            $stmt1->execute(array(
+                                  ':id_docente'   => $id_docente,
+                                  ':id_anio_lectivo'   => $id_anio_lectivo 
+                                    ));
+
+
+            $userRow=$stmt1->fetch(PDO::FETCH_ASSOC);
+
+            if($stmt1->rowCount() == 1)
+            {
+
+                $stmt=$this->conn->prepare("UPDATE asig_director_grupo SET id_grupo = :id_grupo WHERE id_docente=:id_docente AND id_anio_lectivo=:id_anio_lectivo");
+
+                $stmt->bindparam(":id_anio_lectivo", $id_anio_lectivo);
+                $stmt->bindparam(":id_docente", $id_docente);
+                $stmt->bindparam(":id_grupo", $id_grupo);
+
+                $stmt->execute();
+
+                $res = "true";
+            }
+            else
+            {
+                $stmt2 = $this->conn->prepare("INSERT INTO asig_director_grupo(id_docente,id_anio_lectivo,id_grupo) 
+                                          VALUES(:id_docente,:id_anio_lectivo,:id_grupo)");
+                                                  
+                $stmt2->bindparam(":id_docente", $id_docente);
+                $stmt2->bindparam(":id_anio_lectivo", $id_anio_lectivo);
+                $stmt2->bindparam(":id_grupo", $id_grupo);                                  
+                    
+                $stmt2->execute();   
+
+                $res = "true";
+            }
+
+            return $res;           
+        }
+
+        catch(PDOException $e)
+        {
+            echo $e->getMessage();
+            return false;
+        } 
+    }
+
+    /**
      * [update_logro description]
      * @param  [type] $id_logro [description]
      * @param  [type] $logro    [description]
@@ -1793,7 +1903,7 @@ class USER
             if($stmt->rowCount() == 1)
             {
             
-                $stmt=$this->conn->prepare("UPDATE docente SET estado=:pass WHERE id_docente=:id_docente");
+                $stmt=$this->conn->prepare("UPDATE docente SET contra=:pass WHERE id_docente=:id_docente");
 
                 $stmt->bindparam(":pass",$pass);
                 $stmt->bindparam(":id_docente",$id_docente);
