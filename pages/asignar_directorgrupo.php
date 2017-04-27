@@ -207,7 +207,7 @@ if (isset($id_sede))
                                 <form id="check_logros" method="POST">
 
                                 <!-- enviar de manera oculta datos id_asignatura e id_anio_lectivo --> 
-                                    <input type="text" class="form-control" name="id_anio_lectivo" value="<?php echo $cabecera['id_anio_lectivo']; ?>">
+                                    <input type="hidden" class="form-control" name="id_anio_lectivo" value="<?php echo $cabecera['id_anio_lectivo']; ?>">
 
                                     <select class="form-control show-tick" name="id_grupo" id="getGrupo" size="3" tabindex="1">
                                         <option value="">-- Seleccione Grupo --</option>

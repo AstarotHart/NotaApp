@@ -463,26 +463,64 @@ class USER
      * @param  [type] $id_docente      [description]
      * @param  [type] $id_asignatura   [description]
      * @param  [type] $id_anio_lectivo [description]
+     * @param  [type] $id_grupo        [description]
      * @return [type]                  [description]
      */
-    public function asignar_docente_asignatura($id_docente,$id_asignatura,$id_anio_lectivo)
+    public function asignar_docente_asignatura($id_docente,$id_asignatura,$id_anio_lectivo,$id_grupo)
     {
+        $res ="false";
+
         try
         {
-            $stmt = $this->conn->prepare("INSERT INTO asig_docente_asignatura(id_docente,id_asignatura,id_anio_lectivo) 
-                                          VALUES(:id_docente,:id_asignatura,:id_anio_lectivo)");
+            $stmt1 = $this->conn->prepare("SELECT id_docente FROM asig_docente_asignatura WHERE id_docente=:id_docente AND id_anio_lectivo=:id_anio_lectivo AND id_asignatura=:id_asignatura AND id_grupo=:id_grupo");
+
+            $stmt1->execute(array(
+                                  ':id_docente'   => $id_docente,
+                                  ':id_anio_lectivo'   => $id_anio_lectivo, 
+                                  ':id_asignatura'   => $id_asignatura, 
+                                  ':id_grupo'   => $id_grupo 
+                                    ));
+
+
+            $userRow=$stmt1->fetch(PDO::FETCH_ASSOC);
+
+            if($stmt1->rowCount() == 1)
+            {
+
+                $stmt=$this->conn->prepare("UPDATE asig_docente_asignatura SET id_asignatura = :id_asignatura WHERE id_docente=:id_docente AND id_anio_lectivo=:id_anio_lectivo AND id_grupo=:id_grupo");
+
+                $stmt->bindparam(":id_anio_lectivo", $id_anio_lectivo);
+                $stmt->bindparam(":id_docente", $id_docente);
+                $stmt->bindparam(":id_asignatura", $id_asignatura);
+                $stmt->bindparam(":id_grupo", $id_grupo);
+
+                $stmt->execute();
+
+                $res = "true";
+            }
+            else
+            {
+                $stmt2 = $this->conn->prepare("INSERT INTO asig_docente_asignatura(id_docente,id_asignatura,id_anio_lectivo,id_grupo) 
+                                          VALUES(:id_docente,:id_asignatura,:id_anio_lectivo,:id_grupo)");
                                                   
-            $stmt->bindparam(":id_docente", $id_docente);
-            $stmt->bindparam(":id_asignatura", $id_asignatura);
-            $stmt->bindparam(":id_anio_lectivo", $id_anio_lectivo);                                 
-                
-            $stmt->execute();   
-            
-            return $stmt;   
+                $stmt2->bindparam(":id_docente", $id_docente);
+                $stmt2->bindparam(":id_asignatura", $id_asignatura); 
+                $stmt2->bindparam(":id_anio_lectivo", $id_anio_lectivo);
+                $stmt2->bindparam(":id_grupo", $id_grupo);
+                                                 
+                    
+                $stmt2->execute();   
+
+                $res = "true";
+            }
+
+            return $res;           
         }
+
         catch(PDOException $e)
         {
             echo $e->getMessage();
+            return false;
         }               
     }
 
@@ -598,6 +636,22 @@ class USER
     public function Read_grupos_sede($id_sede)
     {
         $query = $this->conn->prepare('SELECT * FROM grupo GRU inner join grado GRA ON GRA.id_grado = GRU.id_grado WHERE GRA.id_sede = :id_sede');
+        $query->bindparam(":id_sede",$id_sede);
+        $query->execute();
+        $data = array();
+        while ($row = $query->fetch(PDO::FETCH_ASSOC)) {
+            $data[] = $row;
+        }
+        return $data;
+    }
+
+    /**
+     * [Read_asignaturas_sede description]
+     * @param [type] $id_sede [description]
+     */
+    public function Read_asignaturas_sede($id_sede)
+    {
+        $query = $this->conn->prepare('SELECT * FROM asignatura ASI inner join area AR ON AR.id_area = ASI.id_area WHERE AR.id_sede = :id_sede');
         $query->bindparam(":id_sede",$id_sede);
         $query->execute();
         $data = array();
