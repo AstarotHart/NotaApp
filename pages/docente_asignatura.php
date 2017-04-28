@@ -106,6 +106,7 @@ if (isset($_POST['asignar_docente_asignatura']))
         }
 
         $asignatura = $object_docente_grupo->Read_asignaturas_sede($id_sede);
+        $asignatura_asig = $object_docente_grupo->Read_asignaturas_asig_asignatura($id_sede);
         $grupos = $object_docente_grupo->Read_grupos_sede($id_sede);
         $nombre_sede = $object_docente_grupo->nombre_sede($id_sede);
 
@@ -115,18 +116,41 @@ if (isset($_POST['asignar_docente_asignatura']))
         }
 
         $docentes = $object_docente_grupo->Read_docente_sede($id_sede);
-        $res_grupos  = " ";      
+        $res_grupos  = " ";
+
+        //print_r($asignatura_asig); 
+
+        //print_r($asignatura);   
 
 
         // Sber si alumnos_grupo esta vacio
         if (count($asignatura) > 0) 
-        {      
-            foreach ($asignatura as $asignatura) 
+        {  
+            $foundflag=false;
+            foreach($asignatura_asig as $item)
             {
-                $data_select .= '<option value="' . $asignatura['id_asignatura'] . '">' . $asignatura['nombre_asignatura'] .'</option>';                
+                 foreach($asignatura as $item1)
+                 {
+                    if($item['id_asignatura'] == $item1['id_asignatura'])
+                    {
+                       $foundflag = true;
+                       $array[]=$item1['id_asignatura'];
+                    }
+                }
+                if(!$foundflag)
+                {
+                    $data_select .= '<option value="' . $item['id_asignatura'] . '">' . $item['nombre_asignatura'] .'</option>';
+                }
+            }
+            foreach($asignatura as $item1)
+            {
+                 if(!(in_array($item1['id_asignatura'],$array)))
+                 {
+                    $data_select .= '<option value="' . $item1['id_asignatura'] . '">' . $item1['nombre_asignatura'] .'</option>';
+                 }
             }
         }
-        
+
     }
     
 

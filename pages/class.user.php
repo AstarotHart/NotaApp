@@ -662,6 +662,22 @@ class USER
     }
 
     /**
+     * [Read_asignaturas_asig_asignatura description]
+     * @param [type] $id_sede [description]
+     */
+    public function Read_asignaturas_asig_asignatura($id_sede)
+    {
+        $query = $this->conn->prepare('SELECT * FROM asignatura ASI inner join area AR inner join asig_docente_asignatura ADA ON AR.id_area = ASI.id_area AND ADA.id_asignatura = ASI.id_asignatura WHERE AR.id_sede = :id_sede');
+        $query->bindparam(":id_sede",$id_sede);
+        $query->execute();
+        $data = array();
+        while ($row = $query->fetch(PDO::FETCH_ASSOC)) {
+            $data[] = $row;
+        }
+        return $data;
+    }
+
+    /**
      * [Read_grupos_sede description]
      * @param [type] $id_sede [description]
      */
