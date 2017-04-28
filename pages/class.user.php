@@ -530,33 +530,24 @@ class USER
      * @param  [type] $nombre_area [description]
      * @return [type]              [description]
      */
-    public function register_asignaturas($id_docente,$id_area,$nombre_asignatura,$intensidad_horaria,$porcentaje,$id_grupo,$id_anio_lectivo)
+    public function register_asignaturas($id_area,$nombre_asignatura,$intensidad_horaria,$porcentaje)
     {
 
         $id_asignatura=$id_area;
 
         $iniciales_asignatura = $this->iniciales($nombre_asignatura);
-        $asignar_doc_asig = $this->asignar_docente_asignatura($id_docente,$id_asignatura,$id_anio_lectivo);
 
         $id_asignatura.="-".$iniciales_asignatura;
 
-        $num_grado = $this->Read_grupos_id($id_grupo);
-
-        foreach ($num_grado as $num_grado) 
-        {
-            $id_asignatura.= $num_grado['descripcion_grupo'];
-        }
 
 
         try
         {
-            $stmt = $this->conn->prepare("INSERT INTO asignatura(id_asignatura,id_area,id_docente,id_grupo,nombre_asignatura,intensidad_horaria,porcentaje) 
-                                          VALUES(:id_asignatura,:id_area,:id_docente,:id_grupo,:nombre_asignatura,:intensidad_horaria,:porcentaje)");
+            $stmt = $this->conn->prepare("INSERT INTO asignatura(id_asignatura,id_area,nombre_asignatura,intensidad_horaria,porcentaje) 
+                                          VALUES(:id_asignatura,:id_area,:nombre_asignatura,:intensidad_horaria,:porcentaje)");
                                                   
             $stmt->bindparam(":id_asignatura", $id_asignatura);
-            $stmt->bindparam(":id_grupo", $id_grupo);
             $stmt->bindparam(":id_area", $id_area);
-            $stmt->bindparam(":id_docente", $id_docente);
             $stmt->bindparam(":nombre_asignatura", $nombre_asignatura);
             $stmt->bindparam(":intensidad_horaria", $intensidad_horaria);
             $stmt->bindparam(":porcentaje", $porcentaje);                                 
@@ -572,7 +563,7 @@ class USER
     }
 
     /**
-     * [Read_asignaturas description]
+     * [Read_grados description]
      */
     public function Read_grados()
     {
@@ -616,11 +607,11 @@ class USER
     }
 
     /**
-     * [Read_asignaturas description]
+     * [Read_grupos description]
      */
     public function Read_grupos()
     {
-        $query = $this->conn->prepare("SELECT * FROM grupo GP inner join grado GD inner join docente D inner join sede S ON GP.id_grado = GD.id_grado AND GP.id_docente = D.id_docente AND GD.id_sede = S.id_sede");
+        $query = $this->conn->prepare("SELECT * FROM grupo GP inner join grado GD inner join sede S ON GP.id_grado = GD.id_grado AND GD.id_sede = S.id_sede");
         $query->execute();
         $data = array();
         while ($row = $query->fetch(PDO::FETCH_ASSOC)) {
@@ -736,20 +727,19 @@ class USER
      * @param  [type] $id_sede           [description]
      * @return [type]                    [description]
      */
-    public function register_grupos($id_grado,$id_docente,$descripcion_grupo,$id_sede)
+    public function register_grupos($id_grado,$descripcion_grupo,$id_sede)
     {
         $id_grupo=$id_grado;
         $id_grupo.="-".$descripcion_grupo;
 
         try
         {
-            $stmt = $this->conn->prepare("INSERT INTO grupo(id_grupo,id_grado,id_docente,descripcion_grupo) 
-                                          VALUES(?,?,?,?)");
+            $stmt = $this->conn->prepare("INSERT INTO grupo(id_grupo,id_grado,descripcion_grupo) 
+                                          VALUES(?,?,?)");
                                                   
             $stmt->bindparam(1, $id_grupo);
             $stmt->bindparam(2, $id_grado);
-            $stmt->bindparam(3, $id_docente);
-            $stmt->bindparam(4, $descripcion_grupo);                                 
+            $stmt->bindparam(3, $descripcion_grupo);                                 
                 
             $stmt->execute();   
             
@@ -820,8 +810,8 @@ class USER
         try
         {
         //---- Ingresar en la base de datos Año lectivo
-            $stmt_anio = $this->conn->prepare("INSERT INTO anio_lectivo(id_anio_lectivo, id_sede, descripcion_anio_lectivo, fecha_inicio, fecha_fin) 
-                                          VALUES(?, ?, ?, ?, ?)");
+            $stmt_anio = $this->conn->prepare("INSERT INTO anio_lectivo(id_anio_lectivo, id_sede, descripcion_anio_lectivo, fecha_inicio, fecha_fin,id_estado) 
+                                          VALUES(?, ?, ?, ?, ?, '1')");
                 
         /** Insertar datos Año lectivo */                               
             $stmt_anio->bindparam(1, $id_anio_lectivo);
@@ -1083,6 +1073,19 @@ class USER
         return $data;
     }
 
+
+    public function Read_alumnos()
+    {
+        $query = $this->conn->prepare('SELECT * FROM docente WHERE id_sede = :id_sede AND id_tipo_usuario = "3"');
+        $query->bindParam(":id_sede",$id_sede);
+        $query->execute();
+        $data = array();
+        while ($row = $query->fetch(PDO::FETCH_ASSOC)) {
+            $data[] = $row;
+        }
+        return $data;
+    }
+
     /**
      * [Read_alumnos_grupo description]
      * @param [type] $id_docente [description]
@@ -1176,7 +1179,6 @@ class USER
     {
         try 
         {
-
             $query = $this->conn->prepare('SELECT * FROM grupo GRU inner join Grado GRA  inner join asig_alumno_grupo AAG ON
             AAG.id_grupo = GRU.id_grupo AND GRU.id_grado = GRA.id_grado WHERE GRU.id_grupo = :id_grupo AND GRA.id_sede = :id_sede');
             $query->bindParam(":id_grupo",$id_grupo);

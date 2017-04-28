@@ -8,14 +8,17 @@ $show_table= "none";
 if (isset($_POST['crear'])) 
 {
     $id_grado=$_POST['id_grado'];
-    $id_docente=$_POST['id_docente'];
     $nombre_grupo=$_POST['nombre_grupo'];
     $id_sede=$_POST['id_sede'];
+
+    echo "id grado: ".$id_grado."<br>";
+    echo "nombre_grupo: ".$nombre_grupo."<br>";
+    echo "id sede: ".$id_sede."<br>";
 
     /**
      * Llamada a funcion para actualizar los datos del docente
      */
-    if(($grupo->register_grupos($id_grado,$id_docente,$nombre_grupo,$id_sede))==true)
+    if(($grupo->register_grupos($id_grado,$nombre_grupo,$id_sede))==true)
     {
         echo '<script type="text/javascript">';
         echo 'setTimeout(function () { swal("Grupo Creado","","success");';
@@ -84,7 +87,6 @@ if (isset($_POST['crear']))
                                                             <th>Nombre</th>
                                                             <th>Grado</th>
                                                             <th>Sede</th>
-                                                            <th>Director Grupo</th>
                                                             <th>Acciones</th>
                                                         </tr>
                                                     <thead>
@@ -103,7 +105,6 @@ if (isset($_POST['crear']))
                                                         <td>' . $grupo['descripcion_grupo'] . '</td>
                                                         <td>' . $grupo['descripcion_grado'] . '</td>
                                                         <td>' . $grupo['descripcion_sede'] . '</td>
-                                                        <td>' . $grupo['nombres'] . ' ' . $grupo['prim_apellido'] . '</td>
                                                         <td>
                                                             <div class="btn-group" role="group">
                                                                 <button data-toggle="modal" data-target="#view-modal" data-id="'.$grupo['id_grupo'].'" id="getUser" class="btn btn-primary btn-xs waves-effect"><i class="material-icons">info_outline    </i></button>
@@ -260,7 +261,7 @@ if (isset($_POST['crear']))
                             </div>
                         </div>
                         
-                        <div class="input-group">
+                        <!-- <div class="input-group">
                             <span class="input-group-addon">
                                 <i class="material-icons">person</i>
                             </span>
@@ -269,7 +270,7 @@ if (isset($_POST['crear']))
                                         
                             </select>
                             </div>
-                        </div>
+                        </div> -->
 
                         <div class="input-group">
                             <span class="input-group-addon">

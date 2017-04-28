@@ -7,10 +7,10 @@ $grupos                 =   new USER();
 $nombre_sede            =   new USER();
 $asignar_docente_asignatura =   new USER();
 
-$show_table_alumnos = "none";
-$show_table_logros  = "none";
-$show_combox_grupo  =  "show";
-$res_logros_alumno  = " ";
+$show_table_asignatura =   "none";
+$show_table_logros  =   "none";
+$show_combox_grupo  =   "show";
+$res_logros_alumno  =   " ";
 
 
 //saber si el boton CREAR de logro a sido inicializado
@@ -18,7 +18,7 @@ if (isset($_POST['asignar_docente_asignatura']))
 {
     $id_grupo=$_POST['id_grupo'];
     $id_docente=$_POST['id_docente'];
-    $id_asignatura=$_POST['select_alumnos'];
+    $id_asignatura=$_POST['select_asignatura'];
     $id_anio_lectivo= $_POST['id_anio_lectivo'];
 
     foreach ($id_asignatura as $id_asignatura)
@@ -30,13 +30,13 @@ if (isset($_POST['asignar_docente_asignatura']))
     if($asignar_docente_asignatura==true)
     {
         echo '<script type="text/javascript">';
-        echo 'setTimeout(function () { swal("Asignaturas Asignadas.","","success");';
+        echo 'setTimeout(function () { swal("asignaturas Asignadas.","","success");';
         echo '}, 1000);</script>';
      }
      else
      {
         echo '<script type="text/javascript">';
-        echo 'setTimeout(function () { swal("Asignaturas NO Asignadas.","","error");';
+        echo 'setTimeout(function () { swal("asignaturas NO Asignadas.","","error");';
         echo '}, 1000);</script>';
      }
      
@@ -101,12 +101,13 @@ if (isset($_POST['asignar_docente_asignatura']))
         {                        
             foreach ($cabecera as $cabecera) 
             {
-                $show_table_alumnos= "show";
+                $show_table_asignatura= "show";
             }
         }
 
         $asignatura = $object_docente_grupo->Read_asignaturas_sede($id_sede);
         $asignatura_asig = $object_docente_grupo->Read_asignaturas_asig_asignatura($id_sede);
+
         $grupos = $object_docente_grupo->Read_grupos_sede($id_sede);
         $nombre_sede = $object_docente_grupo->nombre_sede($id_sede);
 
@@ -118,14 +119,13 @@ if (isset($_POST['asignar_docente_asignatura']))
         $docentes = $object_docente_grupo->Read_docente_sede($id_sede);
         $res_grupos  = " ";
 
-        //print_r($asignatura_asig); 
 
-        //print_r($asignatura);   
-
-
-        // Sber si alumnos_grupo esta vacio
+        // Sber si asignatura_grupo esta vacio
         if (count($asignatura) > 0) 
         {  
+            $foundflag=false;
+            $array[]=array();
+            
             $foundflag=false;
             foreach($asignatura_asig as $item)
             {
@@ -142,9 +142,10 @@ if (isset($_POST['asignar_docente_asignatura']))
                     $data_select .= '<option value="' . $item['id_asignatura'] . '">' . $item['nombre_asignatura'] .'</option>';
                 }
             }
+
             foreach($asignatura as $item1)
             {
-                 if(!(in_array($item1['id_asignatura'],$array)))
+                if(!(in_array($item1['id_asignatura'],$array)))
                  {
                     $data_select .= '<option value="' . $item1['id_asignatura'] . '">' . $item1['nombre_asignatura'] .'</option>';
                  }
@@ -166,7 +167,7 @@ if (isset($_POST['asignar_docente_asignatura']))
                 <div class="card">
                     <div class="header" style="padding-bottom: 10px;"">
                         <h2>
-                            Asignaturas-Grupos<small>Asignar Asignaturas a grupos.</small>
+                            asignaturas-Grupos<small>Asignar asignaturas a grupos.</small>
                         </h2>
                         
                         <?php 
@@ -185,7 +186,7 @@ if (isset($_POST['asignar_docente_asignatura']))
                         else
                         {
                             ?>
-                            <!-- form para seleccionar GRUPO por ASIGNATURA -->
+                            <!-- form para seleccionar GRUPO por asignatura -->
                             <form style="margin-bottom: 2px;" method="POST">
                                 <div class="row clearfix">
                                     <div class="col-lg-3 col-md-3 col-sm-3 col-xs-6">
@@ -214,11 +215,11 @@ if (isset($_POST['asignar_docente_asignatura']))
                     </div>
                     
 
-                    <div class="body" style="display: <?php echo $show_table_alumnos; ?>;>
+                    <div class="body" style="display: <?php echo $show_table_asignatura; ?>;>
                     
 
             <!-- Div mostrar u ocultar tablas -->
-                <div  style="display: <?php echo $show_table_alumnos; ?>;">
+                <div  style="display: <?php echo $show_table_asignatura; ?>;">
 
                     <div class="card">
                         <div class="body" style="padding-top: 10px;">
@@ -269,9 +270,9 @@ if (isset($_POST['asignar_docente_asignatura']))
 
                                     <br>
 
-                                <!-- Multi Select Alumnos para LOGROS-->
+                                <!-- Multi Select asignatura para LOGROS-->
                                     
-                                    <select multiple id="optgroup" name="select_alumnos[]" class="searchable">
+                                    <select multiple id="optgroup" name="select_asignatura[]" class="searchable">
                                         <?php
                                             echo $data_select;
                                          ?>

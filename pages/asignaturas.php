@@ -7,18 +7,15 @@ $show_table= "none";
 
 if (isset($_POST['crear'])) 
 {
-    $id_docente         = $_POST['id_docente'];
     $id_area            = $_POST['id_area'];
     $nombre_asignatura  = $_POST['nombre_asignatura'];
     $intensidad_horaria = $_POST['intensidad_horaria'];
     $porcentaje         = $_POST['porcentaje'];
-    $id_grupo           = $_POST['id_grupo'];
-    $id_anio_lectivo    = $_POST['id_anio_lectivo'];
 
     /**
      * Llamada a funcion para actualizar los datos del docente
      */
-    if(($asignatura->register_asignaturas($id_docente,$id_area,$nombre_asignatura,$intensidad_horaria,$porcentaje,$id_grupo,$id_anio_lectivo))==true)
+    if(($asignatura->register_asignaturas($id_area,$nombre_asignatura,$intensidad_horaria,$porcentaje))==true)
     {
         echo '<script type="text/javascript">';
         echo 'setTimeout(function () { swal("Asignatura Creada","","success");';
@@ -92,7 +89,10 @@ if (isset($_POST['actualizar_logro']))
                     <div class="body">
                         
                     <?php 
-                        $asignaturas = $object->Read_asignaturas();
+
+                        $id_sede = "IE";
+                        $asignaturas = $object->Read_asignaturas_sede($id_sede);
+
                                  
                             if (count($asignaturas) > 0) $show_table= "show";
                     ?>
@@ -108,8 +108,6 @@ if (isset($_POST['actualizar_logro']))
                                                         <tr>
                                                             <th>Codigo</th>
                                                             <th>Nombre</th>
-                                                            <th>Sede</th>
-                                                            <th>Docente</th>
                                                             <th>Area</th>
                                                             <th>Intesidad Horaria</th>
                                                             <th>Porcentaje</th>
@@ -129,9 +127,7 @@ if (isset($_POST['actualizar_logro']))
                                         $data .=    '<tr>
         
                                                         <td>' . $asignatura['id_asignatura'] . '</td>
-                                                        <td>' . $asignatura['nombre_asignatura'] . '</td>
-                                                        <td>' . $asignatura['descripcion_sede'] . '</td>
-                                                        <td>' . $asignatura['nombres'] . ' ' . $asignatura['prim_apellido'] . '</td>
+                                                        <td>' . $asignatura['nombre_asignatura'] . '</td>                                                    
                                                         <td>' . $asignatura['nombre_area'] . '</td>
                                                         <td>' . $asignatura['intensidad_horaria'] . '</td>
                                                         <td>' . $asignatura['porcentaje'] . '</td>
@@ -148,7 +144,6 @@ if (isset($_POST['actualizar_logro']))
 
                                     }
                                 } else {
-                                    // records not found
                                     $data .= '<tr><td colspan="6">No hay registros para mostrar!</td></tr>';
                                 }
                                  
@@ -352,56 +347,10 @@ if (isset($_POST['actualizar_logro']))
 
                         <div class="input-group">
                             <span class="input-group-addon">
-                                <i class="material-icons">account_balance</i>
-                            </span>
-                            <div class="form-line">
-                                <select class="form-control show-tick" name="id_sede" id="getDocentes">
-                                        <option value="">-- Seleccione Sede --</option>
-                                        <?php 
-                                            $user = $object->combobox_sede();
-                                        ?>
-                            </select>
-                            </div>
-                        </div>
-
-                        <div class="input-group">
-                            <span class="input-group-addon">
-                                <i class="material-icons">person</i>
-                            </span>
-                            <div class="form-line">
-                                <select class="form-control show-tick" name="id_anio_lectivo" id="display4">
-                                        
-                            </select>
-                            </div>
-                        </div>
-                        
-                        <div class="input-group">
-                            <span class="input-group-addon">
-                                <i class="material-icons">person</i>
-                            </span>
-                            <div class="form-line">
-                                <select class="form-control show-tick" name="id_docente" id="display">
-                                        
-                            </select>
-                            </div>
-                        </div>
-
-                        <div class="input-group">
-                            <span class="input-group-addon">
                                 <i class="material-icons">dns</i>
                             </span>
                             <div class="form-line">
                                 <select class="form-control show-tick" name="id_area" id="display2">
-                            </select>
-                            </div>
-                        </div>
-                        
-                        <div class="input-group">
-                            <span class="input-group-addon">
-                                <i class="material-icons">label</i>
-                            </span>
-                            <div class="form-line">
-                                <select class="form-control show-tick" name="id_grupo" id="display3">
                             </select>
                             </div>
                         </div>

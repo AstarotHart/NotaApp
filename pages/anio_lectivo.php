@@ -136,7 +136,7 @@ if (isset($_POST['crear']))
                                                             <th>Fecha Finalizacion</th>
                                                             <th>Acciones</th>
                                                         </tr>
-                                                    <thead>
+                                                    </thead>
 
                                                     <tbody>
 
@@ -168,7 +168,7 @@ if (isset($_POST['crear']))
                                     }
                                 }
                                  
-                                $data .= '<tbody></table>';
+                                $data .= '</tbody></table>';
                                  
                                 echo $data;
                                 

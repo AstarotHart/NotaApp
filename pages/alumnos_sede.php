@@ -8,7 +8,7 @@ $nombre_sede    =   new USER();
 $asignar_alumno    =   new USER();
 
 $show_table_alumnos = "show";
-$show_table_logros  = "show";
+$show_table_logros  = "none";
 $show_combox_grupo  = "show";
 $res_logros_alumno  = " ";
 
@@ -23,7 +23,6 @@ if (isset($_POST['asignar_alumno']))
 
     foreach ($id_alumno as $id_alumno)
     {
-
         $asignar_alumno->cambio_alumno_grupo($id_grupo_new,$id_alumno,$id_anio_lec);
     }
    
@@ -60,58 +59,31 @@ if (isset($_POST['asignar_alumno']))
     //saber si el boton ACEPTAR de seleccionde SEDE a sido inicializado
     if (isset($_POST['btn-select-SE'])) 
     {
-        $_SESSION['id_sede']=$_POST['id_sede'];
-    }
-
-    //saber si el boton ACEPTAR de seleccionde GRUPO a sido inicializado
-    if (isset($_POST['btn-select-GR'])) 
-    {
-        $_SESSION['id_grupo']=$_POST['id_grupo'];
+        $_SESSION['id_sede_asig_alum_sede']=$_POST['id_sede'];
     }
 
     //saber si el boton CAMBIAR SEDE Y GRUPO a sido inicializado
     if (isset($_POST['btn-select-destroy'])) 
     {
-        $_SESSION['id_sede'] = null;
+        $_SESSION['id_sede_asig_alum_sede'] = null;
         $_SESSION['id_grupo'] = null;
     }
 
     //Saber si si la variable de session ID_SEDE
-    if (isset($_SESSION['id_sede']))
+    if (isset($_SESSION['id_sede_asig_alum_sede']))
     {
-        $id_sede = $_SESSION['id_sede'];
-    }
-
-    //Saber si si la variable de session ID_GRUPO
-    if (isset($_SESSION['id_grupo']))
-    {
-        $id_grupo = $_SESSION['id_grupo'];
+        $id_sede = $_SESSION['id_sede_asig_alum_sede'];
     }
 
     //Saber si si la variable ID_SEDE E ID_GRUPO
-    if (isset($id_sede) and isset($id_grupo))
-    {
-        $cabecera = $object->Read_cabecera_asig_grupo($id_grupo,$id_sede);
-        
+    if (isset($id_sede))
+    {        
         $num = 1;
 
         $data_select = "";
-        
-        // Cargar datos en un array con CABECERA
-        if (count($cabecera) > 0) 
-        {                        
-            foreach ($cabecera as $cabecera) 
-            {
-                $show_table_alumnos= "show";
-            }
-        }
-
-        //saber si la variable $id_asignatura fue inicializada
-        if (isset($id_grupo))
-        {
-            $alumnos_grupo = $object->Read_alumnos_asig_grupo($id_grupo);
-            $res_grupos  = " ";
-        }
+            
+        $alumnos_grupo = $object->Read_alumnos_asig_grupo($id_grupo);
+        $res_grupos  = " ";
 
         // Sber si alumnos_grupo esta vacio
         if (count($alumnos_grupo) > 0) 
