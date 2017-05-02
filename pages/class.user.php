@@ -1073,10 +1073,13 @@ class USER
         return $data;
     }
 
-
-    public function Read_alumnos()
+    /**
+     * [Read_alumnos_sede description]
+     * @param [type] $id_sede [description]
+     */
+    public function Read_alumnos_sede($id_sede)
     {
-        $query = $this->conn->prepare('SELECT * FROM docente WHERE id_sede = :id_sede AND id_tipo_usuario = "3"');
+        $query = $this->conn->prepare('SELECT * FROM alumno AL inner join asig_alumno_sede AAS ON AL.id_Alumno = AAS.id_alumno WHERE AAS.id_sede = :id_sede AND AL.id_estado = "1"');
         $query->bindParam(":id_sede",$id_sede);
         $query->execute();
         $data = array();
@@ -1172,16 +1175,13 @@ class USER
 
     /**
      * [Read_cabecera_asig_grupo description]
-     * @param [type] $id_grupo [description]
-     * @param [type] $id_sede  [description]
+     * @param [type] $id_sede [description]
      */
-    public function Read_cabecera_asig_grupo($id_grupo,$id_sede)
+    public function Read_cabecera_asig_grupo($id_sede)
     {
         try 
         {
-            $query = $this->conn->prepare('SELECT * FROM grupo GRU inner join Grado GRA  inner join asig_alumno_grupo AAG ON
-            AAG.id_grupo = GRU.id_grupo AND GRU.id_grado = GRA.id_grado WHERE GRU.id_grupo = :id_grupo AND GRA.id_sede = :id_sede');
-            $query->bindParam(":id_grupo",$id_grupo);
+            $query = $this->conn->prepare('SELECT * FROM anio_lectivo ANL inner join sede SE ON SE.id_sede = ANL.id_sede WHERE ANL.id_sede = :id_sede AND ANL.id_estado = "1"');
             $query->bindParam(":id_sede",$id_sede);
             $query->execute();
             $data = array();
@@ -1568,29 +1568,56 @@ class USER
      * @param  [type] $id_anio_lec  [description]
      * @return [type]               [description]
      */
-    public function cambio_alumno_grupo($id_grupo_new,$id_alumno,$id_anio_lectivo)
+    public function cambio_alumno_grupo($id_grupo,$id_alumno,$id_anio_lectivo)
     {
-        echo "ID Alumno: ".$id_alumno."<br>";
-        echo "ID Grupo New: ".$id_grupo_new."<br>";
-        echo "ID ANIO: ".$id_anio_lectivo."<br>";
-        try 
+        $res ="false";
+
+        try
         {
-            $stmt=$this->conn->prepare("UPDATE asig_alumno_grupo SET id_grupo=:id_grupo_new WHERE id_alumno=:id_alumno AND id_anio_lectivo=:id_anio_lectivo");
+            $stmt1 = $this->conn->prepare("SELECT id_alumno FROM asig_alumno_grupo WHERE id_alumno=:id_alumno AND id_anio_lectivo=:id_anio_lectivo");
 
-            $stmt->bindparam(":id_grupo_new", $id_grupo_new);
-            $stmt->bindparam(":id_alumno", $id_alumno);
-            $stmt->bindparam(":id_anio_lectivo", $id_anio_lectivo);
+            $stmt1->execute(array(
+                                  ':id_alumno'   => $id_alumno,
+                                  ':id_anio_lectivo'   => $id_anio_lectivo
+                                    ));
 
-            $stmt->execute();
 
-            return true;
-        } 
+            $userRow=$stmt1->fetch(PDO::FETCH_ASSOC);
+
+            if($stmt1->rowCount() == 1)
+            {
+                $stmt=$this->conn->prepare("UPDATE asig_alumno_grupo SET id_grupo = :id_grupo WHERE id_alumno=:id_alumno AND id_anio_lectivo=:id_anio_lectivo");
+
+                $stmt->bindparam(":id_alumno", $id_alumno);
+                $stmt->bindparam(":id_grupo", $id_grupo);
+                $stmt->bindparam(":id_anio_lectivo", $id_anio_lectivo);
+
+                $stmt->execute();
+
+                $res = "true";
+            }
+            else
+            {
+                $stmt2 = $this->conn->prepare("INSERT INTO asig_alumno_grupo(id_alumno,id_grupo,id_anio_lectivo) 
+                                          VALUES(:id_alumno,:id_grupo,:id_anio_lectivo)");
+                                                  
+                $stmt2->bindparam(":id_alumno", $id_alumno);
+                $stmt2->bindparam(":id_grupo", $id_grupo);
+                $stmt2->bindparam(":id_anio_lectivo", $id_anio_lectivo);                                  
+                    
+                $stmt2->execute();   
+
+                $res = "true";
+            }
+
+            return $res;           
+        }
 
         catch(PDOException $e)
         {
             echo $e->getMessage();
             return false;
-        }  
+        } 
     }
 
     /**

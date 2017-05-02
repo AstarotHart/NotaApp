@@ -16,15 +16,13 @@ $res_logros_alumno  = " ";
 //saber si el boton CREAR de logro a sido inicializado
 if (isset($_POST['asignar_alumno'])) 
 {
-    $id_grupo_old=$_POST['id_grupo_old'];
     $id_alumno=$_POST['select_alumnos'];
-    $id_grupo_new = $_POST['id_grupo_new'];
+    $id_grupo = $_POST['id_grupo_new'];
     $id_anio_lec= $_POST['id_anio_lectivo'];
 
     foreach ($id_alumno as $id_alumno)
     {
-
-        $asignar_alumno->cambio_alumno_grupo($id_grupo_new,$id_alumno,$id_anio_lec);
+        $asignar_alumno->cambio_alumno_grupo($id_grupo,$id_alumno,$id_anio_lec);
     }
    
      
@@ -89,9 +87,9 @@ if (isset($_POST['asignar_alumno']))
     }
 
     //Saber si si la variable ID_SEDE E ID_GRUPO
-    if (isset($id_sede) and isset($id_grupo))
+    if (isset($id_sede))
     {
-        $cabecera = $object->Read_cabecera_asig_grupo($id_grupo,$id_sede);
+        $cabecera = $object->Read_cabecera_asig_grupo($id_sede);
         
         $num = 1;
 
@@ -106,35 +104,27 @@ if (isset($_POST['asignar_alumno']))
             }
         }
 
-        //saber si la variable $id_asignatura fue inicializada
-        if (isset($id_grupo))
-        {
-            $alumnos_grupo = $object->Read_alumnos_asig_grupo($id_grupo);
-            $res_grupos  = " ";
-        }
+        $alumnos_grupo = $object->Read_alumnos_sede($id_sede);
+        $res_grupos  = " ";
 
         // Sber si alumnos_grupo esta vacio
         if (count($alumnos_grupo) > 0) 
         {      
             foreach ($alumnos_grupo as $alumnos_grupo) 
             {
-                $data_select .= '<option value="' . $alumnos_grupo['id_alumno'] . '">' . $alumnos_grupo['primer_apellido'] . ' ' .$alumnos_grupo['segundo_apellido'] . ' ' .$alumnos_grupo['nombres'] .'</option>';                
+                $data_select .= '<option value="' . $alumnos_grupo['id_alumno'] . '">' . $alumnos_grupo['primer_apellido'] . ' ' .$alumnos_grupo['segundo_apellido'] . ' ' .$alumnos_grupo['nombres'] .' (' .$alumnos_grupo['id_alumno'] .')</option>';                
             }
         }
+
+        $grupos = $object->Read_grupos_sede($id_sede);
+        $nombre_sede = $object->nombre_sede($id_sede);
+
+        foreach ($nombre_sede as $nombre_sede) 
+        {
+            # code...
+        }
         
-    }
-
-if (isset($id_sede))
-{
-    $grupos = $object->Read_grupos_sede($id_sede);
-    $nombre_sede = $object->nombre_sede($id_sede);
-
-    foreach ($nombre_sede as $nombre_sede) 
-    {
-        # code...
-    }
-}
-    
+    }    
 
 ?>
 <!-- end menu-->
@@ -155,6 +145,7 @@ if (isset($id_sede))
                         if (isset($id_sede))
                         { 
                             echo "<h5>".$nombre_sede['descripcion_sede']."</h5>";
+                            echo "<h5>".$cabecera['descripcion_anio_lectivo']."</h5>";
                         ?>
                             <div class="align-right">
                                 <form id="destroy_variables" method="POST">
@@ -190,89 +181,7 @@ if (isset($id_sede))
                             $show_combox_grupo = "none";
                         } 
                         ?>
-                        <?php 
-                        if (isset($id_grupo) )
-                        { 
-                            
-                        }
-                        else
-                        {
-                            ?> 
-                            <div  style="display: <?php echo $show_combox_grupo; ?>;">
-                                <!-- form para seleccionar GRUPO por ASIGNATURA -->
-                                <form style="margin-bottom: 2px;" method="POST">
-                                    <div class="row clearfix">
-                                        <div class="col-lg-3 col-md-3 col-sm-3 col-xs-6">
-                                            <div class="form-group" style="margin-bottom: 2px;">
-                                                <div class="form-line">
-                                                    <select class="form-control show-tick" name="id_grupo" id="getGrupo">
-                                                            <option value="">-- Seleccione Grupo --</option>
-                                                            <?php 
-                                                            if (count($grupos) > 0) 
-                                                            {                 
-                                                                foreach ($grupos as $grupo)
-                                                                {
-                                                                    ?>
-                                                                    <option value="<?php echo $grupo['id_grupo']; ?>"><?php echo $grupo['descripcion_grado']."-".$grupo['descripcion_grupo']; ?></option>'; 
-                                                                    <?php
-                                                                }
-                                                            } else {
-                                                                ?>
-                                                                    <option value=""><p class="col-pink">Sin Grupos en la Sede</p></option>';
-                                                                <?php
-                                                            }
-                                                            ?>
-                                                    </select>
-                                                </div>
-                                            </div>
-                                        </div>
-
-                                        <div class="col-lg-6 col-md-6 col-sm-6 col-xs-12">
-                                            <button class="btn bg-teal waves-effect" type="submit" name="btn-select-GR">Aceptar</button>
-                                        </div>
-                                    </div>
-                                </form>
-                            </div>
-
-                        <?php 
-                        } 
-                        ?>
-
-                    </div>
-                    
-
-                    <div class="body" style="display: <?php echo $show_table_alumnos; ?>;>
-
-                        <div class="card" >
-                            <div class="body" >
-
-                                <?php   
-                                if (isset($id_grupo))
-                                { ?>   
-                                <div class="col-sm-4">
-                                    <b>Grupo:</b> <?php if (isset($cabecera['descripcion_grupo'])) 
-                                    {
-                                        echo $cabecera['descripcion_grado']."-".$cabecera['descripcion_grupo'];
-                                    }else{echo " ";} ?>
-                                </div>
-
-                                <div class="col-sm-4">
-                                    <b>Director Grupo:</b> <?php if (isset($cabecera['id_docente'])) 
-                                    {
-                                         echo $cabecera['id_docente'];
-                                    }else{echo " ";} ?>
-                                </div>
-
-                                <div class="col-sm-4">
-                                    <b>Año Lectivo:</b> <?php if (isset($cabecera['id_anio_lectivo'])) 
-                                    {
-                                         echo $cabecera['id_anio_lectivo'];
-                                    }else{echo " ";} ?>
-                                </div>
-                                
-                            </div>
-                        </div>
-                    
+                    </div>                    
 
             <!-- Div mostrar u ocultar tablas -->
                 <div  style="display: <?php echo $show_table_alumnos; ?>;">
@@ -287,7 +196,6 @@ if (isset($id_sede))
                                 <form id="check_logros" method="POST">
 
                                 <!-- enviar de manera oculta datos id_asignatura e id_anio_lectivo --> 
-                                    <input type="hidden" class="form-control" name="id_grupo_old" value="<?php echo $id_grupo; ?>">
                                     <input type="hidden" class="form-control" name="id_anio_lectivo" value="<?php echo $cabecera['id_anio_lectivo']; ?>">
 
                                     <select class="form-control show-tick" name="id_grupo_new" id="getGrupo" size="3" tabindex="1">
@@ -340,7 +248,7 @@ if (isset($id_sede))
             </div>
         </div>
         <!-- #END# Lista Docentes -->
-    <?php } ?>
+
         </div>
     </section>
 
