@@ -3,7 +3,7 @@
 	include('dbconfig.php');
 	include('class.user.php');
 
-	echo "Accion " . $_REQUEST['action'];
+	//echo "Accion " . $_REQUEST['action'];
 	$action = $_REQUEST['action'];
 
 	$grupo = new USER();

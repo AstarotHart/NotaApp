@@ -7,9 +7,9 @@ $grupos         =   new USER();
 $nombre_sede    =   new USER();
 $asignar_alumno    =   new USER();
 
-$show_table_alumnos = "show";
-$show_table_logros  = "show";
-$show_combox_grupo  = "show";
+$show_table_alumnos = "none";
+$show_table_logros  = "none";
+$show_combox_grupo  = "none";
 $res_logros_alumno  = " ";
 
 
@@ -138,7 +138,7 @@ if (isset($_POST['asignar_alumno']))
                 <div class="card">
                     <div class="header" style="padding-bottom: 10px;"">
                         <h2>
-                            Asignaturas <small>Lista de Estudientes Por Grupo</small>
+                            Alumnos-Grupo <small>Lista alumnos y asignarlos a grupo</small>
                         </h2>
                         
                         <?php 
