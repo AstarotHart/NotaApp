@@ -941,7 +941,7 @@ class USER
      */
     public function Read_asignatura_reporte($id_alumno,$id_anio_lectivo,$id_grupo)
     { 
-        $query = $this->conn->prepare('SELECT * FROM asig_asignatura_grupo AASG inner join logros LG inner join alumnos_logros ALO inner join nota NT inner join asistencia ASI ON AASG.id_asignatura = LG.id_asignatura AND LG.id_asignatura = ALO.id_asignatura AND ALO.id_alumno = NT.id_alumno AND NT.id_alumno = ASI.id_alumno WHERE NT.id_alumno = :id_alumno AND NT.id_anio_lectivo = :id_anio_lectivo AND AASG.id_grupo = :id_grupo');
+        $query = $this->conn->prepare('SELECT * FROM asig_asignatura_grupo AASG inner join nota NT inner join asignatura ASI inner join area AR ON AASG.id_asignatura = NT.id_asignatura AND NT.id_asignatura = ASI.id_asignatura AND ASI.id_area = AR.id_area WHERE NT.id_alumno = :id_alumno AND NT.id_anio_lectivo = :id_anio_lectivo AND AASG.id_grupo = :id_grupo');
         $query->bindParam(":id_alumno",$id_alumno);
         $query->bindParam(":id_anio_lectivo",$id_anio_lectivo);
         $query->bindParam(":id_grupo",$id_grupo);

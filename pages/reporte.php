@@ -12,6 +12,7 @@ $id_sede         = "IE";
 $id_asignatura   = "2017IEIE";
 $id_anio_lectivo = "2017IEIE";
 $periodo         = "2017IEIEP1";
+$grupoo          = "2017IEIE10-1";
 
 
 echo "ID Alumno ".$id_alumno  ."<br>";
@@ -30,7 +31,7 @@ foreach ($informe_cabecera as $informe_cabecera)
 	# code...
 }
 
-$informe_asignaturas = $informe_asignaturas->Read_asignatura_reporte($id_alumno,$id_anio_lectivo,$informe_cabecera['id_grupo']);
+$informe_asignaturas = $informe_asignaturas->Read_asignatura_reporte($id_alumno,$id_anio_lectivo,$grupoo);
 
 foreach ($informe_asignaturas as $informe_asignaturas) 
 {
@@ -39,11 +40,40 @@ foreach ($informe_asignaturas as $informe_asignaturas)
 
 $anio_str=substr($informe_cabecera['fecha_inicio'], 0,4);
 $periodo_str=substr($periodo, -1);
+$periodo_str2=substr($periodo, -2);
+
+$str = "2017IEIEM10-C-L1,2017IEIEM10-C-L2,2017IEIEM10-C-L3,";
+
+/*Test Cortar cadena separada por ,*/
+print_r(explode(',', $str, -1));
+
+switch ($periodo_str2) {
+	case 'P1':
+		$periodo_show = $informe_asignaturas['nota1'];
+		break;
+
+	case 'P2':
+		$periodo_show = $informe_asignaturas['nota2'];
+		break;
+
+	case 'P3':
+		$periodo_show = $informe_asignaturas['nota3'];
+		break;
+
+	case 'P4':
+		$periodo_show = $informe_asignaturas['nota4'];
+		break;
+	
+	default:
+		$periodo_show = "Sin Nota Periodo.";
+		break;
+}
 
 echo "ID grupo ".$informe_cabecera['id_grupo']."<br>";
-echo "Perdio Str ".$periodo_str."<br><br>";
+echo "Perdio Str ".$periodo_str."<br>";
+echo "Perdio Str 2 ".$periodo_str2."<br><br>";
 
-
+print_r($informe_cabecera);
 print_r($informe_asignaturas);
 
 
@@ -231,7 +261,7 @@ $html_asignaturas = '<!-- Start Informe Area-Asignatura -->
 							<tr height="21">
 								<td COLSPAN="4" class="X54 MA10">
 									<span>
-										<span>Ciencias Naturales y Educacion Ambiental</span>
+										<span>'.$informe_asignaturas['nombre_area'].'</span>
 									</span>
 								</td>
 								<td class="X20">
@@ -242,14 +272,14 @@ $html_asignaturas = '<!-- Start Informe Area-Asignatura -->
 								</td>
 								<td COLSPAN="2" class="X54 MG10">
 									<span>
-										<span>Ciencias Naturales</span>
+										<span>'.$informe_asignaturas['nombre_asignatura'].'</span>
 									</span>
 								</td>
 								<td class="X20">
-									<span>4.3</span>
+									<span>'.$periodo_show.'</span>
 								</td>
 								<td class="X20">
-									<span>4</span>
+									<span>'.$informe_asignaturas['intensidad_horaria'].'</span>
 								</td>
 								<td class="X20">
 									<span>2</span>
@@ -291,27 +321,27 @@ $html_asignaturas = '<!-- Start Informe Area-Asignatura -->
 								</td>
 								<td COLSPAN="3" class="X30 MC19">
 									<span>
-										<span>P1:  4,4</span>
+										<span>P1:  '.$informe_asignaturas['nota1'].'</span>
 									</span>
 								</td>
 								<td COLSPAN="1" class="X30 ME19">
 									<span>
-										<span>P2:  4,5</span>
+										<span>P2:  '.$informe_asignaturas['nota2'].'</span>
 									</span>
 								</td>
 								<td COLSPAN="2" class="X30 MG19">
 									<span>
-										<span>P3:   4,6</span>
+										<span>P3:   '.$informe_asignaturas['nota3'].'</span>
 									</span>
 								</td>
 								<td COLSPAN="2" class="X30 MI19">
 									<span>
-										<span>P4:   4,7</span>
+										<span>P4:   '.$informe_asignaturas['nota4'].'</span>
 									</span>
 								</td>
 								<td COLSPAN="2" class="X53 MK19">
 									<span>
-										<span>Acom: 4,3</span>
+										<span>Acom: 10</span>
 									</span>
 								</td>
 								<td class="X11">&nbsp;</td>
