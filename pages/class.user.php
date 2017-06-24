@@ -67,6 +67,29 @@ class USER
 
         return $iniciales;
     }
+
+    /**
+     * [after description]
+     * @param  [type] $this   [description]
+     * @param  [type] $inthat [description]
+     * @return [type]         [description]
+     */
+    public function despues($caracter, $inthat)
+    {
+        if (!is_bool(strpos($inthat, $caracter)))
+        return substr($inthat, strpos($inthat,$caracter)+strlen($caracter));
+    }
+
+    /**
+     * [before description]
+     * @param  [type] $this   [description]
+     * @param  [type] $inthat [description]
+     * @return [type]         [description]
+     */
+    public function antes($caracter, $inthat)
+    {
+        return substr($inthat, 0, strpos($inthat, $caracter));
+    }
 	
     /**
      * Funcion para devolver datos de usuario (menu)
@@ -312,14 +335,25 @@ class USER
      */
     public function combobox_grupos_docente($id_docente)
     {
-        $query = $this->conn->prepare("SELECT * FROM asig_docente_asignatura ADA inner join asignatura ASI inner join grupo GR inner join grado GRA ON ASI.id_asignatura =ADA.id_asignatura AND ADA.id_grupo = GR.id_grupo AND GRA.id_grado = GR.id_grado WHERE ADA.id_docente = :id_docente");
+        $query = $this->conn->prepare("SELECT * FROM asig_asignatura_docente AAD inner join asignatura ASI inner join grupo GRU ON AAD.id_asignatura = ASI.id_asignatura AND AAD.id_grupo = GRU.id_grupo WHERE AAD.id_docente = :id_docente");
         $query->bindParam(":id_docente", $id_docente); 
         $query->execute();
-        
+
+        $data = array();
+        /*
         while($row=$query->fetch(PDO::FETCH_ASSOC))
         {
-            echo '<option value="'.$row['id_asignatura'].'">'.$row['nombre_asignatura'].' '.$row['descripcion_grado'].'-'.$row['descripcion_grupo'].'</option>'; 
+            echo '<option value="'.$row['id_asignatura'].'">'.$row['nombre_asignatura'].' '.$row['descripcion_grado'].'-'.$row['descripcion_grupo'].'</option>';
+
+            $data[] = $row;
         }
+        */
+       
+        while ($row = $query->fetch(PDO::FETCH_ASSOC)) {
+            $data[] = $row;
+        }
+
+        return $data;
 
     }
 
@@ -1136,11 +1170,10 @@ class USER
      * [Read_alumnos_grupo description]
      * @param [type] $id_docente [description]
      */
-    public function Read_alumnos_grupo($id_docente,$id_asignatura)
+    public function Read_alumnos_grupo($id_grupo)
     {
-        $query = $this->conn->prepare('SELECT AL.id_alumno,AL.nombres,AL.primer_apellido,AL.segundo_apellido FROM asig_alumno_grupo AAG inner join alumno AL inner join asig_docente_asignatura ADA ON AAG.id_alumno = AL.id_alumno AND ADA.id_grupo = AAG.id_grupo WHERE ADA.id_docente = :id_docente AND ADA.id_asignatura = :id_asignatura ORDER BY AL.primer_apellido ');
-        $query->bindParam(":id_docente",$id_docente);
-        $query->bindParam(":id_asignatura",$id_asignatura);
+        $query = $this->conn->prepare('SELECT AL.id_alumno,AL.nombres,AL.primer_apellido,AL.segundo_apellido FROM alumno AL inner join asig_alumno_grupo AALG ON AL.id_alumno = AALG.id_alumno WHERE AALG.id_grupo = :id_grupo ORDER BY AL.primer_apellido ');
+        $query->bindParam(":id_grupo",$id_grupo);
         $query->execute();
         $data = array();
         while ($row = $query->fetch(PDO::FETCH_ASSOC)) {
@@ -1203,11 +1236,12 @@ class USER
      * [Read_alumnos_grupo description]
      * @param [type] $id_docente [description]
      */
-    public function Read_cabecera_grupo($id_docente,$id_asignatura)
+    public function Read_cabecera_grupo($id_docente,$id_asignatura,$id_grupo)
     {
-        $query = $this->conn->prepare('SELECT * FROM asig_docente_asignatura ADA inner join asignatura ASI inner join grupo GR inner join grado GRA inner join area ARE ON ASI.id_asignatura =ADA.id_asignatura AND ADA.id_grupo = GR.id_grupo AND GRA.id_grado = GR.id_grado AND ARE.id_area = ASI.id_area WHERE ADA.id_docente = :id_docente AND ASI.id_asignatura = :id_asignatura');
+        $query = $this->conn->prepare('SELECT * FROM asig_asignatura_docente AAD inner join asignatura ASI inner join grupo GRU ON AAD.id_asignatura = ASI.id_asignatura AND AAD.id_grupo = GRU.id_grupo  WHERE AAD.id_docente = :id_docente AND AAD.id_asignatura = :id_asignatura AND AAD.id_grupo = :id_grupo');
         $query->bindParam(":id_docente",$id_docente);
         $query->bindParam(":id_asignatura",$id_asignatura);
+        $query->bindParam(":id_grupo",$id_grupo);
         $query->execute();
         $data = array();
         while ($row = $query->fetch(PDO::FETCH_ASSOC)) {

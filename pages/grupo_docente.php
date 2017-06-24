@@ -63,6 +63,7 @@ $object         = new USER();
 $fechas         = new USER();
 $asig_id        = new USER();
 $alumnos_grupo  = new USER();
+$combox  = new USER();
 
 
 $show_table_alumnos = "none";
@@ -174,7 +175,13 @@ if (isset($_POST['actualizar_logro']))
     //saber si el boton CREAR de logro a sifo inicializado
     if (isset($_POST['btn-select-GR'])) 
     {
-        $_SESSION['id_asignatura']=$_POST['id_asignatura'];    
+        $res_combox = $_POST['id_asignatura'];
+
+        $id_grupo_combox =$object->despues('#', $res_combox);
+        $id_asignatura_combox =$object->antes('#', $res_combox);
+
+        $_SESSION['id_asignatura']=$id_asignatura_combox;
+        $_SESSION['id_grupo']=$id_grupo_combox;
     }
 
     if (isset($_SESSION['id_asignatura']))
@@ -182,12 +189,19 @@ if (isset($_POST['actualizar_logro']))
         $id_asignatura = $_SESSION['id_asignatura'];
     }
 
+    if (isset($_SESSION['id_grupo']))
+    {
+        $id_grupo = $_SESSION['id_grupo'];
+    }
+
 
 if (isset($id_asignatura))
 {
-    $cabecera = $object->Read_cabecera_grupo($user_id,$id_asignatura);
+    $cabecera = $object->Read_cabecera_grupo($user_id,$id_asignatura,$id_grupo);
     
     $num = 1;
+
+    print_r($combox);
 
     $data_select = "";
     // Design initial table header
@@ -215,7 +229,8 @@ if (isset($id_asignatura))
     // Cargar datos en un array con CABECERA
     if (count($cabecera) > 0) 
     {
-                    
+        print_r($cabecera);        
+
         foreach ($cabecera as $cabecera) 
         {
             $show_table_alumnos= "show";
@@ -225,13 +240,19 @@ if (isset($id_asignatura))
     //saber si la variable $id_asignatura fue inicializada
     if (isset($id_asignatura))
     {
-        $alumnos_grupo = $object->Read_alumnos_grupo($user_id,$id_asignatura);
+        $alumnos_grupo = $object->Read_alumnos_grupo($id_grupo);
+
+        //print_r($alumnos_grupo);
 
         //llamando a la funcion read logros para cargar los losgros por asignatura
         $logros      = $object->read_logros($id_asignatura);
         $fechas      = $object->Read_fecha_periodos($cabecera['id_anio_lectivo']);
         $list_logros = "<ol>";
         $res_logros  = " ";
+
+        echo "FECHAS<BR>";
+        echo "Año Lectivo: ".$cabecera['id_anio_lectivo']."<br>";
+        print_r($fechas);
         
     }
 
@@ -250,6 +271,7 @@ if (isset($id_asignatura))
 
         if (count($fechas_periodos) > 0) 
         {
+            echo "Entro";
             //Name Nota Upload Excel
             $name_nota = "";
 
@@ -258,6 +280,8 @@ if (isset($id_asignatura))
             $no_periodo2 = 2;
             $no_periodo3 = 3;
             $no_periodo4 = 4;
+
+/* PHP 7 */
 
             //ids Peridos
             $id_periodo1 = ((array_column($fechas_periodos, "id_periodo"))[0]);
@@ -287,6 +311,39 @@ if (isset($id_asignatura))
             $editar_tablas_p2="none";
             $editar_tablas_p3="none";
             $editar_tablas_p4="none";
+/* PHP 5
+
+        //ids Peridos
+            $id_periodo1 = Array(0 => $fechas_periodos["id_periodo"]);
+            $id_periodo2 = Array(1 => $fechas_periodos["id_periodo"]);
+            $id_periodo3 = Array(2 => $fechas_periodos["id_periodo"]);
+            $id_periodo4 = Array(3 => $fechas_periodos["id_periodo"]);
+
+        //Fecha InicioPeridos
+            $inicio_periodo1 = Array(0 => $fechas_periodos["fecha_inicio_periodo"]);
+            $inicio_periodo2 = Array(1 => $fechas_periodos["fecha_inicio_periodo"]);
+            $inicio_periodo3 = Array(2 => $fechas_periodos["fecha_inicio_periodo"]);
+            $inicio_periodo4 = Array(3 => $fechas_periodos["fecha_inicio_periodo"]);
+
+        //Fecha FinPeridos
+            $fin_periodo1 = Array(0 => $fechas_periodos["fecha_fin_periodo"]);
+            $fin_periodo2 = Array(1 => $fechas_periodos["fecha_fin_periodo"]);
+            $fin_periodo3 = Array(2 => $fechas_periodos["fecha_fin_periodo"]);
+            $fin_periodo4 = Array(3 => $fechas_periodos["fecha_fin_periodo"]);
+
+        //Fecha InicioPeridos
+            $desc_periodo1 = Array(0 => $fechas_periodos["desc_periodo"]);
+            $desc_periodo2 = Array(1 => $fechas_periodos["desc_periodo"]);
+            $desc_periodo3 = Array(2 => $fechas_periodos["desc_periodo"]);
+            $desc_periodo4 = Array(3 => $fechas_periodos["desc_periodo"]);
+
+        
+
+            $editar_tablas_p1="none";
+            $editar_tablas_p2="none";
+            $editar_tablas_p3="none";
+            $editar_tablas_p4="none";
+*/
 
             date_default_timezone_set('America/Bogota');
 
@@ -510,8 +567,14 @@ if (isset($id_asignatura))
                                             <select class="form-control show-tick" name="id_asignatura">
                                                     <option value="">-- Seleccione Grupo --</option>
                                                     <?php 
-                                                        $user = $object->combobox_grupos_docente($user_id);
-                                                    ?>
+                                                        $combox = $object->combobox_grupos_docente($user_id);
+
+                                                        foreach ($combox as $combox) 
+                                                        {
+                                                            echo '<option value="'.$combox['id_asignatura']."#".$combox['id_grupo'].'">'.$combox['nombre_asignatura'].' '.$combox['descripcion_grado'].'-'.$combox['descripcion_grupo'].'</option>';
+                                                        }
+
+                                                    ?>  
                                             </select>
                                         </div>
                                     </div>
@@ -525,13 +588,19 @@ if (isset($id_asignatura))
 
 
                     <div class="body" >
-                        <?php   
+                        <?php
+
+                        echo "Id Asignatura: ".$res_combox."<br>";
+                        echo "Id User: ".$user_id."<br>";
+                        echo "Id Grupo Combox: ".$id_grupo."<br>";
+                        echo "Id Asignatura Combox: ".$id_asignatura."<br>";
+
                         if (isset($id_asignatura))
                         { ?>   
                         <div class="col-sm-2">
                             <b>Grupo:</b> <?php if (isset($cabecera['descripcion_grupo'])) 
                             {
-                                echo $cabecera['descripcion_grado']."-".$cabecera['descripcion_grupo'];
+                                echo $cabecera['descripcion_grupo'];
                             }else{echo " ";} ?>
                         </div>
 
