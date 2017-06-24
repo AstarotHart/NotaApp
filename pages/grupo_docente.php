@@ -594,6 +594,7 @@ if (isset($id_asignatura))
                         echo "Id User: ".$user_id."<br>";
                         echo "Id Grupo Combox: ".$id_grupo."<br>";
                         echo "Id Asignatura Combox: ".$id_asignatura."<br>";
+                        echo "Nombre Area: ".$cabecera['nombre_area']."<br>";
 
                         if (isset($id_asignatura))
                         { ?>   
@@ -739,7 +740,7 @@ if (isset($id_asignatura))
                         
 
                         <div class='col-sx-12'>    
-                            <a href="createExcel.php?variable=<?php echo $user_id; ?>&id_asignatura=<?php echo $id_asignatura;?> " class="btn bg-teal waves-effect" role="button">Descargar Plantilla</a>
+                            <a href="createExcel.php?variable=<?php echo $user_id; ?>&id_asignatura=<?php echo $id_asignatura;?>&id_grupo=<?php echo $id_grupo;?> " class="btn bg-teal waves-effect" role="button">Descargar Plantilla</a>
                         
                             <!-- subir archivos -->
                             <button class="btn bg-teal waves-effect" type="button" data-toggle="collapse" data-target="#UploadFile" aria-expanded="false" aria-controls="UploadFile">

@@ -1238,7 +1238,7 @@ class USER
      */
     public function Read_cabecera_grupo($id_docente,$id_asignatura,$id_grupo)
     {
-        $query = $this->conn->prepare('SELECT * FROM asig_asignatura_docente AAD inner join asignatura ASI inner join grupo GRU ON AAD.id_asignatura = ASI.id_asignatura AND AAD.id_grupo = GRU.id_grupo  WHERE AAD.id_docente = :id_docente AND AAD.id_asignatura = :id_asignatura AND AAD.id_grupo = :id_grupo');
+        $query = $this->conn->prepare('SELECT * FROM asig_asignatura_docente AAD inner join asignatura ASI inner join area AR inner join grupo GRU ON AAD.id_asignatura = ASI.id_asignatura AND AAD.id_grupo = GRU.id_grupo AND ASI.id_area = AR.id_area  WHERE AAD.id_docente = :id_docente AND AAD.id_asignatura = :id_asignatura AND AAD.id_grupo = :id_grupo');
         $query->bindParam(":id_docente",$id_docente);
         $query->bindParam(":id_asignatura",$id_asignatura);
         $query->bindParam(":id_grupo",$id_grupo);
