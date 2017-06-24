@@ -1279,10 +1279,11 @@ class USER
      * [Read_fecha_periodos description]
      * @param [type] $id_anio_lectivo [description]
      */
-    public function Read_fecha_periodos($id_anio_lectivo)
+    public function Read_fecha_periodos($id_anio_lectivo,$id_jornada)
     {
-        $query = $this->conn->prepare('SELECT * FROM periodo WHERE id_anio_lectivo = :id_anio_lectivo');
+        $query = $this->conn->prepare('SELECT * FROM periodo WHERE id_anio_lectivo = :id_anio_lectivo AND id_jornada = :id_jornada');
         $query->bindParam(":id_anio_lectivo",$id_anio_lectivo);
+        $query->bindParam(":id_jornada",$id_jornada);
         $query->execute();
         $data = array();
         while ($row = $query->fetch(PDO::FETCH_ASSOC)) {
@@ -1468,7 +1469,7 @@ class USER
                     $stmt2 = $this->conn->prepare("INSERT INTO asistencia(id_alumno,id_anio_lectivo,id_asignatura,inasistencia_p2) 
                                           VALUES(:id_alumno,:anio,:materia,:falta)");
                 }
-                elseif ($name_falta == "nota3") 
+                elseif ($name_falta == "inasistencia_p3") 
                 {
                     $stmt2 = $this->conn->prepare("INSERT INTO asistencia(id_alumno,id_anio_lectivo,id_asignatura,inasistencia_p3) 
                                           VALUES(:id_alumno,:anio,:materia,:falta)");

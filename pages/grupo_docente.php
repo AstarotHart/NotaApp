@@ -201,8 +201,6 @@ if (isset($id_asignatura))
     
     $num = 1;
 
-    print_r($combox);
-
     $data_select = "";
     // Design initial table header
     $data = '<table class="table font-13 table-bordered table-striped table-hover js-basic-example dataTable display nowrap"" cellspacing="0" width="100%">
@@ -228,9 +226,7 @@ if (isset($id_asignatura))
                         ';
     // Cargar datos en un array con CABECERA
     if (count($cabecera) > 0) 
-    {
-        print_r($cabecera);        
-
+    {      
         foreach ($cabecera as $cabecera) 
         {
             $show_table_alumnos= "show";
@@ -246,17 +242,17 @@ if (isset($id_asignatura))
 
         //llamando a la funcion read logros para cargar los losgros por asignatura
         $logros      = $object->read_logros($id_asignatura);
-        $fechas      = $object->Read_fecha_periodos($cabecera['id_anio_lectivo']);
+        $fechas      = $object->Read_fecha_periodos($cabecera['id_anio_lectivo'],$cabecera['id_jornada']);
         $list_logros = "<ol>";
         $res_logros  = " ";
 
-        echo "FECHAS<BR>";
-        echo "Año Lectivo: ".$cabecera['id_anio_lectivo']."<br>";
-        print_r($fechas);
+        //echo "FECHAS<BR>";
+        //echo "Año Lectivo: ".$cabecera['id_anio_lectivo']."<br>";
+        //print_r($fechas);
+        
+        //print_r($cabecera);
         
     }
-
-    //echo "Numero de ALumnos ".count($alumnos_grupo);
 
     // cargar Informacion Periodos
     if (count($fechas) > 0)
@@ -271,7 +267,6 @@ if (isset($id_asignatura))
 
         if (count($fechas_periodos) > 0) 
         {
-            echo "Entro";
             //Name Nota Upload Excel
             $name_nota = "";
 
@@ -290,16 +285,16 @@ if (isset($id_asignatura))
             $id_periodo4 = ((array_column($fechas_periodos, "id_periodo"))[3]);
 
             //Fecha InicioPeridos
-            $inicio_periodo1 = ((array_column($fechas_periodos, "fecha_inicio"))[0]);
-            $inicio_periodo2 = ((array_column($fechas_periodos, "fecha_inicio"))[1]);
-            $inicio_periodo3 = ((array_column($fechas_periodos, "fecha_inicio"))[2]);
-            $inicio_periodo4 = ((array_column($fechas_periodos, "fecha_inicio"))[3]);
+            $inicio_periodo1 = ((array_column($fechas_periodos, "fecha_inicio_periodo"))[0]);
+            $inicio_periodo2 = ((array_column($fechas_periodos, "fecha_inicio_periodo"))[1]);
+            $inicio_periodo3 = ((array_column($fechas_periodos, "fecha_inicio_periodo"))[2]);
+            $inicio_periodo4 = ((array_column($fechas_periodos, "fecha_inicio_periodo"))[3]);
 
             //Fecha FinPeridos
-            $fin_periodo1 = ((array_column($fechas_periodos, "fecha_fin"))[0]);
-            $fin_periodo2 = ((array_column($fechas_periodos, "fecha_fin"))[1]);
-            $fin_periodo3 = ((array_column($fechas_periodos, "fecha_fin"))[2]);
-            $fin_periodo4 = ((array_column($fechas_periodos, "fecha_fin"))[3]);
+            $fin_periodo1 = ((array_column($fechas_periodos, "fecha_fin_periodo"))[0]);
+            $fin_periodo2 = ((array_column($fechas_periodos, "fecha_fin_periodo"))[1]);
+            $fin_periodo3 = ((array_column($fechas_periodos, "fecha_fin_periodo"))[2]);
+            $fin_periodo4 = ((array_column($fechas_periodos, "fecha_fin_periodo"))[3]);
 
             //Fecha InicioPeridos
             $desc_periodo1 = ((array_column($fechas_periodos, "desc_periodo"))[0]);

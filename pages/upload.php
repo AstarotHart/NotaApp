@@ -44,7 +44,7 @@
                                 archivo <b>'."".$_FILES["upload_file"]["name"].'</b> subido con exito.
                             </div>';
 
-      require_once '/../Classes/PHPExcel/IOFactory.php';
+      require_once '../Classes/PHPExcel/IOFactory.php';
 
       $fullURL = $folder.$_FILES["upload_file"]["name"];
 
