@@ -660,7 +660,7 @@ class USER
      */
     public function Read_grupos_sede($id_sede)
     {
-        $query = $this->conn->prepare('SELECT * FROM grupo GRU inner join grado GRA ON GRA.id_grado = GRU.id_grado WHERE GRA.id_sede = :id_sede');
+        $query = $this->conn->prepare('SELECT * FROM grupo WHERE id_sede = :id_sede');
         $query->bindparam(":id_sede",$id_sede);
         $query->execute();
         $data = array();
@@ -1205,7 +1205,7 @@ class USER
      */
     public function Read_alumnos_asig_grupo($id_grupo)
     {
-        $query = $this->conn->prepare('SELECT AL.id_alumno,AL.nombres,AL.primer_apellido,AL.segundo_apellido FROM asig_alumno_grupo AAG inner join alumno AL ON AAG.id_alumno = AL.id_alumno WHERE AAG.id_grupo = :id_grupo ORDER BY AL.primer_apellido ');
+        $query = $this->conn->prepare('SELECT AL.id_alumno,AL.nombres,AL.primer_apellido,AL.segundo_apellido FROM alumno AL inner join asig_alumno_grupo AAG ON AL.id_alumno = AAG.id_alumno WHERE AAG.id_grupo = :id_grupo ORDER BY AL.primer_apellido ');
         $query->bindParam(":id_grupo",$id_grupo);
         $query->execute();
         $data = array();
@@ -1260,6 +1260,31 @@ class USER
         {
             $query = $this->conn->prepare('SELECT * FROM anio_lectivo ANL inner join sede SE ON SE.id_sede = ANL.id_sede WHERE ANL.id_sede = :id_sede AND ANL.id_estado = "1"');
             $query->bindParam(":id_sede",$id_sede);
+            $query->execute();
+            $data = array();
+            while ($row = $query->fetch(PDO::FETCH_ASSOC)) {
+                $data[] = $row;
+            }
+            return $data;
+        }
+        catch(PDOException $e)
+        {
+            echo $e->getMessage();
+            return false;
+        }
+    }
+
+
+    /**
+     * [Read_cabecera_asig_alumno_grupo description]
+     * @param [type] $id_grupo [description]
+     */
+    public function Read_cabecera_asig_alumno_grupo($id_grupo)
+    {
+        try 
+        {
+            $query = $this->conn->prepare('SELECT GRU.id_grupo, GRU.descripcion_grupo, DC.nombres, DC.prim_apellido, ADG.id_anio_lectivo FROM grupo GRU inner join asig_director_grupo ADG inner join docente DC ON GRU.id_grupo = ADG.id_grupo AND ADG.id_docente = DC.id_docente WHERE GRU.id_grupo = :id_grupo');
+            $query->bindParam(":id_grupo",$id_grupo);
             $query->execute();
             $data = array();
             while ($row = $query->fetch(PDO::FETCH_ASSOC)) {
@@ -1338,80 +1363,99 @@ class USER
      * @param  [type] $anio      [description]
      * @return [type]            [description]
      */
-    public function update_nota($id_alumno,$name_nota,$nota,$materia,$anio)
+    public function update_nota($id_alumno,$name_nota,$nota,$materia,$materia_file,$anio)
     {
-        try
+        //echo "Id asignatura: ".$materia."<br>";
+        //echo "Id asig file:  ".$materia_file."<br><br>";
+
+        $res = "false";
+
+        if ($materia == $materia_file) 
         {
-
-            $stmt1 = $this->conn->prepare("SELECT id_alumno FROM nota WHERE id_alumno=:id_alumno");
-            $stmt1->execute(array(':id_alumno'=>$id_alumno));
-            $userRow=$stmt1->fetch(PDO::FETCH_ASSOC);
-
-            if($stmt1->rowCount() == 1)
+            //echo "entro en materia == materia_file<br>";
+            try
             {
-                if ($name_nota == "nota1") 
+
+                $stmt1 = $this->conn->prepare("SELECT id_alumno FROM nota WHERE id_alumno=:id_alumno AND id_asignatura=:materia AND id_anio_lectivo=:anio");
+
+                $stmt1->execute(array(
+                                      ':id_alumno'   => $id_alumno,
+                                      ':materia' => $materia,
+                                      ':anio'   => $anio 
+                                        ));
+
+                $userRow=$stmt1->fetch(PDO::FETCH_ASSOC);
+
+                if($stmt1->rowCount() == 1)
                 {
-                    $stmt=$this->conn->prepare("UPDATE nota SET nota1=:nota WHERE id_alumno=:id_alumno AND id_asignatura=:materia");
-                }
-                elseif ($name_nota == "nota2") 
-                {
-                    $stmt=$this->conn->prepare("UPDATE nota SET nota2=:nota WHERE id_alumno=:id_alumno AND id_asignatura=:materia");
-                }
-                elseif ($name_nota == "nota3") 
-                {
-                    $stmt=$this->conn->prepare("UPDATE nota SET nota3=:nota WHERE id_alumno=:id_alumno AND id_asignatura=:materia");
-                }
-                elseif ($name_nota == "nota4") 
-                {
-                    $stmt=$this->conn->prepare("UPDATE nota SET nota4=:nota WHERE id_alumno=:id_alumno AND id_asignatura=:materia");
+                    if ($name_nota == "nota1") 
+                    {
+                        $stmt=$this->conn->prepare("UPDATE nota SET nota1=:nota WHERE id_alumno=:id_alumno AND id_asignatura=:materia");
+                    }
+                    elseif ($name_nota == "nota2") 
+                    {
+                        $stmt=$this->conn->prepare("UPDATE nota SET nota2=:nota WHERE id_alumno=:id_alumno AND id_asignatura=:materia");
+                    }
+                    elseif ($name_nota == "nota3") 
+                    {
+                        $stmt=$this->conn->prepare("UPDATE nota SET nota3=:nota WHERE id_alumno=:id_alumno AND id_asignatura=:materia");
+                    }
+                    elseif ($name_nota == "nota4") 
+                    {
+                        $stmt=$this->conn->prepare("UPDATE nota SET nota4=:nota WHERE id_alumno=:id_alumno AND id_asignatura=:materia");
+                    }
+
+                    $stmt->bindparam(":nota",$nota);
+                    $stmt->bindparam(":id_alumno",$id_alumno);
+                    $stmt->bindparam(":materia",$materia);
+
+                    $stmt->execute();
+
+                }else
+                {                                                  
+                    if ($name_nota == "nota1") 
+                    {
+                        $stmt2 = $this->conn->prepare("INSERT INTO nota(id_alumno,id_anio_lectivo,id_asignatura,nota1) 
+                                              VALUES(:id_alumno,:anio,:materia,:nota)");
+                    }
+                    elseif ($name_nota == "nota2") 
+                    {
+                        $stmt2 = $this->conn->prepare("INSERT INTO nota(id_alumno,id_anio_lectivo,id_asignatura,nota2) 
+                                              VALUES(:id_alumno,:anio,:materia,:nota)");
+                    }
+                    elseif ($name_nota == "nota3") 
+                    {
+                        $stmt2 = $this->conn->prepare("INSERT INTO nota(id_alumno,id_anio_lectivo,id_asignatura,nota3) 
+                                              VALUES(:id_alumno,:anio,:materia,:nota)");
+                    }
+                    elseif ($name_nota == "nota4") 
+                    {
+                        $stmt2 = $this->conn->prepare("INSERT INTO nota(id_alumno,id_anio_lectivo,id_asignatura,nota4) 
+                                              VALUES(:id_alumno,:anio,:materia,:nota)");
+                    }
+
+                    $stmt2->bindparam(":nota",$nota);
+                    $stmt2->bindparam(":id_alumno",$id_alumno);
+                    $stmt2->bindparam(":materia",$materia);
+                    $stmt2->bindparam(":anio",$anio);
+
+                    $stmt2->execute();
+
                 }
 
-                $stmt->bindparam(":nota",$nota);
-                $stmt->bindparam(":id_alumno",$id_alumno);
-                $stmt->bindparam(":materia",$materia);
-
-                $stmt->execute();
-
-            }else
-            {                                                  
-                if ($name_nota == "nota1") 
-                {
-                    $stmt2 = $this->conn->prepare("INSERT INTO nota(id_alumno,id_anio_lectivo,id_asignatura,nota1) 
-                                          VALUES(:id_alumno,:anio,:materia,:nota)");
-                }
-                elseif ($name_nota == "nota2") 
-                {
-                    $stmt2 = $this->conn->prepare("INSERT INTO nota(id_alumno,id_anio_lectivo,id_asignatura,nota2) 
-                                          VALUES(:id_alumno,:anio,:materia,:nota)");
-                }
-                elseif ($name_nota == "nota3") 
-                {
-                    $stmt2 = $this->conn->prepare("INSERT INTO nota(id_alumno,id_anio_lectivo,id_asignatura,nota3) 
-                                          VALUES(:id_alumno,:anio,:materia,:nota)");
-                }
-                elseif ($name_nota == "nota4") 
-                {
-                    $stmt2 = $this->conn->prepare("INSERT INTO nota(id_alumno,id_anio_lectivo,id_asignatura,nota4) 
-                                          VALUES(:id_alumno,:anio,:materia,:nota)");
-                }
-
-                $stmt2->bindparam(":nota",$nota);
-                $stmt2->bindparam(":id_alumno",$id_alumno);
-                $stmt2->bindparam(":materia",$materia);
-                $stmt2->bindparam(":anio",$anio);
-
-                $stmt2->execute();
-
+                    $res = "True";            
             }
 
-                return true;            
+            catch(PDOException $e)
+            {
+                echo $e->getMessage();
+                 $res = "False";
+            }
         }
 
-        catch(PDOException $e)
-        {
-            echo $e->getMessage();
-            return false;
-        }
+        //echo "RES: ".$res."<br>";
+        return $res;
+        
     }
 
     /**
@@ -1423,80 +1467,103 @@ class USER
      * @param  [type] $anio       [description]
      * @return [type]             [description]
      */
-    public function update_faltas($id_alumno,$name_falta,$falta,$materia,$anio)
+    public function update_faltas($id_alumno,$name_falta,$falta,$materia,$materia_file,$anio)
     {
-        try
+        //echo "Id asignatura: ".$materia."<br>";
+        //echo "Id asig file:  ".$materia_file."<br><br>";
+        $res_faltas = false;
+
+        if ($materia_file == $materia)
         {
 
-            $stmt1 = $this->conn->prepare("SELECT id_alumno FROM asistencia WHERE id_alumno=:id_alumno");
-            $stmt1->execute(array(':id_alumno'=>$id_alumno));
-            $userRow=$stmt1->fetch(PDO::FETCH_ASSOC);
-
-            if($stmt1->rowCount() == 1)
+            try
             {
-                if ($name_falta == "inasistencia_p1") 
-                {
-                    $stmt=$this->conn->prepare("UPDATE asistencia SET inasistencia_p1=:falta WHERE id_alumno=:id_alumno AND id_asignatura=:materia");
-                }
-                elseif ($name_falta == "inasistencia_p2") 
-                {
-                    $stmt=$this->conn->prepare("UPDATE asistencia SET inasistencia_p2=:falta WHERE id_alumno=:id_alumno AND id_asignatura=:materia");
-                }
-                elseif ($name_falta == "inasistencia_p3") 
-                {
-                    $stmt=$this->conn->prepare("UPDATE asistencia SET inasistencia_p3=:falta WHERE id_alumno=:id_alumno AND id_asignatura=:materia");
-                }
-                elseif ($name_falta == "inasistencia_p4") 
-                {
-                    $stmt=$this->conn->prepare("UPDATE asistencia SET inasistencia_p4=:falta WHERE id_alumno=:id_alumno AND id_asignatura=:materia");
-                }
 
-                $stmt->bindparam(":falta",$falta);
-                $stmt->bindparam(":id_alumno",$id_alumno);
-                $stmt->bindparam(":materia",$materia);
+                $stmt1 = $this->conn->prepare("SELECT id_alumno FROM asistencia WHERE id_alumno=:id_alumno");
+                $stmt1->execute(array(':id_alumno'=>$id_alumno));
+                $userRow=$stmt1->fetch(PDO::FETCH_ASSOC);
 
-                $stmt->execute();
-
-            }else
-            {                                                  
-                if ($name_falta == "inasistencia_p1") 
+                if($stmt1->rowCount() == 1)
                 {
-                    $stmt2 = $this->conn->prepare("INSERT INTO asistencia(id_alumno,id_anio_lectivo,id_asignatura,inasistencia_p1) 
-                                          VALUES(:id_alumno,:anio,:materia,:falta)");
-                }
-                elseif ($name_falta == "inasistencia_p2") 
-                {
-                    $stmt2 = $this->conn->prepare("INSERT INTO asistencia(id_alumno,id_anio_lectivo,id_asignatura,inasistencia_p2) 
-                                          VALUES(:id_alumno,:anio,:materia,:falta)");
-                }
-                elseif ($name_falta == "inasistencia_p3") 
-                {
-                    $stmt2 = $this->conn->prepare("INSERT INTO asistencia(id_alumno,id_anio_lectivo,id_asignatura,inasistencia_p3) 
-                                          VALUES(:id_alumno,:anio,:materia,:falta)");
-                }
-                elseif ($name_falta == "inasistencia_p4") 
-                {
-                    $stmt2 = $this->conn->prepare("INSERT INTO asistencia(id_alumno,id_anio_lectivo,id_asignatura,inasistencia_p4) 
-                                          VALUES(:id_alumno,:anio,:materia,:falta)");
-                }
+                    if ($name_falta == "inasistencia_p1") 
+                    {
+                        $stmt1=$this->conn->prepare("UPDATE asistencia SET inasistencia_p1=:falta WHERE id_alumno=:id_alumno AND id_asignatura=:materia");
+                    }
+                    elseif ($name_falta == "inasistencia_p2") 
+                    {
+                        $stmt1=$this->conn->prepare("UPDATE asistencia SET inasistencia_p2=:falta WHERE id_alumno=:id_alumno AND id_asignatura=:materia");
+                    }
+                    elseif ($name_falta == "inasistencia_p3") 
+                    {
+                        $stmt1=$this->conn->prepare("UPDATE asistencia SET inasistencia_p3=:falta WHERE id_alumno=:id_alumno AND id_asignatura=:materia");
+                    }
+                    elseif ($name_falta == "inasistencia_p4") 
+                    {
+                        $stmt1=$this->conn->prepare("UPDATE asistencia SET inasistencia_p4=:falta WHERE id_alumno=:id_alumno AND id_asignatura=:materia");
+                    }
 
-                $stmt2->bindparam(":falta",$falta);
-                $stmt2->bindparam(":id_alumno",$id_alumno);
-                $stmt2->bindparam(":materia",$materia);
-                $stmt2->bindparam(":anio",$anio);
+                    $stmt1->bindparam(":falta",$falta);
+                    $stmt1->bindparam(":id_alumno",$id_alumno);
+                    $stmt1->bindparam(":materia",$materia);
 
-                $stmt2->execute();
+                    $stmt1->execute();
 
+                    $res_faltas = true;
+        
+
+                }
+                else
+                {                                                  
+                    if ($name_falta == "inasistencia_p1") 
+                    {
+                        $stmt2 = $this->conn->prepare("INSERT INTO asistencia(id_alumno,id_anio_lectivo,id_asignatura,inasistencia_p1) 
+                                              VALUES(:id_alumno,:anio,:materia,:falta)");
+                    }
+                    elseif ($name_falta == "inasistencia_p2") 
+                    {
+                        $stmt2 = $this->conn->prepare("INSERT INTO asistencia(id_alumno,id_anio_lectivo,id_asignatura,inasistencia_p2) 
+                                              VALUES(:id_alumno,:anio,:materia,:falta)");
+                    }
+                    elseif ($name_falta == "inasistencia_p3") 
+                    {
+                        $stmt2 = $this->conn->prepare("INSERT INTO asistencia(id_alumno,id_anio_lectivo,id_asignatura,inasistencia_p3) 
+                                              VALUES(:id_alumno,:anio,:materia,:falta)");
+                    }
+                    elseif ($name_falta == "inasistencia_p4") 
+                    {
+                        $stmt2 = $this->conn->prepare("INSERT INTO asistencia(id_alumno,id_anio_lectivo,id_asignatura,inasistencia_p4) 
+                                              VALUES(:id_alumno,:anio,:materia,:falta)");
+                    }
+
+                    $stmt2->bindparam(":falta",$falta);
+                    $stmt2->bindparam(":id_alumno",$id_alumno);
+                    $stmt2->bindparam(":materia",$materia);
+                    $stmt2->bindparam(":anio",$anio);
+
+                    $stmt2->execute();
+
+                    $res_faltas = true;
+        
+                }
+            
             }
 
-            return true;            
+            catch(PDOException $e)
+            {
+                echo $e->getMessage();
+                $res_faltas = false;
+    
+            }
+
+        }
+        else
+        {
+            $res_faltas = false;
+
         }
 
-        catch(PDOException $e)
-        {
-            echo $e->getMessage();
-            return false;
-        }
+        return $res_faltas;
+
     }
 
     /**
@@ -1582,18 +1649,19 @@ class USER
      * @param  [type] $id_logros       [description]
      * @return [type]                  [description]
      */
-    public function register_logros_alumno($id_asignatura,$id_alumno,$id_anio_lectivo,$id_logros)
+    public function register_logros_alumno($id_asignatura,$id_alumno,$id_anio_lectivo,$id_periodo,$id_logros)
     {
         $res ="false";
 
         try
         {
-            $stmt1 = $this->conn->prepare("SELECT id_alumno FROM alumnos_logros WHERE id_alumno=:id_alumno AND id_asignatura=:id_asignatura AND id_anio_lectivo=:id_anio_lectivo");
+            $stmt1 = $this->conn->prepare("SELECT id_alumno FROM alumnos_logros WHERE id_alumno=:id_alumno AND id_asignatura=:id_asignatura AND id_anio_lectivo=:id_anio_lectivo AND id_periodo=:id_periodo");
 
             $stmt1->execute(array(
                                   ':id_alumno'   => $id_alumno,
                                   ':id_asignatura' => $id_asignatura,
-                                  ':id_anio_lectivo'   => $id_anio_lectivo 
+                                  ':id_anio_lectivo'   => $id_anio_lectivo,
+                                  ':id_periodo'   => $id_periodo 
                                     ));
 
 
@@ -1606,6 +1674,7 @@ class USER
 
                 $stmt->bindparam(":id_asignatura", $id_asignatura);
                 $stmt->bindparam(":id_anio_lectivo", $id_anio_lectivo);
+                $stmt->bindparam(":id_periodo", $id_periodo);
                 $stmt->bindparam(":id_alumno", $id_alumno);
                 $stmt->bindparam(":id_logros", $id_logros);
 
@@ -1615,12 +1684,13 @@ class USER
             }
             else
             {
-                $stmt2 = $this->conn->prepare("INSERT INTO alumnos_logros(id_asignatura,id_alumno,id_anio_lectivo,id_logros) 
-                                          VALUES(:id_asignatura,:id_alumno,:id_anio_lectivo,:id_logros)");
+                $stmt2 = $this->conn->prepare("INSERT INTO alumnos_logros(id_asignatura,id_alumno,id_anio_lectivo,id_periodo,id_logros) 
+                                          VALUES(:id_asignatura,:id_alumno,:id_anio_lectivo,:id_periodo,:id_logros)");
                                                   
                 $stmt2->bindparam(":id_asignatura", $id_asignatura);
                 $stmt2->bindparam(":id_alumno", $id_alumno);
                 $stmt2->bindparam(":id_anio_lectivo", $id_anio_lectivo);
+                $stmt2->bindparam(":id_periodo", $id_periodo);
                 $stmt2->bindparam(":id_logros", $id_logros);                                  
                     
                 $stmt2->execute();   
@@ -1767,10 +1837,6 @@ class USER
      */
     public function update_logro($id_logro,$logro,$id_asignatura)
     {
-        echo "ID Alumno: ".$id_alumno."<br>";
-        echo "ID Grupo New: ".$id_grupo_new."<br>";
-        echo "ID ANIO: ".$id_anio_lec."<br>";
-
         try 
         {
             $stmt=$this->conn->prepare("UPDATE logros SET descripcion=:logro WHERE id_logro=:id_logro AND id_asignatura=:id_asignatura");

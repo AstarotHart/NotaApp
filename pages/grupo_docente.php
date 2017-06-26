@@ -32,6 +32,7 @@
 </script> 
 
 
+
 <style>
     #myForm 
     { 
@@ -99,6 +100,7 @@ if (isset($_POST['asignar_logros']))
     $id_alumnos=$_POST['select_alumnos'];
     $id_asig = $_POST['id_asignatura'];
     $id_anio_lec= $_POST['id_anio_lectivo'];
+    $perio_act= $_POST['id_periodo'];
 
     
     $logros_insert = "";
@@ -116,8 +118,9 @@ if (isset($_POST['asignar_logros']))
         echo "ID ALUMNO: ".$id_alumnos."<br>";
         echo "ID ASIG: ".$id_asig."<br>";
         echo "ID ANIO: ".$id_anio_lec."<br>";
+        echo "ID ANIO: ".$perio_act."<br>";
 
-        $logros_alumnos->register_logros_alumno($id_asig,$id_alumnos,$id_anio_lec,$logros_insert);
+        $logros_alumnos->register_logros_alumno($id_asig,$id_alumnos,$id_anio_lec,$perio_act,$logros_insert);
     }
     
      
@@ -351,24 +354,28 @@ if (isset($id_asignatura))
                 $editar_tablas_p1 = "xedit";
                 $name_nota = "nota1";
                 $name_falta = "inasistencia_p1";
+                $periodo_Actual = $id_periodo1;
             }
             elseif ($fechaHoy > $inicio_periodo2 AND $fechaHoy < $fin_periodo2) 
             {
                 $editar_tablas_p2 = "xedit";
                 $name_nota = "nota2";
                 $name_falta = "inasistencia_p2";
+                $periodo_Actual = $id_periodo2;
             }
             elseif ($fechaHoy > $inicio_periodo3 AND $fechaHoy < $fin_periodo3) 
             {
                 $editar_tablas_p3 = "xedit";
                 $name_nota = "nota3";
                 $name_falta = "inasistencia_p3";
+                $periodo_Actual = $id_periodo3;
             }
             elseif ($fechaHoy > $inicio_periodo4 AND $fechaHoy < $fin_periodo4) 
             {
                 $editar_tablas_p4 = "xedit";
                 $name_nota = "nota4";
                 $name_falta = "inasistencia_p4";
+                $periodo_Actual = $id_periodo4;
             }
         }
     }
@@ -506,7 +513,7 @@ if (isset($id_asignatura))
                 $data .= '
                     <tr>
                         <td>' . $num. '</td>
-                        <td>' . $alumnos_grupo['primer_apellido'] . ' ' .$alumnos_grupo['segundo_apellido'] . ' ' .$alumnos_grupo['nombres'] .'</td>
+                        <td>' . utf8_encode($alumnos_grupo['primer_apellido']) . ' ' .utf8_encode($alumnos_grupo['segundo_apellido']) . ' ' .utf8_encode($alumnos_grupo['nombres']) .'</td>
                         <td>' . $alumnos_grupo['id_alumno'] . '</td>
                         <td><span class="'.$editar_tablas_p1.'" id="periodo1" id_alumno="'.$alumnos_grupo['id_alumno'].'" name="nota1" materia="'.$id_asignatura.'" anio="'.$cabecera['id_anio_lectivo'].'">'.$res_nota1.'</span></td>
                         <td><span tipo="falta" class="'.$editar_tablas_p1.'" id="periodo1" id_alumno="'.$alumnos_grupo['id_alumno'].'" name="inasistencia_p1" materia="'.$id_asignatura.'" anio="'.$cabecera['id_anio_lectivo'].'">'.$res_falta1.'</span></td>
@@ -566,7 +573,7 @@ if (isset($id_asignatura))
 
                                                         foreach ($combox as $combox) 
                                                         {
-                                                            echo '<option value="'.$combox['id_asignatura']."#".$combox['id_grupo'].'">'.$combox['nombre_asignatura'].' '.$combox['descripcion_grado'].'-'.$combox['descripcion_grupo'].'</option>';
+                                                            echo '<option value="'.$combox['id_asignatura']."#".$combox['id_grupo'].'">'.utf8_encode($combox['nombre_asignatura']).' '.$combox['descripcion_grado'].'-'.$combox['descripcion_grupo'].'</option>';
                                                         }
 
                                                     ?>  
@@ -584,13 +591,14 @@ if (isset($id_asignatura))
 
                     <div class="body" >
                         <?php
-
+                        /*
                         echo "Id Asignatura: ".$res_combox."<br>";
                         echo "Id User: ".$user_id."<br>";
                         echo "Id Grupo Combox: ".$id_grupo."<br>";
                         echo "Id Asignatura Combox: ".$id_asignatura."<br>";
                         echo "Nombre Area: ".$cabecera['nombre_area']."<br>";
-
+                        */
+                       
                         if (isset($id_asignatura))
                         { ?>   
                         <div class="col-sm-2">
@@ -603,14 +611,14 @@ if (isset($id_asignatura))
                         <div class="col-sm-3">
                             <b>Asignatura:</b> <?php if (isset($cabecera['nombre_asignatura'])) 
                             {
-                                 echo $cabecera['nombre_asignatura'];
+                                 echo utf8_encode($cabecera['nombre_asignatura']);
                             }else{echo " ";} ?>
                         </div>
 
                         <div class="col-sm-2">
-                            <b>Periodo:</b> <?php if (isset($id_periodo1)) 
+                            <b>Periodo:</b> <?php if (isset($periodo_Actual)) 
                             {
-                                 echo $id_periodo1;
+                                 echo $periodo_Actual;
                             }else{echo " ";} ?>
                         </div>
 
@@ -665,6 +673,7 @@ if (isset($id_asignatura))
                                 <!-- enviar de manera oculta datos id_asignatura e id_anio_lectivo --> 
                                     <input type="hidden" class="form-control" name="id_asignatura" value="<?php echo $id_asignatura; ?>">
                                     <input type="hidden" class="form-control" name="id_anio_lectivo" value="<?php echo $cabecera['id_anio_lectivo']; ?>">
+                                    <input type="hidden" class="form-control" name="id_periodo" value="<?php echo $periodo_Actual; ?>">
 
                                     <div class="demo-checkbox">
                                         <select name="select_logros[]" size="3" multiple="multiple" tabindex="1">
@@ -723,7 +732,7 @@ if (isset($id_asignatura))
                             <div class="well">
                                 <form action="upload.php?id_asignatura=<?php echo $id_asignatura; ?>&anio_lectivo=<?php echo $cabecera['id_anio_lectivo']; ?>&name_nota=<?php echo $name_nota; ?>&name_falta=<?php echo $name_falta; ?>&id_user=<?php echo $user_id; ?>" id="myForm" name="frmupload" method="post" enctype="multipart/form-data">
                                   <input type="file" id="upload_file" name="upload_file" />
-                                  <input type="submit" name='submit_image' value="Subir" onclick='upload_image();'/>
+                                  <input type="submit" name='submit_file' value="Subir" onclick='upload_image();'/>
                                 </form>
                                 <div class='progress' id="progress_div">
                                     <div class='bar' id='bar1'></div>
@@ -741,7 +750,6 @@ if (isset($id_asignatura))
                             <button class="btn bg-teal waves-effect" type="button" data-toggle="collapse" data-target="#UploadFile" aria-expanded="false" aria-controls="UploadFile">
                                 Subir Archivo
                             </button>
-                        </div>
                         
                     </div>
                 </div>

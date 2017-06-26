@@ -45,11 +45,11 @@ if (count($cabecera_print) > 0)
 
    $objPHPExcel->setActiveSheetIndex(0)
                            ->setCellValue("F4", utf8_encode($cabecera_print['nombre_area']))
-                           ->setCellValue("M4", $cabecera_print['descripcion_grupo'])
-                           ->setCellValue("M5", $cabecera_print['intensidad_horaria'])
-                           ->setCellValue("R4", $cabecera_print['id_anio_lectivo'])
-                           ->setCellValue("F5", $cabecera_print['nombre_asignatura']);
-
+                           ->setCellValue("M4", utf8_encode($cabecera_print['descripcion_grupo']))
+                           ->setCellValue("M5", utf8_encode($cabecera_print['intensidad_horaria']))
+                           ->setCellValue("R4", utf8_encode($cabecera_print['id_anio_lectivo']))
+                           ->setCellValue("R5", utf8_encode($id_asignatura))
+                           ->setCellValue("F5", utf8_encode($cabecera_print['nombre_asignatura']));
 }
 
 //Insertar Datos Alumno en celdas

@@ -5,7 +5,7 @@
   $notas = new USER();
   $faltas = new USER();
 
-  if(isset($_POST['submit_image']))
+  if(isset($_POST['submit_file']))
   {
     $id_user       = $_GET['id_user'];
     $id_asignatura = $_GET['id_asignatura'];
@@ -24,7 +24,7 @@
     if (isset($uploadfile))
     {
 
-      $folder="Subidas/".$id_user;
+      $folder="Subidas/".$id_user."/".$id_asignatura;
 
       if (!is_dir($folder))
       {
@@ -38,7 +38,7 @@
 
 
       move_uploaded_file($_FILES["upload_file"]["tmp_name"], $folder.$_FILES["upload_file"]["name"]);
-      //echo 'archivo <b>'."".$_FILES["upload_file"]["name"].'</b> subido con exito';
+      /*echo 'archivo <b>'."".$_FILES["upload_file"]["name"].'</b> subido con exito';*/
       echo '<div class="alert bg-green alert-dismissible" role="alert">
                                 <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
                                 archivo <b>'."".$_FILES["upload_file"]["name"].'</b> subido con exito.
@@ -64,7 +64,8 @@
         $informacion[] = array(
                                 'id_alumno' => $objPHPExcel->getActiveSheet()->getCell('F'.$i)->getCalculatedValue(),
                                 'nota' => $objPHPExcel->getActiveSheet()->getCell('S'.$i)->getCalculatedValue(),
-                                'faltas' => $objPHPExcel->getActiveSheet()->getCell('T'.$i)->getCalculatedValue(),  
+                                'faltas' => $objPHPExcel->getActiveSheet()->getCell('T'.$i)->getCalculatedValue(), 
+                                'id_asig_file' => $objPHPExcel->getActiveSheet()->getCell('R5')->getCalculatedValue(), 
                               );
 
       }
@@ -75,13 +76,14 @@
           if ($item['id_alumno'] != NULL)
           {
               //llamado a la funcion UPDATE_NOTA para ingresar notas
-              $notas->update_nota($item['id_alumno'],$name_nota,$item['nota'],$id_asignatura,$anio_lectivo);
+              $notas->update_nota($item['id_alumno'],$name_nota,$item['nota'],$id_asignatura,$item['id_asig_file'],$anio_lectivo);
 
               //llamado a la funcion UPDATE_FALTAS para ingresar FALTAS
-              $faltas->update_faltas($item['id_alumno'],$name_falta,$item['faltas'],$id_asignatura,$anio_lectivo);
+              $faltas->update_faltas($item['id_alumno'],$name_falta,$item['faltas'],$id_asignatura,$item['id_asig_file'],$anio_lectivo);
+
           }
           
-      }    
+      }
 
     }
   }

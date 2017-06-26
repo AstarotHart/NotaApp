@@ -91,7 +91,7 @@ if(isset($_POST['btn-login']))
                             <i class="material-icons">person</i>
                         </span>
                         <div class="form-line">
-                            <input type="text" class="form-control" name="u_id" placeholder="CC" required autofocus>
+                            <input type="number" class="form-control" name="u_id" placeholder="CC" required autofocus>
                         </div>
                     </div>
                     <div class="input-group">
@@ -99,7 +99,7 @@ if(isset($_POST['btn-login']))
                             <i class="material-icons">lock</i>
                         </span>
                         <div class="form-line">
-                            <input type="password" class="form-control" name="u_pass" placeholder="contraseña" required>
+                            <input type="password" class="form-control" name="u_pass" placeholder="Contraseña" required>
                         </div>
                     </div>
                     <div class="row">
@@ -109,7 +109,7 @@ if(isset($_POST['btn-login']))
                     </div>
                     <div class="row m-t-15 m-b--20">
                         <div class="col-xs-6">
-                            <a href="sign-up.php">Registrate Ahora!</a>
+                            <a href="sign-up.php">Registrarse!</a>
                         </div>
                     </div>
                 </form>

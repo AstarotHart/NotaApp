@@ -9,7 +9,7 @@ $asignar_alumno    =   new USER();
 
 $show_table_alumnos = "show";
 $show_table_logros  = "none";
-$show_combox_grupo  = "show";
+$show_combox_grupo  = "none";
 $res_logros_alumno  = " ";
 
 
@@ -60,6 +60,13 @@ if (isset($_POST['asignar_alumno']))
     if (isset($_POST['btn-select-SE'])) 
     {
         $_SESSION['id_sede_asig_alum_sede']=$_POST['id_sede'];
+        $show_combox_grupo = "show";
+    }
+
+    //saber si el boton ACEPTAR de seleccionde GRUPOa sido inicializado
+    if (isset($_POST['btn-select-GR'])) 
+    {
+        $_SESSION['id_grupo']=$_POST['id_grupo'];
     }
 
     //saber si el boton CAMBIAR SEDE Y GRUPO a sido inicializado
@@ -75,25 +82,42 @@ if (isset($_POST['asignar_alumno']))
         $id_sede = $_SESSION['id_sede_asig_alum_sede'];
     }
 
+    //Saber si si la variable de session ID_SEDE
+    if (isset($_SESSION['id_grupo']))
+    {
+        $id_grupo = $_SESSION['id_grupo'];
+    }
+
     //Saber si si la variable ID_SEDE E ID_GRUPO
-    if (isset($id_sede))
+    if (isset($id_sede) AND isset($id_grupo))
     {        
         $num = 1;
 
         $data_select = "";
             
         $alumnos_grupo = $object->Read_alumnos_asig_grupo($id_grupo);
+        $cabecera = $object->Read_cabecera_asig_alumno_grupo($id_grupo);
+
         $res_grupos  = " ";
 
-        // Sber si alumnos_grupo esta vacio
+        // Saber si alumnos_grupo esta vacio
         if (count($alumnos_grupo) > 0) 
         {      
             foreach ($alumnos_grupo as $alumnos_grupo) 
             {
-                $data_select .= '<option value="' . $alumnos_grupo['id_alumno'] . '">' . $alumnos_grupo['primer_apellido'] . ' ' .$alumnos_grupo['segundo_apellido'] . ' ' .$alumnos_grupo['nombres'] .'</option>';                
+                $data_select .= '<option value="' . $alumnos_grupo['id_alumno'] . '">' . utf8_encode($alumnos_grupo['primer_apellido']) . ' ' .utf8_encode($alumnos_grupo['segundo_apellido']) . ' ' .utf8_encode($alumnos_grupo['nombres']) .'</option>';                
             }
         }
-        
+
+        // Saber si CABECERA esta vacio
+        if (count($cabecera) > 0) 
+        {      
+            foreach ($cabecera as $cabecera) 
+            {
+                    
+            }
+        }
+
     }
 
 if (isset($id_sede))
@@ -158,8 +182,9 @@ if (isset($id_sede))
                                     </div>
                                 </div>
                             </form>
+
                             <?php
-                            $show_combox_grupo = "none";
+                        
                         } 
                         ?>
                         <?php 
@@ -185,7 +210,7 @@ if (isset($id_sede))
                                                                 foreach ($grupos as $grupo)
                                                                 {
                                                                     ?>
-                                                                    <option value="<?php echo $grupo['id_grupo']; ?>"><?php echo $grupo['descripcion_grado']."-".$grupo['descripcion_grupo']; ?></option>'; 
+                                                                    <option value="<?php echo $grupo['id_grupo']; ?>"><?php echo utf8_encode($grupo['descripcion_grupo']); ?></option>'; 
                                                                     <?php
                                                                 }
                                                             } else {
@@ -224,14 +249,14 @@ if (isset($id_sede))
                                 <div class="col-sm-4">
                                     <b>Grupo:</b> <?php if (isset($cabecera['descripcion_grupo'])) 
                                     {
-                                        echo $cabecera['descripcion_grado']."-".$cabecera['descripcion_grupo'];
+                                        echo $cabecera['descripcion_grupo'];
                                     }else{echo " ";} ?>
                                 </div>
 
                                 <div class="col-sm-4">
-                                    <b>Director Grupo:</b> <?php if (isset($cabecera['id_docente'])) 
+                                    <b>Director Grupo:</b> <?php if (isset( $cabecera['nombres']) AND isset( $cabecera['prim_apellido'])) 
                                     {
-                                         echo $cabecera['id_docente'];
+                                         echo $cabecera['nombres']." ".$cabecera['prim_apellido'];
                                     }else{echo " ";} ?>
                                 </div>
 
@@ -270,7 +295,7 @@ if (isset($id_sede))
                                             foreach ($grupos as $grupo)
                                             {
                                                 ?>
-                                                <option value="<?php echo $grupo['id_grupo']; ?>"><?php echo $grupo['descripcion_grado']."-".$grupo['descripcion_grupo']; ?></option>'; 
+                                                <option value="<?php echo $grupo['id_grupo']; ?>"><?php echo $grupo['descripcion_grupo']; ?></option>'; 
                                                 <?php
                                             }
                                         } else {

@@ -52,6 +52,9 @@
     <!-- Input Mask Plugin Js     [Select Plugin] Js-->
     <script src="../plugins/jquery-inputmask/jquery.inputmask.bundle.js"></script>
 
+    <!-- Upload Files Js-->
+    <script src="../plugins/jquery-form/jquery.form.js"></script>
+
     <!-- Custom Js -->
     <script src="../js/admin.js"></script>
     <script src="../js/pages/forms/form-wizard.js"></script>
