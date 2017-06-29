@@ -6,7 +6,13 @@ $object                  = new USER();
 $cabecera_director       = new USER();
 $cabecera_tabla_director = new USER();
 $ini_asignatura          = new USER();
-$alumnos_grupo          = new USER();
+$alumnos_grupo           = new USER();
+$notas_def               = new USER();
+
+
+$data_inside = "";
+$data_select = "";
+
 
 if (isset($_POST['new_pass_docente_admin']))
 {
@@ -42,15 +48,9 @@ if (isset($_POST['new_pass_docente_admin']))
 
     $cabecera_director = $object->cabecera_director($user_id);
 
-//Cargar datos en un array con CABECERA
-    if (count($cabecera_director) > 0) 
-    {
-                    
-        foreach ($cabecera_director as $cabecera_director) 
-        {
-            
-        }
-    }
+    $ids_asignaturas = array();
+    $cont_ids_asig = 0;
+
 
 // Cargar datos en un array con CABECERA
     if (count($cabecera_director) > 0) 
@@ -63,9 +63,13 @@ if (isset($_POST['new_pass_docente_admin']))
 
         $cabecera_tabla_director = $object->cabecera_tabla_director($cabecera_director['id_grupo']);
 
+
         $data = '<table class="table font-13 table-bordered table-striped table-hover js-basic-example dataTable">
                         <thead>
-                            <tr>';
+                            <tr>
+                            <th>No.</th>
+                            <th>Nombre Estudiente</th>
+                            <th>Codigo</th>';
 
         if (count($cabecera_tabla_director) > 0) 
         {
@@ -74,6 +78,9 @@ if (isset($_POST['new_pass_docente_admin']))
             {
                 $ini_asignatura = $object->iniciales_asignaturas($cabecera_tabla_director['nombre_asignatura']);
                 $data .='<th>'.$ini_asignatura.'</th>';
+
+                $ids_asignaturas[$cont_ids_asig] = $cabecera_tabla_director['id_asignatura'];
+                $cont_ids_asig++;
             }
         }
 
@@ -83,10 +90,6 @@ if (isset($_POST['new_pass_docente_admin']))
                         <tbody>
                         ';
     }
-
-
-    
-
 
     ?>
 
@@ -108,12 +111,11 @@ if (isset($_POST['new_pass_docente_admin']))
 
                         <div class="body">
 
-<<<<<<< HEAD
                             <div class="card">
                                 <div class="body">
 
                                     <div class="col-sm-3">
-                                        <b>Grupo:</b> <?php echo $cabecera_director['descripcion_grado']."-".$cabecera_director['descripcion_grupo'] ?>
+                                        <b>Grupo:</b> <?php echo $cabecera_director['descripcion_grupo'] ?>
                                     </div>
 
                                     <div class="col-sm-3">
@@ -132,11 +134,10 @@ if (isset($_POST['new_pass_docente_admin']))
 
                                 <?php
                                 
-                                $alumnos_grupo = $object->Read_alumnos_dir_grupo($cabecera_director['id_grupo']);
+                                $alumnos_grupo = $object->Read_alumnos_grupo($cabecera_director['id_grupo']);
 
-                                 echo $data;
-                                 
-                                $users = $object->Read_alumnos_dir_grupo($cabecera_director['id_grupo']);
+                                //echo $data;
+
                                 $num = 1;
 
                                 
@@ -147,16 +148,33 @@ if (isset($_POST['new_pass_docente_admin']))
                                     {
                                         $data_inside .= '<tr>
                                                             <td>' . $num. '</td>
-                                                            <td>' . $alumnos_grupo['primer_apellido'] . ' ' .$alumnos_grupo['segundo_apellido'] . ' ' .$alumnos_grupo['nombres'] .'</td>
-                                                            <td>' . $alumnos_grupo['id_alumno'] . '</td>
-                                                            <td>0</td>
-                                                            <td>0</td>
-                                                            <td>0</td>
-                                                            <td>0</td>
-                                                         </tr>';
+                                                            <td>' . utf8_encode($alumnos_grupo['primer_apellido']) . ' ' .utf8_encode($alumnos_grupo['segundo_apellido']) . ' ' .utf8_encode($alumnos_grupo['nombres']) .'</td>
+                                                            <td>' . $alumnos_grupo['id_alumno'] . '</td>';
+                                        
+                                        for($i=0; $i < count($ids_asignaturas); $i++)
+                                        {
+                                            $notas_def = $object->Read_notas_def_asignatura($ids_asignaturas[$i],$alumnos_grupo['id_alumno'],$cabecera_director['id_anio_lectivo']);
+
+                                            if (count($notas_def) > 0)
+                                            {
+                                                foreach ($notas_def as $notas_def)
+                                                {
+                                                    $data_inside .= '<td>' . $notas_def['nota_definitiva_asig'] . '</td>';
+                                                }
+                                            }
+                                            else
+                                            {
+                                                $data_inside .= '<td>0</td>';
+                                            }
+
+                                            
+                                        }
+                                        
+
+                                        $data_inside .= '</tr>';
                                         $num++;
 
-                                        $data_select .= '<option value="' . $alumnos_grupo['id_alumno'] . '">' . $alumnos_grupo['primer_apellido'] . ' ' .$alumnos_grupo['segundo_apellido'] . ' ' .$alumnos_grupo['nombres'] .'</option>';
+                                        $data_select .= '<option value="' . $alumnos_grupo['id_alumno'] . '">' . utf8_encode($alumnos_grupo['primer_apellido']) . ' ' .utf8_encode($alumnos_grupo['segundo_apellido']) . ' ' .utf8_encode($alumnos_grupo['nombres']) .'</option>';
                                     
                                     }
                                 } 

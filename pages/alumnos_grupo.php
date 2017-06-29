@@ -7,7 +7,7 @@ $grupos         =   new USER();
 $nombre_sede    =   new USER();
 $asignar_alumno    =   new USER();
 
-$show_table_alumnos = "show";
+$show_table_alumnos = "none";
 $show_table_logros  = "none";
 $show_combox_grupo  = "none";
 $res_logros_alumno  = " ";
@@ -59,7 +59,7 @@ if (isset($_POST['asignar_alumno']))
     //saber si el boton ACEPTAR de seleccionde SEDE a sido inicializado
     if (isset($_POST['btn-select-SE'])) 
     {
-        $_SESSION['id_sede_asig_alum_sede']=$_POST['id_sede'];
+        $_SESSION['id_sede_asig_alum_grupo']=$_POST['id_sede'];
         $show_combox_grupo = "show";
     }
 
@@ -72,14 +72,14 @@ if (isset($_POST['asignar_alumno']))
     //saber si el boton CAMBIAR SEDE Y GRUPO a sido inicializado
     if (isset($_POST['btn-select-destroy'])) 
     {
-        $_SESSION['id_sede_asig_alum_sede'] = null;
+        $_SESSION['id_sede_asig_alum_grupo'] = null;
         $_SESSION['id_grupo'] = null;
     }
 
     //Saber si si la variable de session ID_SEDE
-    if (isset($_SESSION['id_sede_asig_alum_sede']))
+    if (isset($_SESSION['id_sede_asig_alum_grupo']))
     {
-        $id_sede = $_SESSION['id_sede_asig_alum_sede'];
+        $id_sede = $_SESSION['id_sede_asig_alum_grupo'];
     }
 
     //Saber si si la variable de session ID_SEDE
@@ -102,7 +102,9 @@ if (isset($_POST['asignar_alumno']))
 
         // Saber si alumnos_grupo esta vacio
         if (count($alumnos_grupo) > 0) 
-        {      
+        {     
+            $show_table_alumnos = "show";
+
             foreach ($alumnos_grupo as $alumnos_grupo) 
             {
                 $data_select .= '<option value="' . $alumnos_grupo['id_alumno'] . '">' . utf8_encode($alumnos_grupo['primer_apellido']) . ' ' .utf8_encode($alumnos_grupo['segundo_apellido']) . ' ' .utf8_encode($alumnos_grupo['nombres']) .'</option>';                
@@ -238,7 +240,7 @@ if (isset($id_sede))
                     </div>
                     
 
-                    <div class="body" style="display: <?php echo $show_table_alumnos; ?>;>
+                    <div class="body" style="display: <?php echo $show_table_alumnos; ?>;">
 
                         <div class="card" >
                             <div class="body" >

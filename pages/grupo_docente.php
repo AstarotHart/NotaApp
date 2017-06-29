@@ -56,6 +56,7 @@ $user           = new USER();
 $cabecera       = new USER();
 $logros_alumnos = new USER();
 $nota           = new USER();
+$nota_final_reg = new USER();
 $falta          = new USER();
 $logros         = new USER();
 $newLogro       = new USER();
@@ -114,11 +115,13 @@ if (isset($_POST['asignar_logros']))
 
     foreach ($id_alumnos as $id_alumnos)
     {
+        /*
         echo "ID LOGRO: ".$id_logros."<br>";
         echo "ID ALUMNO: ".$id_alumnos."<br>";
         echo "ID ASIG: ".$id_asig."<br>";
         echo "ID ANIO: ".$id_anio_lec."<br>";
         echo "ID ANIO: ".$perio_act."<br>";
+        */
 
         $logros_alumnos->register_logros_alumno($id_asig,$id_alumnos,$id_anio_lec,$perio_act,$logros_insert);
     }
@@ -377,6 +380,9 @@ if (isset($id_asignatura))
                 $name_falta = "inasistencia_p4";
                 $periodo_Actual = $id_periodo4;
             }
+
+
+            
         }
     }
 
@@ -424,10 +430,10 @@ if (isset($id_asignatura))
                     
         foreach ($alumnos_grupo as $alumnos_grupo) 
         {
-            $notas  = $object->Read_notas($id_asignatura,$alumnos_grupo['id_alumno']);
-            $faltas = $object->Read_faltas($id_asignatura,$alumnos_grupo['id_alumno']);
+            $notas  = $object->Read_notas($id_asignatura,$alumnos_grupo['id_alumno'],$cabecera['id_anio_lectivo']);
+            $faltas = $object->Read_faltas($id_asignatura,$alumnos_grupo['id_alumno'],$cabecera['id_anio_lectivo']);
 
-            if (isset($id_asignatura) and isset($cabecera['id_alumno']))
+            if (isset($id_asignatura) and isset($alumnos_grupo['id_alumno']))
             {
                 $show_table_alumnos = "show";
             }
@@ -454,7 +460,9 @@ if (isset($id_asignatura))
                     $res_nota3  = $notas['nota3'];
                     $res_nota4  = $notas['nota4'];
                     $nota_final = ($res_nota1+$res_nota2+$res_nota3+$res_nota4)/4;
-                    $nota_final =  number_format($nota_final,1);  
+                    $nota_final =  number_format($nota_final,1);
+
+                    $nota_final_reg = $object->update_nota_final($alumnos_grupo['id_alumno'],$id_asignatura,$cabecera['id_anio_lectivo'],$nota_final); 
                 }
                 if ($nota_final <= 2.9) 
                 {
