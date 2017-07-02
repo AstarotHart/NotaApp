@@ -243,6 +243,40 @@ class USER
     }
 
     /**
+     * [nombre_grupo description]
+     * @param  [type] $id_grupo [description]
+     * @return [type]           [description]
+     */
+    public function nombre_grupo($id_grupo)
+    {
+        $query = $this->conn->prepare('SELECT descripcion_grupo FROM grupo WHERE id_grupo = :id_grupo');
+        $query->bindParam(":id_grupo",$id_grupo);
+        $query->execute();
+        $data = array();
+        while ($row = $query->fetch(PDO::FETCH_ASSOC)) {
+            $data[] = $row;
+        }
+        return $data;
+    }
+
+    /**
+     * [nombre_asignatura description]
+     * @param  [type] $id_asignatura [description]
+     * @return [type]                [description]
+     */
+    public function nombre_asignatura($id_asignatura)
+    {
+        $query = $this->conn->prepare('SELECT nombre_asignatura FROM asignatura WHERE id_asignatura = :id_asignatura');
+        $query->bindParam(":id_asignatura",$id_asignatura);
+        $query->execute();
+        $data = array();
+        while ($row = $query->fetch(PDO::FETCH_ASSOC)) {
+            $data[] = $row;
+        }
+        return $data;
+    }
+
+    /**
      * Combobox para cargar SEDES
      */
     public function combobox_sede()

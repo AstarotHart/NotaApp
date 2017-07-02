@@ -67,6 +67,8 @@ $asig_id           = new USER();
 $alumnos_grupo     = new USER();
 $combox            = new USER();
 $tipo_calificacion = new USER();
+$nom_grupo         = new USER();
+$nom_asignatura    = new USER();
 
 
 $show_table_alumnos = "none";
@@ -98,8 +100,8 @@ if (isset($_POST['crear']))
 //saber si el boton CREAR de logro a sido inicializado
 if (isset($_POST['asignar_nota_tr'])) 
 {
-    $id_logro    =$_POST['id_logro'];
-    $id_alumnos  =$_POST['select_alumnos'];
+    $id_logro    = $_POST['id_logro'];
+    $id_alumnos  = $_POST['select_alumnos'];
     $id_asig     = $_POST['id_asignatura'];
     $id_anio_lec = $_POST['id_anio_lectivo'];
     $nota_name   = $_POST['name_nota'];
@@ -184,9 +186,27 @@ if (isset($_POST['btn-select-GR']))
     $_SESSION['id_grupo']=$id_grupo_combox;
 }
 
+//saber si el boton CAMBIAR ASIGNATURA - GRUPO a sido inicializado
+if (isset($_POST['btn-select-destroy'])) 
+{
+    $_SESSION['id_asignatura'] = null;
+    $_SESSION['id_grupo']      = null;
+    
+    $tipo_calificacion         = null;
+    $nom_grupo                 = null;
+    $tipo                      = null;
+       
+    $show_table_alumnos = "none";
+    $show_table_logros  = "none";
+    $res_logros_alumno  = " ";;
+
+}
+
 if (isset($_SESSION['id_asignatura']))
 {
     $id_asignatura = $_SESSION['id_asignatura'];
+
+    $nom_asignatura = $object->nombre_asignatura($id_asignatura);
 }
 
 if (isset($_SESSION['id_grupo']))
@@ -195,10 +215,12 @@ if (isset($_SESSION['id_grupo']))
 
     $tipo_calificacion =$object->tipo_calificacion($id_grupo);
 
+    $nom_grupo = $object->nombre_grupo($id_grupo);
+
 }
 
 
-// Cargar datos en un array con CABECERA
+// Cargar datos en un array con TIPO GRADO
 if (count($tipo_calificacion) > 0) 
 { 
     foreach ($tipo_calificacion as $tipo_calificacion) 
@@ -207,6 +229,92 @@ if (count($tipo_calificacion) > 0)
     }
 
 }
+
+// Cargar datos en un array con NOMBRE ASIGNATURA
+if (count($nom_asignatura) > 0) 
+{ 
+    foreach ($nom_asignatura as $nom_asignatura) 
+    {
+        $nombre_asig = utf8_encode($nom_asignatura['nombre_asignatura']);
+    }
+
+}
+
+// Cargar datos en un array con NOMBRE GRUPO
+if (count($nom_grupo) > 0) 
+{ 
+    foreach ($nom_grupo as $nom_grupo) 
+    {
+        $nombre_gr = utf8_encode($nom_grupo['descripcion_grupo']);
+    }
+
+}
+
+?>
+<section class="content">
+    <div class="container-fluid">
+
+        <!-- Lista de Docentes -->
+        <div class="row clearfix">
+            <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                <div class="card">
+                    <div class="header" style="padding-bottom: 10px;"">
+                        <h2>
+                            Asignaturas <small>Lista de Estudientes Por Asignaturas</small>
+                        </h2>
+                                                
+                        <?php
+
+                        if (isset($nombre_asig) AND isset($nombre_gr))
+                        { 
+                            echo "<h4>".$nombre_gr."-".$nombre_gr."</h4>";
+                        ?>
+                            <div class="align-right">
+                                <form id="destroy_variables" method="POST">
+                                    <button class="btn bg-teal btn-xs waves-effect" type="submit" name="btn-select-destroy">Cambiar Asignatura y Grupo</button>
+                                </form>
+                            </div>
+                        <?php 
+                        }
+                        else
+                        {
+                            ?>
+                                                        <!-- form para seleccionar GRUPO por ASIGNATURA -->
+                            <form style="margin-bottom: 2px;" method="POST">
+                                <div class="row clearfix">
+                                    <div class="col-lg-3 col-md-3 col-sm-3 col-xs-6">
+                                        <div class="form-group" style="margin-bottom: 2px;">
+                                            <div class="form-line">
+                                                <select class="form-control show-tick" name="id_asignatura">
+                                                        <option value="">-- Seleccione Grupo --</option>
+                                                        <?php 
+                                                            $combox = $object->combobox_grupos_docente($user_id);
+
+                                                            foreach ($combox as $combox) 
+                                                            {
+                                                                echo '<option value="'.$combox['id_asignatura']."#".$combox['id_grupo'].'">'.utf8_encode($combox['nombre_asignatura']).' '.$combox['descripcion_grado'].'-'.utf8_encode($combox['descripcion_grupo']).'</option>';
+                                                            }
+
+                                                        ?>  
+                                                </select>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="col-lg-6 col-md-6 col-sm-6 col-xs-12">
+                                        <button class="btn bg-teal waves-effect" type="submit" name="btn-select-GR">Aceptar</button>
+                                    </div>
+
+                                </div>
+                            </form>
+
+                            <?php
+                        
+                        } 
+                        ?>
+
+                    </div>
+<?php
 
 //echo "Id GRADO: ".$tipo."<br>";
     
@@ -252,6 +360,7 @@ if (isset($tipo) AND ($tipo == "Tr"))
             }
         }
 
+    
         //saber si la variable $id_asignatura fue inicializada
         if (isset($id_asignatura))
         {
@@ -550,45 +659,6 @@ if (isset($tipo) AND ($tipo == "Tr"))
         
     $data .= '</tbody></table>';
 ?>
-<section class="content">
-    <div class="container-fluid">
-
-        <!-- Lista de Docentes -->
-        <div class="row clearfix">
-            <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
-                <div class="card">
-                    <div class="header" style="padding-bottom: 10px;"">
-                        <h2>
-                            Asignaturas <small>Lista de Estudientes Por Asignaturas</small>
-                        </h2>
-                        
-                        <!-- form para seleccionar GRUPO por ASIGNATURA -->
-                        <form style="margin-bottom: 2px;" method="POST">
-                            <div class="row clearfix">
-                                <div class="col-lg-3 col-md-3 col-sm-3 col-xs-6">
-                                    <div class="form-group" style="margin-bottom: 2px;">
-                                        <div class="form-line">
-                                            <select class="form-control show-tick" name="id_asignatura">
-                                                    <option value="">-- Seleccione Grupo --</option>
-                                                    <?php 
-                                                        $combox = $object->combobox_grupos_docente($user_id);
-
-                                                        foreach ($combox as $combox) 
-                                                        {
-                                                            echo '<option value="'.$combox['id_asignatura']."#".$combox['id_grupo'].'">'.utf8_encode($combox['nombre_asignatura']).' '.$combox['descripcion_grado'].'-'.utf8_encode($combox['descripcion_grupo']).'</option>';
-                                                        }
-
-                                                    ?>  
-                                            </select>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="col-lg-6 col-md-6 col-sm-6 col-xs-12">
-                                    <button class="btn bg-teal waves-effect" type="submit" name="btn-select-GR">Aceptar</button>
-                                </div>
-                            </div>
-                        </form>
-                    </div>
 
 
                     <div class="body" >
@@ -602,7 +672,9 @@ if (isset($tipo) AND ($tipo == "Tr"))
                         */
                        
                         if (isset($id_asignatura))
-                        { ?>   
+                        { 
+                          
+                            ?> 
                             <div class="col-sm-2">
                                 <b>Grupo:</b> <?php if (isset($cabecera['descripcion_grupo'])) 
                                 {
@@ -780,9 +852,9 @@ if (isset($tipo) AND ($tipo == "Tr"))
     }
 }
 
-/** ELSEEEEEEE **
+/** ELSEEEEEEE **/
 else
-{echo "ENTRO ELSE<br>";
+{
     if (isset($id_asignatura))
     {
         $cabecera = $object->Read_cabecera_grupo($user_id,$id_asignatura,$id_grupo);
@@ -864,7 +936,7 @@ else
                 $no_periodo3 = 3;
                 $no_periodo4 = 4;
 
-    /* PHP 7 *
+    /* PHP 7 */
 
                 //ids Peridos
                 $id_periodo1 = ((array_column($fechas_periodos, "id_periodo"))[0]);
@@ -926,7 +998,7 @@ else
                 $editar_tablas_p2="none";
                 $editar_tablas_p3="none";
                 $editar_tablas_p4="none";
-    *
+    */
 
                 date_default_timezone_set('America/Bogota');
 
@@ -1082,7 +1154,7 @@ else
                     $logros_alumnos = $object->Read_logros_alumno($id_asignatura,$alumnos_grupo['id_alumno']);                
                 }
 
-                /** Saber si $logros_alunos han sido inicializados y hay registros encontrados**
+                /** Saber si $logros_alunos han sido inicializados y hay registros encontrados**/
                 if (isset($logros_alumnos) and count($logros_alumnos) > 0)
                 {
                     foreach ($logros_alumnos as $logros_alumnos)
@@ -1135,225 +1207,190 @@ else
 ?>
 
     <!-- end menu-->
-
-<section class="content">
-    <div class="container-fluid">
-
-        <!-- Lista de Docentes -->
-        <div class="row clearfix">
-            <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
-                <div class="card">
-                    <div class="header" style="padding-bottom: 10px;"">
-                        <h2>
-                            Asignaturas <small>Lista de Estudientes Por Asignaturas</small>
-                        </h2>
-                        
-                        <!-- form para seleccionar GRUPO por ASIGNATURA -->
-                        <form style="margin-bottom: 2px;" method="POST">
-                            <div class="row clearfix">
-                                <div class="col-lg-3 col-md-3 col-sm-3 col-xs-6">
-                                    <div class="form-group" style="margin-bottom: 2px;">
-                                        <div class="form-line">
-                                            <select class="form-control show-tick" name="id_asignatura">
-                                                    <option value="">-- Seleccione Grupo --</option>
-                                                    <?php 
-                                                        $combox = $object->combobox_grupos_docente($user_id);
-
-                                                        foreach ($combox as $combox) 
-                                                        {
-                                                            echo '<option value="'.$combox['id_asignatura']."#".$combox['id_grupo'].'">'.utf8_encode($combox['nombre_asignatura']).' '.$combox['descripcion_grado'].'-'.utf8_encode($combox['descripcion_grupo']).'</option>';
-                                                        }
-
-                                                    ?>  
-                                            </select>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="col-lg-6 col-md-6 col-sm-6 col-xs-12">
-                                    <button class="btn bg-teal waves-effect" type="submit" name="btn-select-GR">Aceptar</button>
-                                </div>
-                            </div>
-                        </form>
+            <div class="card">
+                <div class="body" >
+                    <?php
+                    /*
+                    echo "Id Asignatura: ".$res_combox."<br>";
+                    echo "Id User: ".$user_id."<br>";
+                    echo "Id Grupo Combox: ".$id_grupo."<br>";
+                    echo "Id Asignatura Combox: ".$id_asignatura."<br>";
+                    echo "Nombre Area: ".$cabecera['nombre_area']."<br>";
+                    */
+                   
+                    if (isset($id_asignatura))
+                    { ?>   
+                    <div class="col-sm-2">
+                        <b>Grupo:</b> <?php if (isset($cabecera['descripcion_grupo'])) 
+                        {
+                            echo utf8_encode($cabecera['descripcion_grupo']);
+                        }else{echo " ";} ?>
                     </div>
 
+                    <div class="col-sm-3">
+                        <b>Asignatura:</b> <?php if (isset($cabecera['nombre_asignatura'])) 
+                        {
+                             echo utf8_encode($cabecera['nombre_asignatura']);
+                        }else{echo " ";} ?>
+                    </div>
 
-                    <div class="body" >
-                        <?php
-                        /*
-                        echo "Id Asignatura: ".$res_combox."<br>";
-                        echo "Id User: ".$user_id."<br>";
-                        echo "Id Grupo Combox: ".$id_grupo."<br>";
-                        echo "Id Asignatura Combox: ".$id_asignatura."<br>";
-                        echo "Nombre Area: ".$cabecera['nombre_area']."<br>";
-                        *
-                       
-                        if (isset($id_asignatura))
-                        { ?>   
-                        <div class="col-sm-2">
-                            <b>Grupo:</b> <?php if (isset($cabecera['descripcion_grupo'])) 
-                            {
-                                echo utf8_encode($cabecera['descripcion_grupo']);
-                            }else{echo " ";} ?>
-                        </div>
+                    <div class="col-sm-2">
+                        <b>Periodo:</b> <?php if (isset($periodo_Actual)) 
+                        {
+                             echo $periodo_Actual;
+                        }else{echo " ";} ?>
+                    </div>
 
-                        <div class="col-sm-3">
-                            <b>Asignatura:</b> <?php if (isset($cabecera['nombre_asignatura'])) 
-                            {
-                                 echo utf8_encode($cabecera['nombre_asignatura']);
-                            }else{echo " ";} ?>
-                        </div>
+                    <div class="col-sm-2">
+                        <b>Año Lectivo:</b> <?php if (isset($cabecera['id_anio_lectivo'])) 
+                        {
+                             echo $cabecera['id_anio_lectivo'];
+                        }else{echo " ";} ?>
+                    </div>
 
-                        <div class="col-sm-2">
-                            <b>Periodo:</b> <?php if (isset($periodo_Actual)) 
-                            {
-                                 echo $periodo_Actual;
-                            }else{echo " ";} ?>
-                        </div>
-
-                        <div class="col-sm-2">
-                            <b>Año Lectivo:</b> <?php if (isset($cabecera['id_anio_lectivo'])) 
-                            {
-                                 echo $cabecera['id_anio_lectivo'];
-                            }else{echo " ";} ?>
-                        </div>
-
-                        <div class="col-sm-2">
-                            <b>Intensidad Horaria:</b> <?php if (isset($cabecera['intensidad_horaria'])) 
-                            {
-                                 echo $cabecera['intensidad_horaria'];
-                            }else{echo " ";} ?>
-                        </div>
-                        <br><br>
-                    
-
-            <!-- Div mostrar u ocultar tablas -->
-                <div  style="display: <?php echo $show_table_alumnos; ?>;">
-
-                    <div class="card">
-                        <div class="body" style="padding-top: 10px;">
-                        
-                        <!-- Boton para cargar collpse de LOGOS -->
-                            <div class='col-sm-12'>
-                                <button class="btn bg-cyan waves-effect" type="button" data-toggle="collapse" data-target="#collapseExample" aria-expanded="false" aria-controls="collapseExample">Logros</button>
-
-                                <button type='button' class='btn bg-teal waves-effect' data-toggle='modal' data-target='#NewLogro'>Nuevo Logro</button>
-                            </div>
-
-                            <!--Boton crear Nuevo Logro-->
+                    <div class="col-sm-2">
+                        <b>Intensidad Horaria:</b> <?php if (isset($cabecera['intensidad_horaria'])) 
+                        {
+                             echo $cabecera['intensidad_horaria'];
+                        }else{echo " ";} ?>
+                    </div>
+                
+                </div>
+            </div>
                             
 
-                            <div class="collapse" id="collapseExample">
-                                <!-- Mostrar Logros en un Quote-->
-                                <h5>Logros</h5>
-                                <blockquote class="font-12">
-                                    <?php
-                                        
-                                        if (isset($list_logros)) 
-                                        {
-                                            echo $list_logros;
-                                        } 
-                                    ?>
-                                </blockquote>
+                <!-- Div mostrar u ocultar tablas -->
+                    <div  style="display: <?php echo $show_table_alumnos; ?>;">
 
-                                <!-- SlectBox Logros -->
-                                <form id="check_logros" method="POST">
+                        <div class="card">
+                            <div class="body" style="padding-top: 10px;">
+                            
+                            <!-- Boton para cargar collpse de LOGOS -->
+                                <div class='col-sm-12'>
+                                    <button class="btn bg-cyan waves-effect" type="button" data-toggle="collapse" data-target="#collapseExample" aria-expanded="false" aria-controls="collapseExample">Logros</button>
 
-                                <!-- enviar de manera oculta datos id_asignatura e id_anio_lectivo --> 
-                                    <input type="hidden" class="form-control" name="id_asignatura" value="<?php echo $id_asignatura; ?>">
-                                    <input type="hidden" class="form-control" name="id_anio_lectivo" value="<?php echo $cabecera['id_anio_lectivo']; ?>">
-                                    <input type="hidden" class="form-control" name="id_periodo" value="<?php echo $periodo_Actual; ?>">
-
-                                    <div class="demo-checkbox">
-                                        <select name="select_logros[]" size="3" multiple="multiple" tabindex="1">
-                                    <?php
-                                        
-                                        if (isset($res_logros)) 
-                                        {
-                                            echo $res_logros;
-                                        } 
-                                    ?>
-                                        </select>
-                                    </div>
-
-                                    <br>
-
-                                <!-- Multi Select Alumnos para LOGROS-->
-                                    
-                                    <select multiple id="optgroup" name="select_alumnos[]" class="searchable" multiple="multiple">
-                                        <?php
-                                            echo $data_select;
-                                         ?>
-                                    </select>
-
-                                    <div class="btn-group btn-group-xs" role="group" aria-label="Extra-small button group">
-                                        <button type="button" class="btn bg-blue waves-effect" id="select-all">Todos</button>
-                                        <button type="button" class="btn bg-red waves-effect" id="deselect-all">Ninguno</button>
-                                    </div>
-                                    
-                                    <div class='col-sm-12 align-right'>
-                                        <button class="btn bg-green waves-effect" type="submit" name="asignar_logros">Aceptar</button>
-                                    </div>
-
-                                </form>                            
-                            </div>
-
-                        </div>
-                    </div>
-                </div><!-- Fin div SHOW-->
-
-                <div class="card" >
-                    <div class="body" >
-
-                        <div id="miTabla">
-                                <?php echo $data; ?>
-                                </tbody>
-                            </table>
-                        </div>
-                                
-                        <blockquote class="blockquote-reverse m-b-25 font-12">
-                            <p><b>P.1</b>: Primer Periodo,<b>P.2</b>: Segundo Periodo,<b>P.3</b>: Tercer Periodo,<b>P.4</b>: Cuarto Periodo. <b>F. P.1</b>: Faltas Primer Periodo,<b>F. P.2</b>: Faltas Segundo Periodo,<b>F. P.3</b>: Faltas Tercer Periodo,<b>F. P.4</b>: Faltas Cuarto Periodo. </p>
-                        </blockquote>
-
-                        <!-- Collapse Upload File -->
-                        <div class="collapse" id="UploadFile" role="Upload_file">
-                            <button type="button" class="close" data-toggle="collapse" data-target="#UploadFile" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-                            <div class="well">
-                                <form action="upload.php?id_asignatura=<?php echo $id_asignatura; ?>&anio_lectivo=<?php echo $cabecera['id_anio_lectivo']; ?>&name_nota=<?php echo $name_nota; ?>&name_falta=<?php echo $name_falta; ?>&id_user=<?php echo $user_id; ?>" id="myForm" name="frmupload" method="post" enctype="multipart/form-data">
-                                  <input type="file" id="upload_file" name="upload_file" />
-                                  <input type="submit" name='submit_file' value="Subir" onclick='upload_image();'/>
-                                </form>
-                                <div class='progress' id="progress_div">
-                                    <div class='bar' id='bar1'></div>
-                                    <div class='percent' id='percent1'>0%</div>
+                                    <button type='button' class='btn bg-teal waves-effect' data-toggle='modal' data-target='#NewLogro'>Nuevo Logro</button>
                                 </div>
-                                <div id='output_image'></div>
+
+                                <!--Boton crear Nuevo Logro-->
+                                
+
+                                <div class="collapse" id="collapseExample">
+                                    <!-- Mostrar Logros en un Quote-->
+                                    <h5>Logros</h5>
+                                    <blockquote class="font-12">
+                                        <?php
+                                            
+                                            if (isset($list_logros)) 
+                                            {
+                                                echo $list_logros;
+                                            } 
+                                        ?>
+                                    </blockquote>
+
+                                    <!-- SlectBox Logros -->
+                                    <form id="check_logros" method="POST">
+
+                                    <!-- enviar de manera oculta datos id_asignatura e id_anio_lectivo --> 
+                                        <input type="hidden" class="form-control" name="id_asignatura" value="<?php echo $id_asignatura; ?>">
+                                        <input type="hidden" class="form-control" name="id_anio_lectivo" value="<?php echo $cabecera['id_anio_lectivo']; ?>">
+                                        <input type="hidden" class="form-control" name="id_periodo" value="<?php echo $periodo_Actual; ?>">
+
+                                        <div class="demo-checkbox">
+                                            <select name="select_logros[]" size="3" multiple="multiple" tabindex="1">
+                                        <?php
+                                            
+                                            if (isset($res_logros)) 
+                                            {
+                                                echo $res_logros;
+                                            } 
+                                        ?>
+                                            </select>
+                                        </div>
+
+                                        <br>
+
+                                    <!-- Multi Select Alumnos para LOGROS-->
+                                        
+                                        <select multiple id="optgroup" name="select_alumnos[]" class="searchable" multiple="multiple">
+                                            <?php
+                                                echo $data_select;
+                                             ?>
+                                        </select>
+
+                                        <div class="btn-group btn-group-xs" role="group" aria-label="Extra-small button group">
+                                            <button type="button" class="btn bg-blue waves-effect" id="select-all">Todos</button>
+                                            <button type="button" class="btn bg-red waves-effect" id="deselect-all">Ninguno</button>
+                                        </div>
+                                        
+                                        <div class='col-sm-12 align-right'>
+                                            <button class="btn bg-green waves-effect" type="submit" name="asignar_logros">Aceptar</button>
+                                        </div>
+
+                                    </form>                            
+                                </div>
+
                             </div>
-                        </div> 
-                        
+                        </div>
 
-                        <div class='col-sx-12'>    
-                            <a href="createExcel.php?variable=<?php echo $user_id; ?>&id_asignatura=<?php echo $id_asignatura;?>&id_grupo=<?php echo $id_grupo;?> " class="btn bg-teal waves-effect" role="button">Descargar Plantilla</a>
-                        
-                            <!-- subir archivos -->
-                            <button class="btn bg-teal waves-effect" type="button" data-toggle="collapse" data-target="#UploadFile" aria-expanded="false" aria-controls="UploadFile">
-                                Subir Archivo
-                            </button>
-                        
+                    </div><!-- Fin div SHOW-->
+
+                    <div class="card" >
+                        <div class="body" >
+
+                            <div id="miTabla">
+                                    <?php echo $data; ?>
+                                    </tbody>
+                                </table>
+                            </div>
+                                    
+                            <blockquote class="blockquote-reverse m-b-25 font-12">
+                                <p><b>P.1</b>: Primer Periodo,<b>P.2</b>: Segundo Periodo,<b>P.3</b>: Tercer Periodo,<b>P.4</b>: Cuarto Periodo. <b>F. P.1</b>: Faltas Primer Periodo,<b>F. P.2</b>: Faltas Segundo Periodo,<b>F. P.3</b>: Faltas Tercer Periodo,<b>F. P.4</b>: Faltas Cuarto Periodo. </p>
+                            </blockquote>
+
+                            <!-- Collapse Upload File -->
+                            <div class="collapse" id="UploadFile" role="Upload_file">
+                                <button type="button" class="close" data-toggle="collapse" data-target="#UploadFile" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                                <div class="well">
+                                    <form action="upload.php?id_asignatura=<?php echo $id_asignatura; ?>&anio_lectivo=<?php echo $cabecera['id_anio_lectivo']; ?>&name_nota=<?php echo $name_nota; ?>&name_falta=<?php echo $name_falta; ?>&id_user=<?php echo $user_id; ?>" id="myForm" name="frmupload" method="post" enctype="multipart/form-data">
+                                      <input type="file" id="upload_file" name="upload_file" />
+                                      <input type="submit" name='submit_file' value="Subir" onclick='upload_image();'/>
+                                    </form>
+                                    <div class='progress' id="progress_div">
+                                        <div class='bar' id='bar1'></div>
+                                        <div class='percent' id='percent1'>0%</div>
+                                    </div>
+                                    <div id='output_image'></div>
+                                </div>
+                            </div> 
+                            
+
+                            <div class='col-sx-12'>    
+                                <a href="createExcel.php?variable=<?php echo $user_id; ?>&id_asignatura=<?php echo $id_asignatura;?>&id_grupo=<?php echo $id_grupo;?> " class="btn bg-teal waves-effect" role="button">Descargar Plantilla</a>
+                            
+                                <!-- subir archivos -->
+                                <button class="btn bg-teal waves-effect" type="button" data-toggle="collapse" data-target="#UploadFile" aria-expanded="false" aria-controls="UploadFile">
+                                    Subir Archivo
+                                </button>
+                            
+                            </div>
+                        </div>
+
                     </div>
-                </div>
-
-                </div>
                 </div>
 
             </div>
+
         </div>
-        <!-- #END# Lista Docentes -->
     </div>
 </section>
 
 <?php 
-    } 
-    */   
+    }
+}
+}
+
+     
 ?>
 
 
