@@ -177,6 +177,34 @@ class USER
 
     }
 
+    /**
+     * [tipo_calificacion description]
+     * @param  [type] $id_grupo [description]
+     * @return [type]           [description]
+     */
+    public function tipo_calificacion($id_grupo)
+    {
+        try 
+        {
+            
+            $query = $this->conn->prepare('SELECT * FROM grupo GRU inner join grado GR ON GRU.id_grado = GR.id_grado WHERE id_grupo=:id_grupo');
+            $query->bindParam(":id_grupo",$id_grupo);
+            $query->execute();
+            $data = array();
+            while ($row = $query->fetch(PDO::FETCH_ASSOC)) {
+                $data[] = $row;
+            }
+            return $data;
+
+        } 
+
+        catch (PDOException $e) 
+        {
+            exit($e->getMessage());
+        }
+
+    }
+
 
     /* -------------F U N C I O N E S  A D M I N I S T R A D O R ----------*/
 
@@ -327,6 +355,23 @@ class USER
         }
 
         return $res;
+    }
+
+
+    /**
+     * [combobox_indicado description]
+     * @return [type] [description]
+     */
+    public function combobox_indicado()
+    {
+        $query = $this->conn->prepare("SELECT * FROM indicador");
+        $query->execute();
+        
+        while($row=$query->fetch(PDO::FETCH_ASSOC))
+        {
+            echo '<option value="'.$row['id_indicador'].'">'.$row['descripcion'].'</option>'; 
+        }
+
     }
 
     /**
@@ -1337,6 +1382,27 @@ class USER
     }
 
     /**
+     * [Read_notas_tr description]
+     * @param [type] $id_asignatura [description]
+     * @param [type] $id_alumno     [description]
+     * @param [type] $id_anio       [description]
+     */
+    public function Read_notas_tr($id_asignatura, $id_alumno,$id_anio)
+    {
+        $query = $this->conn->prepare('SELECT * FROM nota_tr WHERE id_asignatura = :id_asignatura AND id_alumno = :id_alumno AND id_anio_lectivo = :id_anio');
+        $query->bindParam(":id_asignatura",$id_asignatura);
+        $query->bindParam(":id_alumno",$id_alumno);
+        $query->bindParam(":id_anio",$id_anio);
+        $query->execute();
+        $data = array();
+        while ($row = $query->fetch(PDO::FETCH_ASSOC)) {
+            $data[] = $row;
+        }
+        return $data;
+    }
+
+
+    /**
      * [Read_notas_defenitivas_asignatura description]
      * @param [type] $id_asignatura [description]
      * @param [type] $id_alumno     [description]
@@ -1472,6 +1538,110 @@ class USER
                  $res = "False";
             }
         }
+
+        //echo "RES: ".$res."<br>";
+        return $res;
+        
+    }
+
+    /**
+     * [update_nota_tr description]
+     * @param  [type] $id_alumno    [description]
+     * @param  [type] $name_nota    [description]
+     * @param  [type] $nota         [description]
+     * @param  [type] $materia      [description]
+     * @param  [type] $materia_file [description]
+     * @param  [type] $anio         [description]
+     * @return [type]               [description]
+     */
+    public function update_nota_tr($id_alumno,$name_nota,$nota,$id_indicador,$materia,$anio)
+    {
+        //echo "Id asignatura: ".$materia."<br>";
+        //echo "Id asig file:  ".$materia_file."<br><br>";
+
+        $res = "false";
+
+        //echo "entro en materia == materia_file<br>";
+        try
+        {
+
+            $stmt1 = $this->conn->prepare("SELECT id_alumno FROM nota_tr WHERE id_alumno=:id_alumno AND id_asignatura=:materia AND id_anio_lectivo=:anio");
+
+            $stmt1->execute(array(
+                                  ':id_alumno'   => $id_alumno,
+                                  ':materia' => $materia,
+                                  ':anio'   => $anio 
+                                    ));
+
+            $userRow=$stmt1->fetch(PDO::FETCH_ASSOC);
+
+            if($stmt1->rowCount() == 1)
+            {
+                if ($name_nota == "nota1") 
+                {
+                    $stmt=$this->conn->prepare("UPDATE nota_tr SET nota1=:nota, id_indicador1=:id_indicador WHERE id_alumno=:id_alumno AND id_asignatura=:materia");
+                }
+                elseif ($name_nota == "nota2") 
+                {
+                    $stmt=$this->conn->prepare("UPDATE nota_tr SET nota2=:nota, id_indicador2=:id_indicador WHERE id_alumno=:id_alumno AND id_asignatura=:materia");
+                }
+                elseif ($name_nota == "nota3") 
+                {
+                    $stmt=$this->conn->prepare("UPDATE nota_tr SET nota3=:nota, id_indicador3=:id_indicador WHERE id_alumno=:id_alumno AND id_asignatura=:materia");
+                }
+                elseif ($name_nota == "nota4") 
+                {
+                    $stmt=$this->conn->prepare("UPDATE nota_tr SET nota4=:nota, id_indicador4=:id_indicador WHERE id_alumno=:id_alumno AND id_asignatura=:materia");
+                }
+
+                $stmt->bindparam(":nota",$nota);
+                $stmt->bindparam(":id_alumno",$id_alumno);
+                $stmt->bindparam(":materia",$materia);
+                $stmt->bindparam(":id_indicador",$id_indicador);
+
+                $stmt->execute();
+
+            }else
+            {                                                  
+                if ($name_nota == "nota1") 
+                {
+                    $stmt2 = $this->conn->prepare("INSERT INTO nota_tr(id_alumno,id_anio_lectivo,id_asignatura,nota1,id_indicador1) 
+                                          VALUES(:id_alumno,:anio,:materia,:nota,:id_indicador)");
+                }
+                elseif ($name_nota == "nota2") 
+                {
+                    $stmt2 = $this->conn->prepare("INSERT INTO nota_tr(id_alumno,id_anio_lectivo,id_asignatura,nota2,id_indicador2) 
+                                          VALUES(:id_alumno,:anio,:materia,:nota,:id_indicador)");
+                }
+                elseif ($name_nota == "nota3") 
+                {
+                    $stmt2 = $this->conn->prepare("INSERT INTO nota_tr(id_alumno,id_anio_lectivo,id_asignatura,nota3,id_indicador3) 
+                                          VALUES(:id_alumno,:anio,:materia,:nota,:id_indicador)");
+                }
+                elseif ($name_nota == "nota4") 
+                {
+                    $stmt2 = $this->conn->prepare("INSERT INTO nota_tr(id_alumno,id_anio_lectivo,id_asignatura,nota4,id_indicador4) 
+                                          VALUES(:id_alumno,:anio,:materia,:nota,:id_indicador)");
+                }
+
+                $stmt2->bindparam(":nota",$nota);
+                $stmt2->bindparam(":id_alumno",$id_alumno);
+                $stmt2->bindparam(":materia",$materia);
+                $stmt2->bindparam(":anio",$anio);
+                $stmt2->bindparam(":id_indicador",$id_indicador);
+
+                $stmt2->execute();
+
+            }
+
+                $res = "True";            
+            }
+
+            catch(PDOException $e)
+            {
+                echo $e->getMessage();
+                 $res = "False";
+            }
 
         //echo "RES: ".$res."<br>";
         return $res;
@@ -1660,7 +1830,7 @@ class USER
      */
     public function Read_logros($id_asignatura)
     {
-        $query = $this->conn->prepare('SELECT * FROM logros WHERE id_asignatura = :id_asignatura');
+        $query = $this->conn->prepare('SELECT * FROM logros WHERE id_asignatura = :id_asignatura AND id_estado = "1"');
         $query->bindParam(":id_asignatura",$id_asignatura);
         $query->execute();
         $data = array();
@@ -1795,58 +1965,331 @@ class USER
         }  
     }
 
-
-    public function cambio_alumno_sede($id_alumno,$id_sede)
+    /**
+     * [update_logro description]
+     * @param  [type] $id_logro [description]
+     * @param  [type] $logro    [description]
+     * @param  [type] $materia  [description]
+     * @return [type]           [description]
+     */
+    public function update_logro($id_logro,$logro,$id_asignatura,$accion)
     {
-        $res ="false";
-
-        try
+      if ($accion == "Actualizar") 
+      {
+        try 
         {
-            $stmt1 = $this->conn->prepare("SELECT id_alumno FROM asig_alumno_grupo WHERE id_alumno=:id_alumno AND id_anio_lectivo=:id_anio_lectivo");
+            $stmt=$this->conn->prepare("UPDATE logros SET descripcion=:logro WHERE id_logro=:id_logro AND id_asignatura=:id_asignatura");
 
-            $stmt1->execute(array(
-                                  ':id_alumno'   => $id_alumno,
-                                  ':id_anio_lectivo'   => $id_anio_lectivo
-                                    ));
+            $stmt->bindparam(":id_logro", $id_logro);
+            $stmt->bindparam(":id_asignatura", $id_asignatura);
+            $stmt->bindparam(":logro", $logro);
 
+            $stmt->execute();
 
-            $userRow=$stmt1->fetch(PDO::FETCH_ASSOC);
-
-            if($stmt1->rowCount() == 1)
-            {
-                $stmt=$this->conn->prepare("UPDATE asig_alumno_grupo SET id_grupo = :id_grupo WHERE id_alumno=:id_alumno AND id_anio_lectivo=:id_anio_lectivo");
-
-                $stmt->bindparam(":id_alumno", $id_alumno);
-                $stmt->bindparam(":id_grupo", $id_grupo);
-                $stmt->bindparam(":id_anio_lectivo", $id_anio_lectivo);
-
-                $stmt->execute();
-
-                $res = "true";
-            }
-            else
-            {
-                $stmt2 = $this->conn->prepare("INSERT INTO asig_alumno_grupo(id_alumno,id_grupo,id_anio_lectivo) 
-                                          VALUES(:id_alumno,:id_grupo,:id_anio_lectivo)");
-                                                  
-                $stmt2->bindparam(":id_alumno", $id_alumno);
-                $stmt2->bindparam(":id_grupo", $id_grupo);
-                $stmt2->bindparam(":id_anio_lectivo", $id_anio_lectivo);                                  
-                    
-                $stmt2->execute();   
-
-                $res = "true";
-            }
-
-            return $res;           
-        }
-
-        catch(PDOException $e)
+            return true;
+        } 
+        catch (PDOException $e) 
         {
             echo $e->getMessage();
             return false;
+        }
+      }
+      elseif ($accion == "Eliminar")
+      {
+        try 
+        {
+            $stmt1=$this->conn->prepare("UPDATE logros SET id_estado='0' WHERE id_logro=:id_logro");
+
+            $stmt1->bindparam(":id_logro", $id_logro);
+
+            $stmt1->execute();
+
+            return true;
         } 
+        catch (PDOException $e) 
+        {
+            echo $e->getMessage();
+            return false;
+        }
+      }
     }
+
+    /**
+     * [Delete_logro description]
+     * @param [type] $id_logro [description]
+     */
+    public function Delete_logro($id_logro)
+    {
+        try
+        {
+            $query = $this->conn->prepare("DELETE FROM logros WHERE id_logro = :id_logro");
+            $query->bindParam("id_logro", $id_logro, PDO::PARAM_STR);
+            $query->execute();
+
+            return true;   
+        }
+        catch (PDOException $e) 
+        {
+            echo $e->getMessage();
+            return false;
+        }
+        
+    }
+
+
+    /**
+   * [Read_observaciones description]
+   * @param [type] $id_grupo [description]
+   */
+  public function Read_observaciones($id_grupo)
+  {
+      $query = $this->conn->prepare('SELECT * FROM observaciones WHERE id_grupo = :id_grupo AND id_estado = "1"');
+      $query->bindParam(":id_grupo",$id_grupo);
+      $query->execute();
+      $data = array();
+      while ($row = $query->fetch(PDO::FETCH_ASSOC)) {
+          $data[] = $row;
+      }
+      return $data;
+  }
+
+  /**
+   * [Read_observaciones_alumno description]
+   * @param [type] $id_grupo  [description]
+   * @param [type] $id_alumno [description]
+   */
+  public function Read_observaciones_alumno($id_grupo,$id_alumno)
+  {
+      $query = $this->conn->prepare('SELECT * FROM asig_obser_alumno AOA inner join observaciones OB ON AOA.id_grupo = OB.id_grupo WHERE AOA.id_grupo = :id_grupo AND AOA.id_alumno = :id_alumno');
+      $query->bindParam(":id_grupo",$id_grupo);
+      $query->bindParam(":id_alumno",$id_alumno);
+      $query->execute();
+      $data = array();
+      while ($row = $query->fetch(PDO::FETCH_ASSOC)) {
+          $data[] = $row;
+      }
+      return $data;
+  }
+
+
+  /**
+   * [register_observaciones description]
+   * @param  [type] $id_asignatura [description]
+   * @param  [type] $observaciones [description]
+   * @return [type]                [description]
+   */
+  public function register_observaciones($id_grupo,$observaciones)
+  {
+
+      $query = $this->conn->prepare('SELECT* FROM observaciones WHERE id_grupo LIKE :id_grupo');
+      $query->bindParam(":id_grupo",$id_grupo);
+      $query->execute();
+
+      $N_observacion = $query->rowCount();
+
+      $N_observacion++;
+
+      $id_observacion = $id_grupo.'L-'.$N_observacion;
+
+
+      try
+      {
+          $stmt = $this->conn->prepare("INSERT INTO observaciones(id_observacion,id_grupo,descripcion,id_estado) 
+                                        VALUES(:id_observacion,:id_grupo,:observaciones,'1')");
+                                                
+          $stmt->bindparam(":id_observacion", $id_observacion);
+          $stmt->bindparam(":id_grupo", $id_grupo);
+          $stmt->bindparam(":observaciones", $observaciones);                                  
+              
+          $stmt->execute();   
+          
+          return $stmt;   
+      }
+      catch(PDOException $e)
+      {
+          echo $e->getMessage();
+      }               
+  }
+
+  /**
+   * [register_observaciones_alumno description]
+   * @param  [type] $id_asignatura   [description]
+   * @param  [type] $id_alumno       [description]
+   * @param  [type] $id_anio_lectivo [description]
+   * @param  [type] $id_periodo      [description]
+   * @param  [type] $id_observacion  [description]
+   * @return [type]                  [description]
+   */
+  public function register_observaciones_alumno($id_grupo,$id_alumno,$id_anio_lectivo,$id_periodo,$id_observacion)
+  {
+      $res ="false";
+
+      try
+      {
+          $stmt1 = $this->conn->prepare("SELECT id_alumno FROM asig_obser_alumno WHERE id_alumno=:id_alumno AND id_grupo=:id_grupo AND id_anio_lectivo=:id_anio_lectivo AND id_periodo=:id_periodo");
+
+          $stmt1->execute(array(
+                                ':id_alumno'   => $id_alumno,
+                                ':id_grupo' => $id_grupo,
+                                ':id_anio_lectivo'   => $id_anio_lectivo,
+                                ':id_periodo'   => $id_periodo 
+                                  ));
+
+
+          $userRow=$stmt1->fetch(PDO::FETCH_ASSOC);
+
+          if($stmt1->rowCount() == 1)
+          {
+
+              $stmt=$this->conn->prepare("UPDATE asig_obser_alumno SET id_observacion = :id_observacion WHERE id_alumno=:id_alumno AND id_grupo=:id_grupo AND id_anio_lectivo=:id_anio_lectivo");
+
+              $stmt->bindparam(":id_grupo", $id_grupo);
+              $stmt->bindparam(":id_anio_lectivo", $id_anio_lectivo);
+              $stmt->bindparam(":id_periodo", $id_periodo);
+              $stmt->bindparam(":id_alumno", $id_alumno);
+              $stmt->bindparam(":id_logros", $id_logros);
+
+              $stmt->execute();
+
+              $res = "true";
+          }
+          else
+          {
+              $stmt2 = $this->conn->prepare("INSERT INTO asig_obser_alumno(id_alumno,id_grupo,id_anio_lectivo,id_periodo,id_observacion) 
+                                        VALUES(:id_alumno,:id_grupo,:id_anio_lectivo,:id_periodo,:id_observacion)");
+                                                
+              $stmt2->bindparam(":id_grupo", $id_grupo);
+              $stmt2->bindparam(":id_alumno", $id_alumno);
+              $stmt2->bindparam(":id_anio_lectivo", $id_anio_lectivo);
+              $stmt2->bindparam(":id_periodo", $id_periodo);
+              $stmt2->bindparam(":id_observacion", $id_observacion);                                  
+                  
+              $stmt2->execute();   
+
+              $res = "true";
+          }
+
+          return $res;           
+      }
+
+      catch(PDOException $e)
+      {
+          echo $e->getMessage();
+          return false;
+      }  
+  }
+
+
+  /**
+   * [update_observacion description]
+   * @param  [type] $id_observacion [description]
+   * @param  [type] $id_grupo       [description]
+   * @param  [type] $descripcion    [description]
+   * @param  [type] $id_estado      [description]
+   * @return [type]                 [description]
+   */
+    public function update_observacion($id_observacion,$id_grupo,$descripcion,$accion)
+    {
+
+      if ($accion == "Actualizar") 
+      {
+        try 
+        {
+            $stmt=$this->conn->prepare("UPDATE observaciones SET descripcion=:descripcion WHERE id_observacion=:id_observacion AND id_grupo=:id_grupo");
+
+            $stmt->bindparam(":id_observacion", $id_observacion);
+            $stmt->bindparam(":id_grupo", $id_grupo);
+            $stmt->bindparam(":descripcion", $descripcion);
+
+            $stmt->execute();
+
+            return true;
+        } 
+        catch (PDOException $e) 
+        {
+            echo $e->getMessage();
+            return false;
+        }
+      }
+      elseif ($accion == "Eliminar")
+      {
+        try 
+        {
+            $stmt1=$this->conn->prepare("UPDATE observaciones SET id_estado='0' WHERE id_observacion=:id_observacion");
+
+            $stmt1->bindparam(":id_observacion", $id_observacion);
+
+            $stmt1->execute();
+
+            return true;
+        } 
+        catch (PDOException $e) 
+        {
+            echo $e->getMessage();
+            return false;
+        }
+      }
+        
+    }
+
+
+/**
+ * [cambio_alumno_sede description]
+ * @param  [type] $id_alumno [description]
+ * @param  [type] $id_sede   [description]
+ * @return [type]            [description]
+ */
+  public function cambio_alumno_sede($id_alumno,$id_sede)
+  {
+      $res ="false";
+
+      try
+      {
+          $stmt1 = $this->conn->prepare("SELECT id_alumno FROM asig_alumno_grupo WHERE id_alumno=:id_alumno AND id_anio_lectivo=:id_anio_lectivo");
+
+          $stmt1->execute(array(
+                                ':id_alumno'   => $id_alumno,
+                                ':id_anio_lectivo'   => $id_anio_lectivo
+                                  ));
+
+
+          $userRow=$stmt1->fetch(PDO::FETCH_ASSOC);
+
+          if($stmt1->rowCount() == 1)
+          {
+              $stmt=$this->conn->prepare("UPDATE asig_alumno_grupo SET id_grupo = :id_grupo WHERE id_alumno=:id_alumno AND id_anio_lectivo=:id_anio_lectivo");
+
+              $stmt->bindparam(":id_alumno", $id_alumno);
+              $stmt->bindparam(":id_grupo", $id_grupo);
+              $stmt->bindparam(":id_anio_lectivo", $id_anio_lectivo);
+
+              $stmt->execute();
+
+              $res = "true";
+          }
+          else
+          {
+              $stmt2 = $this->conn->prepare("INSERT INTO asig_alumno_grupo(id_alumno,id_grupo,id_anio_lectivo) 
+                                        VALUES(:id_alumno,:id_grupo,:id_anio_lectivo)");
+                                                
+              $stmt2->bindparam(":id_alumno", $id_alumno);
+              $stmt2->bindparam(":id_grupo", $id_grupo);
+              $stmt2->bindparam(":id_anio_lectivo", $id_anio_lectivo);                                  
+                  
+              $stmt2->execute();   
+
+              $res = "true";
+          }
+
+          return $res;           
+      }
+
+      catch(PDOException $e)
+      {
+          echo $e->getMessage();
+          return false;
+      } 
+  }
 
     /**
      * [cambio_alumno_grupo description]
@@ -1968,55 +2411,7 @@ class USER
         } 
     }
 
-    /**
-     * [update_logro description]
-     * @param  [type] $id_logro [description]
-     * @param  [type] $logro    [description]
-     * @param  [type] $materia  [description]
-     * @return [type]           [description]
-     */
-    public function update_logro($id_logro,$logro,$id_asignatura)
-    {
-        try 
-        {
-            $stmt=$this->conn->prepare("UPDATE logros SET descripcion=:logro WHERE id_logro=:id_logro AND id_asignatura=:id_asignatura");
-
-            $stmt->bindparam(":id_logro", $id_logro);
-            $stmt->bindparam(":id_asignatura", $id_asignatura);
-            $stmt->bindparam(":logro", $logro);
-
-            $stmt->execute();
-
-            return true;
-        } 
-        catch (PDOException $e) 
-        {
-            echo $e->getMessage();
-            return false;
-        }
-    }
-
-    /**
-     * [Delete_logro description]
-     * @param [type] $id_logro [description]
-     */
-    public function Delete_logro($id_logro)
-    {
-        try
-        {
-            $query = $this->conn->prepare("DELETE FROM logros WHERE id_logro = :id_logro");
-            $query->bindParam("id_logro", $id_logro, PDO::PARAM_STR);
-            $query->execute();
-
-            return true;   
-        }
-        catch (PDOException $e) 
-        {
-            echo $e->getMessage();
-            return false;
-        }
-        
-    }
+    
 
 /*------------- FUNCIONES DIRECTOR DE GRUPO-------------------*/
 
