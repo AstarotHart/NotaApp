@@ -6,9 +6,10 @@ $user     = new USER();
 $cabecera_print = new USER();
 $object   = new USER();
 
-$user_id = $_REQUEST['variable'];
+$user_id       = $_REQUEST['variable'];
 $id_asignatura = $_REQUEST['id_asignatura'];
-$id_grupo = $_REQUEST['id_grupo'];
+$id_grupo      = $_REQUEST['id_grupo'];
+$id_tipo       = $_REQUEST['tipo'];
 
 $users = $object->Read_alumnos_grupo($id_grupo);
 $cabecera_print = $object->Read_cabecera_grupo($user_id,$id_asignatura,$id_grupo);
@@ -28,6 +29,7 @@ print_r($cabecera_print);
 /** Incluir la libreria PHPExcel */
 require_once '../Classes/PHPExcel/IOFactory.php';
 require_once '../Classes/PHPExcel.php';
+
 
 //cargar plantilla
 $objPHPExcel = PHPExcel_IOFactory::createReader('Excel2007');
