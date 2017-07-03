@@ -234,6 +234,34 @@ class USER
 
     }
 
+    /**
+     * [carga_horaria description]
+     * @param  [type] $id_asignatura [description]
+     * @return [type]                [description]
+     */
+    public function carga_horaria($id_asignatura)
+    {
+        try 
+        {
+            
+            $query = $this->conn->prepare('SELECT intensidad_horaria FROM asignatura WHERE id_asignatura=:id_asignatura');
+            $query->bindParam(":id_asignatura",$id_asignatura);
+            $query->execute();
+            $data = array();
+            while ($row = $query->fetch(PDO::FETCH_ASSOC)) {
+                $data[] = $row;
+            }
+            return $data;
+
+        } 
+
+        catch (PDOException $e) 
+        {
+            exit($e->getMessage());
+        }
+
+    }
+
 
     /**
      * [tipo_calificacion description]

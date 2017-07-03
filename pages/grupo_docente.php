@@ -893,7 +893,7 @@ if (isset($tipo) AND ($tipo == "Tr"))
                                     
 
                                     <div class='col-sx-12'>    
-                                        <a href="createExcel.php?variable=<?php echo $user_id; ?>&id_asignatura=<?php echo $id_asignatura;?>&id_grupo=<?php echo $id_grupo;?> " class="btn bg-teal waves-effect" role="button">Descargar Plantilla</a>
+                                        <a href="createExcel.php?variable=<?php echo $user_id; ?>&id_asignatura=<?php echo $id_asignatura;?>&id_grupo=<?php echo $id_grupo;?>&tipo=<?php echo $tipo;?> " class="btn bg-teal waves-effect" role="button">Descargar Plantilla</a>
                                     
                                         <!-- subir archivos -->
                                         <button class="btn bg-teal waves-effect" type="button" data-toggle="collapse" data-target="#UploadFile" aria-expanded="false" aria-controls="UploadFile">
@@ -1431,7 +1431,7 @@ else
                             
 
                             <div class='col-sx-12'>    
-                                <a href="createExcel.php?variable=<?php echo $user_id; ?>&id_asignatura=<?php echo $id_asignatura;?>&id_grupo=<?php echo $id_grupo;?> " class="btn bg-teal waves-effect" role="button">Descargar Plantilla</a>
+                                <a href="createExcel.php?variable=<?php echo $user_id; ?>&id_asignatura=<?php echo $id_asignatura;?>&id_grupo=<?php echo $id_grupo;?>&tipo=<?php echo $tipo;?> " class="btn bg-teal waves-effect" role="button">Descargar Plantilla</a>
                             
                                 <!-- subir archivos -->
                                 <button class="btn bg-teal waves-effect" type="button" data-toggle="collapse" data-target="#UploadFile" aria-expanded="false" aria-controls="UploadFile">

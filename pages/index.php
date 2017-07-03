@@ -9,27 +9,39 @@
     <?php 
     include("../includes/menu.php");
 
-    $object      = new USER();
-
+    $object            = new USER();
+    
     // COntar Alumnos por Asignatura
-    $num_alumnos = new USER();
-    $num_count   = new USER();
-    $cont_alumnos = 0;
+    $num_alumnos       = new USER();
+    $num_count         = new USER();
+    $cont_alumnos      = 0;
+    
+    $num_carga_horaria = new USER();
+    $cont_IH      = 0;
 
-
+    //Numero de Asignaturas asignadas a docente
     $num_alumnos = $object->alumnos_a_cargo($user_id);
+    $num_asignaturas = count($num_alumnos);
+
+
 
     foreach ($num_alumnos as $num_alumnos)
     {
         $num_count = $object->Read_alumnos_grupo($num_alumnos['id_grupo']);
+        $num_carga_horaria = $object->carga_horaria($num_alumnos["id_asignatura"]);
 
         foreach ($num_count as $num_count)
         {
             $cont_alumnos++;
         }
 
+        foreach ($num_carga_horaria as $num_carga_horaria)
+        {
+            $cont_IH += $num_carga_horaria['intensidad_horaria'];
+        }
 
     }
+
 
 
     ?>
@@ -61,7 +73,7 @@
                         </div>
                         <div class="content">
                             <div class="text">ASIGNATURAS</div>
-                            <div class="number count-to" data-from="0" data-to="8" data-speed="1000" data-fresh-interval="20"></div>
+                            <div class="number count-to" data-from="0" data-to="<?php echo $num_asignaturas; ?>" data-speed="1000" data-fresh-interval="20"></div>
                         </div>
                     </div>
                 </div>
@@ -72,7 +84,7 @@
                         </div>
                         <div class="content">
                             <div class="text">INTENSIDAD HORARIA</div>
-                            <div class="number count-to" data-from="0" data-to="35" data-speed="1000" data-fresh-interval="20"></div>
+                            <div class="number count-to" data-from="0" data-to="<?php echo $cont_IH; ?>" data-speed="1000" data-fresh-interval="20"></div>
                         </div>
                     </div>
                 </div>
