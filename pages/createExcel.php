@@ -79,14 +79,14 @@ if (count($users) > 0)
 }
 
 //echo $cabecera['nombre_area'];
-/*
+
 $filename = str_replace(' ', '_', (utf8_encode($cabecera_print['nombre_asignatura'])."_".utf8_encode($cabecera_print['descripcion_grupo']).".xlsx"));
 // Renombrar Hoja
-$objPHPExcel->getActiveSheet()->setTitle($cabecera_print['descripcion_grupo']);
+//$objPHPExcel->getActiveSheet()->setTitle($cabecera_print['descripcion_grupo']);
 // Establecer la hoja activa, para que cuando se abra el documento se muestre primero.
-$objPHPExcel->setActiveSheetIndex(0);
+//$objPHPExcel->setActiveSheetIndex(0);
 
-
+/*
 
 //print_r($objPHPExcel);
 
@@ -104,7 +104,7 @@ exit;
 
 //$objWriter->save('pruebaexcel2.xls');
 header('Content-Type: application/vnd.ms-excel');
-header('Content-Disposition: attachment;filename="pruebaexcel5.xlsx"');
+header('Content-Disposition: attachment;filename="'.$filename.'"');
 header('Cache-Control: max-age=0');
 $objWriter = PHPExcel_IOFactory::createWriter($objPHPExcel, 'Excel2007');
 $objWriter->save('php://output');
