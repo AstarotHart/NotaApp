@@ -4,6 +4,10 @@ $show_menu_admin = "none";
 $show_menu_doc   = "none";
 $show_menu_coo   = "none";
 
+$show_director   = "none";
+
+$director = new USER();
+
 if ($user_type->des_tipo_usuario == 'Administrador')
 {
     $show_menu_admin = "show";
@@ -12,6 +16,14 @@ if ($user_type->des_tipo_usuario == 'Administrador')
 if ($user_type->des_tipo_usuario == "Docente") 
 {
     $show_menu_doc = "show";
+    $director = $user_app->es_director($user_id);
+
+
+    if (count($director) > 0)
+    {
+        $show_director   = "show";
+    }
+
 }
 
 if ($user_type->des_tipo_usuario == "Coordinador") 
@@ -218,8 +230,8 @@ if (isset($_POST['cambiar_pass']))
                                     <span>Docentes</span>
                                 </a>
                                 <ul class="ml-menu">
-                                     
-                                     <li <?php if (isSite('director_grupo.php')) echo 'class="active"'; ?>>
+                                
+                                    <li style="display: <?php echo $show_director; ?>;" <?php if (isSite('director_grupo.php')) echo 'class="active"'; ?>>
                                         <a href="../pages/director_grupo.php">Director Grupo</a>
                                     </li>
                                     

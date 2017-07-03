@@ -6,7 +6,33 @@
     <!-- #Top Bar -->
 
     <!-- Menu -->
-    <?php include("../includes/menu.php");?>
+    <?php 
+    include("../includes/menu.php");
+
+    $object      = new USER();
+
+    // COntar Alumnos por Asignatura
+    $num_alumnos = new USER();
+    $num_count   = new USER();
+    $cont_alumnos = 0;
+
+
+    $num_alumnos = $object->alumnos_a_cargo($user_id);
+
+    foreach ($num_alumnos as $num_alumnos)
+    {
+        $num_count = $object->Read_alumnos_grupo($num_alumnos['id_grupo']);
+
+        foreach ($num_count as $num_count)
+        {
+            $cont_alumnos++;
+        }
+
+
+    }
+
+
+    ?>
     <!-- end menu-->
 
     <section class="content">
@@ -24,7 +50,7 @@
                         </div>
                         <div class="content">
                             <div class="text">ALUMNOS</div>
-                            <div class="number count-to" data-from="0" data-to="125" data-speed="1000" data-fresh-interval="20"></div>
+                            <div class="number count-to" data-from="0" data-to="<?php echo $cont_alumnos; ?>" data-speed="1000" data-fresh-interval="20"></div>
                         </div>
                     </div>
                 </div>

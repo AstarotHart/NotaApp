@@ -11,7 +11,7 @@ $notas_def               = new USER();
 $Observaciones           = new USER();
 $new_observacion         = new USER();
 $fechas                  = new USER();
-$Observaciones_alumnos   = new USER();
+$observaciones_alumnos   = new USER();
 $update_observacion      = new USER();
 
 
@@ -353,7 +353,7 @@ if (isset($_POST['actualizar_Observacion']))
                                                             <td>' . utf8_encode($alumnos_grupo['primer_apellido']) . ' ' .utf8_encode($alumnos_grupo['segundo_apellido']) . ' ' .utf8_encode($alumnos_grupo['nombres']) .'</td>
                                                             <td>' . $alumnos_grupo['id_alumno'] . '</td>';
 
-                                        $Observaciones_alumnos = $object->Read_observaciones_alumno($id_grupo,$alumnos_grupo['id_alumno']);
+                                        $Observaciones_alumnos = $object->Read_observaciones_alumno($id_grupo,$alumnos_grupo['id_alumno'],$cabecera_director['id_anio_lectivo']);
                                         
                                         for($i=0; $i < count($ids_asignaturas); $i++)
                                         {
@@ -375,8 +375,12 @@ if (isset($_POST['actualizar_Observacion']))
                                         if (count($Observaciones_alumnos) > 0)
                                         {
                                             foreach ($Observaciones_alumnos as $Observaciones_alumnos)
-                                            {
-                                                $res_observaciones = $Observaciones_alumnos['id_observacion']. '. ';
+                                            {   
+                                                if ($Observaciones_alumnos['id_estado']==1)
+                                                {
+                                                    $res_observaciones = $Observaciones_alumnos['id_observacion']. '. ';
+                                                }
+                                                
                                             }
                                         }
                                         else

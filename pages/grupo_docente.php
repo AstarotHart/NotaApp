@@ -69,6 +69,8 @@ $combox            = new USER();
 $tipo_calificacion = new USER();
 $nom_grupo         = new USER();
 $nom_asignatura    = new USER();
+$desc_logro        = new USER();
+$desc_indicador    = new USER();
 
 
 $show_table_alumnos = "none";
@@ -267,7 +269,7 @@ if (count($nom_grupo) > 0)
 
                         if (isset($nombre_asig) AND isset($nombre_gr))
                         { 
-                            echo "<h4>".$nombre_gr."-".$nombre_gr."</h4>";
+                            echo "<h4>".$nombre_asig."-".$nombre_gr."</h4>";
                         ?>
                             <div class="align-right">
                                 <form id="destroy_variables" method="POST">
@@ -558,12 +560,18 @@ if (isset($tipo) AND ($tipo == "Tr"))
             {
                 $show_table_alumnos = "show";
             }
-                $res_nota1      = " ";
-                $res_nota2      = " ";
-                $res_nota3      = " ";
-                $res_nota4      = " ";
-                $nota_final     = " ";
 
+                $res_indicador1  = "";
+                $res_indicador2  = "";
+                $res_indicador3  = "";
+                $res_indicador4  = "";
+                
+                
+                $res_nota1       = "";
+                $res_nota2       = "";
+                $res_nota3       = "";
+                $res_nota4       = "";
+                
                 
                 $res_falta1      = "0";
                 $res_falta2      = "0";
@@ -576,10 +584,86 @@ if (isset($tipo) AND ($tipo == "Tr"))
             {
                 foreach ($notas as $notas) 
                 {
-                    $res_nota1  = $notas['nota1'];
-                    $res_nota2  = $notas['nota2'];
-                    $res_nota3  = $notas['nota3'];
-                    $res_nota4  = $notas['nota4'];
+                    if (empty($notas['nota1']))
+                    {
+                        $res_nota1  = "";
+                    }
+                    else
+                    {
+                        $desc_indicador = $object->Read_indicador_tr($notas['id_indicador1']);
+                        $desc_logro = $object->Read_logro_tr($notas['nota1']);
+
+                        foreach ($desc_indicador as $desc_indicador)
+                        {
+                            $res_nota1  .= $desc_indicador['descripcion']." ";
+                        }
+
+                        foreach ($desc_logro as $desc_logro)
+                        {
+                            $res_nota1  .= $desc_logro['descripcion']."<br>";
+                        }
+                    }
+                    
+                    if (empty($notas['nota2']))
+                    {
+                        $res_nota2  = "";
+                    }
+                    else
+                    {
+                        $desc_indicador = $object->Read_indicador_tr($notas['id_indicador2']);
+                        $desc_logro = $object->Read_logro_tr($notas['nota2']);
+
+                        foreach ($desc_indicador as $desc_indicador)
+                        {
+                            $res_nota2  .= $desc_indicador['descripcion']." ";
+                        }
+
+                        foreach ($desc_logro as $desc_logro)
+                        {
+                            $res_nota2  .= $desc_logro['descripcion']."<br>";
+                        }
+                    }
+
+                    if (empty($notas['nota3']))
+                    {
+                        $res_nota3  = "";
+                    }
+                    else
+                    {
+                        $desc_indicador = $object->Read_indicador_tr($notas['id_indicador3']);
+                        $desc_logro = $object->Read_logro_tr($notas['nota3']);
+
+                        foreach ($desc_indicador as $desc_indicador)
+                        {
+                            $res_nota3  .= $desc_indicador['descripcion']." ";
+                        }
+
+                        foreach ($desc_logro as $desc_logro)
+                        {
+                            $res_nota3  .= $desc_logro['descripcion']."<br>";
+                        }
+                        
+                    }
+
+                    if (empty($notas['nota4']))
+                    {
+                        $res_nota4  = "";
+                    }
+                    else
+                    {
+                        $desc_indicador = $object->Read_indicador_tr($notas['id_indicador4']);
+                        $desc_logro = $object->Read_logro_tr($notas['nota4']);
+
+                        foreach ($desc_indicador as $desc_indicador)
+                        {
+                            $res_nota4  .= $desc_indicador['descripcion']." ";
+                        }
+
+                        foreach ($desc_logro as $desc_logro)
+                        {
+                            $res_nota4  .= $desc_logro['descripcion']."<br>";
+                        }
+                    }
 
                 }
                 
@@ -606,25 +690,6 @@ if (isset($tipo) AND ($tipo == "Tr"))
                 
             }
 
-            // Saber si $id_asignatura & $cabecera['id_alumno'] han sido inicializados
-            if (isset($id_asignatura) and isset($alumnos_grupo['id_alumno']))
-            {                
-                $logros_alumnos = $object->Read_logros_alumno($id_asignatura,$alumnos_grupo['id_alumno']);                
-            }
-
-            /** Saber si $logros_alunos han sido inicializados y hay registros encontrados**/
-            if (isset($logros_alumnos) and count($logros_alumnos) > 0)
-            {
-                foreach ($logros_alumnos as $logros_alumnos)
-                {
-                    $res_logros_alumno = $logros_alumnos['id_logros']. '<br>';
-                }
-            }
-            else
-            {
-                $res_logros_alumno = "No hay logros.";
-            }
-
             //saber si se han iniciado las variables de alumno
             if (isset($alumnos_grupo['primer_apellido']) and isset($alumnos_grupo['segundo_apellido']) and isset($alumnos_grupo['nombres']) and isset($alumnos_grupo['id_alumno']) and isset($id_asignatura) and isset($cabecera['id_anio_lectivo']))
             {
@@ -633,13 +698,13 @@ if (isset($tipo) AND ($tipo == "Tr"))
                         <td>' . $num. '</td>
                         <td>' . utf8_encode($alumnos_grupo['primer_apellido']) . ' ' .utf8_encode($alumnos_grupo['segundo_apellido']) . ' ' .utf8_encode($alumnos_grupo['nombres']) .'</td>
                         <td>' . $alumnos_grupo['id_alumno'] . '</td>
-                        <td><span class="'.$editar_tablas_p1.'" id="periodo1" id_alumno="'.$alumnos_grupo['id_alumno'].'" name="nota1" materia="'.$id_asignatura.'" anio="'.$cabecera['id_anio_lectivo'].'">'.$res_nota1.'</span></td>
+                        <td><span id="periodo1" id_alumno="'.$alumnos_grupo['id_alumno'].'" name="nota1" materia="'.$id_asignatura.'" anio="'.$cabecera['id_anio_lectivo'].'">'.$res_nota1.'</span></td>
                         <td><span tipo="falta" class="'.$editar_tablas_p1.'" id="periodo1" id_alumno="'.$alumnos_grupo['id_alumno'].'" name="inasistencia_p1" materia="'.$id_asignatura.'" anio="'.$cabecera['id_anio_lectivo'].'">'.$res_falta1.'</span></td>
                         <td><span class="'.$editar_tablas_p2.'" id="periodo2" id_alumno="'.$alumnos_grupo['id_alumno'].'" name="nota2" materia="'.$id_asignatura.'" anio="'.$cabecera['id_anio_lectivo'].'">'.$res_nota2.'</span></td>
                         <td><span class="'.$editar_tablas_p2.'" id="periodo2" id_alumno="'.$alumnos_grupo['id_alumno'].'" name="inasistencia_p2" materia="'.$id_asignatura.'" anio="'.$cabecera['id_anio_lectivo'].'">'.$res_falta2.'</span></td>
-                        <td><span class="'.$editar_tablas_p3.'" id="periodo3" id_alumno="'.$alumnos_grupo['id_alumno'].'" name="nota3" materia="'.$id_asignatura.'" anio="'.$cabecera['id_anio_lectivo'].'">'.$res_nota3.'</span></td>
+                        <td><span id="periodo3" id_alumno="'.$alumnos_grupo['id_alumno'].'" name="nota3" materia="'.$id_asignatura.'" anio="'.$cabecera['id_anio_lectivo'].'">'.$res_nota3.'</span></td>
                         <td><span class="'.$editar_tablas_p3.'" id="periodo3" id_alumno="'.$alumnos_grupo['id_alumno'].'" name="inasistencia_p3" materia="'.$id_asignatura.'" anio="'.$cabecera['id_anio_lectivo'].'">'.$res_falta3.'</span></td>
-                        <td><span class="'.$editar_tablas_p4.'" id="periodo4" id_alumno="'.$alumnos_grupo['id_alumno'].'" name="nota4" materia="'.$id_asignatura.'" anio="'.$cabecera['id_anio_lectivo'].'">'.$res_nota4.'</span></td>
+                        <td><span id="periodo4" id_alumno="'.$alumnos_grupo['id_alumno'].'" name="nota4" materia="'.$id_asignatura.'" anio="'.$cabecera['id_anio_lectivo'].'">'.$res_nota4.'</span></td>
                         <td><span class="'.$editar_tablas_p4.'" id="periodo4" id_alumno="'.$alumnos_grupo['id_alumno'].'" name="inasistencia_p4" materia="'.$id_asignatura.'" anio="'.$cabecera['id_anio_lectivo'].'">'.$res_falta4.'</span></td>
                         <td>' . $res_falta_final . '</td>
                     </tr>';
