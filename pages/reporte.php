@@ -1,231 +1,62 @@
 <?php 
-
+ini_set('memory_limit', '512M');
 require_once('../plugins/mpdf/mpdf.php');
 include('dbconfig.php');
 include('class.user.php');
 
+$informe_cabecera    = new USER();
+$informe_asignaturas = new USER();
+$asignaturas_grupo   = new USER();
+$object              = new USER();
+
+$html_asignaturas = "";
+
+
+
+
 //echo "Accion " . $_REQUEST['action'];
 //$action = $_REQUEST['action'];
 
-$id_alumno       = "8474";
+$id_alumno       = "666";
 $id_sede         = "IE";
-$id_asignatura   = "2017IEIE";
-$id_anio_lectivo = "2017IEIE";
-$periodo         = "2017IEIEP1";
-$grupoo          = "2017IEIE10-1";
+$id_asignatura   = "CieNatYEEdu-10-Q";
+$id_anio_lectivo = "IE2017";
+$periodo         = "IE2017P13";
+$grupo           = "IE10-2";
 
 
-echo "ID Alumno ".$id_alumno  ."<br>";
-echo "ID Sede ".$id_sede  ."<br>";
-echo "ID Asignatura ".$id_asignatura."<br>";
-echo "ID periodo ".$periodo."<br>";
+echo "ID Alumno: ".$id_alumno  ."<br>";
+echo "ID Sede: ".$id_sede  ."<br>";
+echo "ID Asignatura: ".$id_asignatura."<br>";
+echo "ID periodo: ".$periodo."<br>";
 
 
-$informe_cabecera = new USER();
-$informe_asignaturas = new USER();
-
-$informe_cabecera = $informe_cabecera->Read_cabecera_reporte($id_alumno,$id_asignatura,$periodo);
+$informe_cabecera = $object->Read_cabecera_reporte($id_alumno,$id_anio_lectivo);
 
 foreach ($informe_cabecera as $informe_cabecera) 
 {
 	# code...
 }
 
-$informe_asignaturas = $informe_asignaturas->Read_asignatura_reporte($id_alumno,$id_anio_lectivo,$grupoo);
-
-foreach ($informe_asignaturas as $informe_asignaturas) 
-{
-	# code...
-}
-
-$anio_str=substr($informe_cabecera['fecha_inicio'], 0,4);
-$periodo_str=substr($periodo, -1);
-$periodo_str2=substr($periodo, -2);
-
-$str = "2017IEIEM10-C-L1,2017IEIEM10-C-L2,2017IEIEM10-C-L3,";
-
-/*Test Cortar cadena separada por ,*/
-print_r(explode(',', $str, -1));
-
-switch ($periodo_str2) {
-	case 'P1':
-		$periodo_show = $informe_asignaturas['nota1'];
-		break;
-
-	case 'P2':
-		$periodo_show = $informe_asignaturas['nota2'];
-		break;
-
-	case 'P3':
-		$periodo_show = $informe_asignaturas['nota3'];
-		break;
-
-	case 'P4':
-		$periodo_show = $informe_asignaturas['nota4'];
-		break;
-	
-	default:
-		$periodo_show = "Sin Nota Periodo.";
-		break;
-}
-
-echo "ID grupo ".$informe_cabecera['id_grupo']."<br>";
-echo "Perdio Str ".$periodo_str."<br>";
-echo "Perdio Str 2 ".$periodo_str2."<br><br>";
-
+echo "Informe Cabecera<br>";
 print_r($informe_cabecera);
-print_r($informe_asignaturas);
+
+$asignaturas_grupo = $object->Read_asignaturas_grupo($grupo);
 
 
-$html_cabecera = '<body>
-		    <table cellspacing="0">
+foreach ($asignaturas_grupo as $asignaturas_grupo)
+{
+	echo "Id asignatura: ".$asignaturas_grupo['id_asignatura']."<br>";
 
-		<!-- Start Header INFORME -->
-				<tr height="25">
-					<td width="123" ROWSPAN="4" class="X42 MA1">
-						<span>
-							<img style="height:82px;width:82px" src="../images/Escudo.jpg" alt="Image" />
-						</span>
-						<span>&nbsp;</span>
-					</td>
-					<td COLSPAN="9" ROWSPAN="2" class="X45 MB1">
-						<span>
-							<span>INSTITUCIÓN EDUCATIVA INSTITUTO ESTRADA</span>
-						</span>
-					</td>
-					<td COLSPAN="2" class="X55 MK1">
-						<span>
-							<span>Codigo Informe</span>
-						</span>
-					</td>
-				</tr>
-				<tr height="20">
-					<td COLSPAN="2" class="X57 MK2">
-						<span>
-							<span>IE-2017-1-000001</span>
-						</span>
-					</td>
-				</tr>
-				<tr height="20">
-					<td COLSPAN="9" ROWSPAN="2" class="X45 MB3">
-						<span>
-							<span>INFORME PERIODICO DE EVALUACION</span>
-						</span>
-					</td>
-					<td width="76" class="X25 left">
-						<span>Version</span>
-					</td>
-					<td width="111" class="X26">
-						<span>1.0</span>
-					</td>
-				</tr>
-				<tr height="20">
-					<td class="X28 left">
-						<span>Pagina</span>
-					</td>
-					<td class="X27">
-						<span>{PAGENO}</span>
-					</td>
-				</tr>
-
-				<!-- Inicio Epacio -->
-				<tr height="4">
-					<td class="X9">&nbsp;</td>
-					<td width="158" class="X8">&nbsp;</td>
-					<td width="11" class="X8">&nbsp;</td>
-					<td width="32" class="X8">&nbsp;</td>
-					<td width="71" class="X5">&nbsp;</td>
-					<td width="109" class="X8">&nbsp;</td>
-					<td width="96" class="X8">&nbsp;</td>
-					<td width="54" class="X8">&nbsp;</td>
-					<td width="68" class="X8">&nbsp;</td>
-					<td width="67" class="X8">&nbsp;</td>
-					<td class="X8">&nbsp;</td>
-					<td class="X8">&nbsp;</td>
-				</tr>
-				<!-- End Espacio -->
-
-				<tr height="20">
-					<td class="X12 left">
-						<span>Año: '.$anio_str.'</span>
-					</td>
-					<td COLSPAN="4" class="X37 MB6">
-						<span>
-							<span>Nombre Estudiante</span>
-						</span>
-					</td>
-					<td COLSPAN="2" class="X37 MF6">
-						<span>
-							<span>Codigo</span>
-						</span>
-					</td>
-					<td class="X23 left">
-						<span>Grado</span>
-					</td>
-					<td class="X23 left">
-						<span>Grupo</span>
-					</td>
-					<td class="X23 left">
-						<span>Promedio</span>
-					</td>
-					<td class="X23 left">
-						<span>Puesto</span>
-					</td>
-					<td class="X23 left">
-						<span>Jornada</span>
-					</td>
-				</tr>
-				<tr height="21">
-					<td class="X12 left">
-						<span>Periodo: '.$periodo_str.'</span>
-					</td>
-					<td COLSPAN="4" class="X39 MB7">
-						<span>
-							<span>'.$informe_cabecera['primer_apellido'].' '.$informe_cabecera['segundo_apellido'].' '.$informe_cabecera['nombres'].'</span>
-						</span>
-					</td>
-					<td COLSPAN="2" class="X39 MF7">
-						<span>
-							<span>'.$id_alumno.'</span>
-						</span>
-					</td>
-					<td class="X15">
-						<span>'.$informe_cabecera['descripcion_grado'].'</span>
-					</td>
-					<td class="X15">
-						<span>'.$informe_cabecera['descripcion_grupo'].'</span>
-					</td>
-					<td class="X16">
-						<span>4.5</span>
-					</td>
-					<td class="X16">
-						<span>7</span>
-					</td>
-					<td class="X14 left">
-						<span>Diurna</span>
-					</td>
-				</tr>
-		<!-- End Header INFORME -->
-
-				<!-- Inicio Epacio -->
-				<tr height="7">
-					<td class="X17">&nbsp;</td>
-					<td COLSPAN="6" class="X41 MB8">
-						<span>&nbsp;</span>
-					</td>
-					<td class="X13">&nbsp;</td>
-					<td class="X13">&nbsp;</td>
-					<td class="X13">&nbsp;</td>
-					<td class="X13">&nbsp;</td>
-					<td class="X13">&nbsp;</td>
-					<td width="8" class="X18">&nbsp;</td>
-				</tr>
-				<!-- Fin Epacio -->
-
-		    ';
+	
+	$informe_asignaturas = $object->Read_asignatura_reporte($id_alumno,$id_anio_lectivo,$asignaturas_grupo['id_asignatura']);
 
 
-$html_asignaturas = '<!-- Start Informe Area-Asignatura -->
+
+		foreach ($informe_asignaturas as $informe_asignaturas) 
+		{
+		/*
+		$html_asignaturas .= '<!-- Start Informe Area-Asignatura -->
 						<!-- Start Header Informe Area-Asignatura -->
 							<tr height="20">
 								<td COLSPAN="4" class="X37 MA9">
@@ -261,7 +92,7 @@ $html_asignaturas = '<!-- Start Informe Area-Asignatura -->
 							<tr height="21">
 								<td COLSPAN="4" class="X54 MA10">
 									<span>
-										<span>'.$informe_asignaturas['nombre_area'].'</span>
+										<span>'.utf8_encode($informe_asignaturas['nombre_area']).'</span>
 									</span>
 								</td>
 								<td class="X20">
@@ -272,7 +103,7 @@ $html_asignaturas = '<!-- Start Informe Area-Asignatura -->
 								</td>
 								<td COLSPAN="2" class="X54 MG10">
 									<span>
-										<span>'.$informe_asignaturas['nombre_asignatura'].'</span>
+										<span>'.utf8_encode($informe_asignaturas['nombre_asignatura']).'</span>
 									</span>
 								</td>
 								<td class="X20">
@@ -347,16 +178,253 @@ $html_asignaturas = '<!-- Start Informe Area-Asignatura -->
 								<td class="X11">&nbsp;</td>
 							</tr>
 						<!-- Fin Footer Informe Area-Asignatura -->
-					<!-- End Informe Area-Asignatura -->';
+					<!-- End Informe Area-Asignatura -->
+					
+					<!-- Inicio Epacio -->
+				<tr height="7">
+					<td class="X17">&nbsp;</td>
+					<td COLSPAN="6" class="X41 MB8">
+						<span>&nbsp;</span>
+					</td>
+					<td class="X13">&nbsp;</td>
+					<td class="X13">&nbsp;</td>
+					<td class="X13">&nbsp;</td>
+					<td class="X13">&nbsp;</td>
+					<td class="X13">&nbsp;</td>
+					<td width="8" class="X18">&nbsp;</td>
+				</tr>
+				<!-- Fin Epacio -->
+				
+					';
+
+					*/
+		
+	} 
+	
+
+}
 
 $html_asignaturas.= '</table>
 		  </body>';
 
+echo "<br>Asignaturas Grupo<br>";
+print_r($asignaturas_grupo);
+
+echo "<br>Informe Asignaturas<br>";
+print_r($informe_asignaturas);
+
+$anio_str=substr($informe_cabecera['fecha_inicio_periodo'], 0,4);
+$periodo_str=substr($periodo, -1);
+$periodo_str2=substr($periodo, -2);
+
+$str_grupo=substr($informe_cabecera['descripcion_grupo'], -1);
+$str_grado=substr($informe_cabecera['descripcion_grupo'], -4, -2);
+
+$str = "2017IEIEM10-C-L1,2017IEIEM10-C-L2,2017IEIEM10-C-L3,";
+
+/*Test Cortar cadena separada por ,*/
+//print_r(explode(',', $str, -1));
+
+
+switch ($periodo_str2) {
+	case 'P1':
+		$periodo_show = $informe_asignaturas['nota1'];
+		break;
+
+	case 'P2':
+		$periodo_show = $informe_asignaturas['nota2'];
+		break;
+
+	case 'P3':
+		$periodo_show = $informe_asignaturas['nota3'];
+		break;
+
+	case 'P4':
+		$periodo_show = $informe_asignaturas['nota4'];
+		break;
+	
+	default:
+		$periodo_show = "Sin Nota Periodo.";
+		break;
+}
 
 /*
-$mpdf=new mPDF('c');
-$mpdf->mirrorMargins = true;
-$mpdf->SetDisplayMode('fullpage','two');
+echo "<br>ID grupo ".$informe_cabecera['descripcion_grupo']."<br>";
+echo "Perdio Str: ".$periodo_str."<br>";
+echo "Perdio Str 2: ".$periodo_str2."<br><br>";
+
+echo "Grupo Str: ".$str_grupo."<br>";
+echo "Grado Str 2: ".$str_grado."<br><br>";
+
+
+
+echo "<br>Informe Asignatura<br>";
+print_r($informe_asignaturas);
+
+*/
+
+$html_cabecera = '<body>
+		    <table cellspacing="0">
+
+		<!-- Start Header INFORME -->
+				<tr height="25">
+					<td width="123" ROWSPAN="4" class="X42 MA1">
+						<span>
+							<img style="height:82px;width:82px" src="../images/Escudo.jpg" alt="Image" />
+						</span>
+						<span>&nbsp;</span>
+					</td>
+					<td COLSPAN="9" ROWSPAN="2" class="X45 MB1">
+						<span>
+							<span>INSTITUCIÓN EDUCATIVA INSTITUTO ESTRADA</span>
+							<p style = "font-size: 8pt">Reconocida por Resoluciones 2625 de Dic. 13 de 2002  y 1041 de Nov 19 de 2010 de la Sec. De Educación Dptal.
+							Carrera 8ª No. 18-53  Tels. 3685132-3686087, Marsella, Risaralda.
+							Código Dane 166440000067.  Nit.  891.412.146-8</p>
+							
+						</span>
+					</td>
+					<td COLSPAN="2" class="X55 MK1">
+						<span>
+							<span>Codigo Informe</span>
+						</span>
+					</td>
+				</tr>
+				<tr height="20">
+					<td COLSPAN="2" class="X57 MK2">
+						<span>
+							<span>IE-2017-1-000001</span>
+						</span>
+					</td>
+				</tr>
+				<tr height="20">
+					<td COLSPAN="9" ROWSPAN="2" class="X45 MB3">
+						<span>
+							<span>INFORME PERIODICO DE EVALUACION</span>
+						</span>
+					</td>
+					<td width="76" class="X25 left">
+						<span>Version</span>
+					</td>
+					<td width="111" class="X26">
+						<span>1.0</span>
+					</td>
+				</tr>
+				<tr height="20">
+					<td class="X28 left">
+						<span>Pagina</span>
+					</td>
+					<td class="X27">
+						<span>{PAGENO} de {nbpg}</span>
+					</td>
+				</tr>
+
+				<!-- Inicio Epacio -->
+				<tr height="4">
+					<td class="X9">&nbsp;</td>
+					<td width="158" class="X8">&nbsp;</td>
+					<td width="11" class="X8">&nbsp;</td>
+					<td width="32" class="X8">&nbsp;</td>
+					<td width="71" class="X5">&nbsp;</td>
+					<td width="109" class="X8">&nbsp;</td>
+					<td width="96" class="X8">&nbsp;</td>
+					<td width="54" class="X8">&nbsp;</td>
+					<td width="68" class="X8">&nbsp;</td>
+					<td width="67" class="X8">&nbsp;</td>
+					<td class="X8">&nbsp;</td>
+					<td class="X8">&nbsp;</td>
+				</tr>
+				<!-- End Espacio -->
+
+				<tr height="20">
+					<td class="X12 left">
+						<span>Año: '.$anio_str.'</span>
+					</td>
+					<td COLSPAN="4" class="X37 MB6">
+						<span>
+							<span>Nombre Estudiante</span>
+						</span>
+					</td>
+					<td COLSPAN="2" class="X37 MF6">
+						<span>
+							<span>Codigo</span>
+						</span>
+					</td>
+					<td class="X23 left">
+						<span>Grado</span>
+					</td>
+					<td class="X23 left">
+						<span>Grupo</span>
+					</td>
+					<td class="X23 left">
+						<span>Promedio</span>
+					</td>
+					<td class="X23 left">
+						<span>Puesto</span>
+					</td>
+					<td class="X23 left">
+						<span>Jornada</span>
+					</td>
+				</tr>
+				<tr height="21">
+					<td class="X12 left">
+						<span>Periodo: '.$periodo_str.'</span>
+					</td>
+					<td COLSPAN="4" class="X39 MB7">
+						<span>
+							<span>'.utf8_encode($informe_cabecera['primer_apellido']).' '.utf8_encode($informe_cabecera['segundo_apellido']).' '.utf8_encode($informe_cabecera['nombres']).'</span>
+						</span>
+					</td>
+					<td COLSPAN="2" class="X39 MF7">
+						<span>
+							<span>'.$id_alumno.'</span>
+						</span>
+					</td>
+					<td class="X15">
+						<span>'.$str_grado.'</span>
+					</td>
+					<td class="X15">
+						<span>'.$str_grupo.'</span>
+					</td>
+					<td class="X16">
+						<span>4.5</span>
+					</td>
+					<td class="X16">
+						<span>7</span>
+					</td>
+					<td class="X14 left">
+						<span>Diurna</span>
+					</td>
+				</tr>
+		<!-- End Header INFORME -->
+
+				<!-- Inicio Epacio -->
+				<tr height="7">
+					<td class="X17">&nbsp;</td>
+					<td COLSPAN="6" class="X41 MB8">
+						<span>&nbsp;</span>
+					</td>
+					<td class="X13">&nbsp;</td>
+					<td class="X13">&nbsp;</td>
+					<td class="X13">&nbsp;</td>
+					<td class="X13">&nbsp;</td>
+					<td class="X13">&nbsp;</td>
+					<td width="8" class="X18">&nbsp;</td>
+				</tr>
+				<!-- Fin Epacio -->
+
+		    ';
+
+
+
+
+/*
+echo $html_cabecera;
+echo $html_asignaturas;
+*/
+
+/*
+$mpdf=new mPDF('', 'Letter', 0, '', 12.7, 12.7, 14, 12.7, 8, 8);
+$mpdf->SetDisplayMode('fullwidth');
 $mpdf->SetHTMLFooter('
 
 					<table width="100%" style="vertical-align: bottom; font-family: serif; font-size: 8pt; color: #000000; font-style: italic;">
@@ -378,5 +446,6 @@ $mpdf->WriteHTML($css,1);
 $mpdf->WriteHTML($html_cabecera);
 $mpdf->WriteHTML($html_asignaturas);
 $mpdf->Output();
+exit;
 */
- ?>
+?>

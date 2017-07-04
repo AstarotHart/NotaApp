@@ -139,6 +139,56 @@ if (isset($_POST['asignar_nota_tr']))
      
 }
 
+
+//saber si el boton CREAR de logro a sido inicializado
+if (isset($_POST['asignar_logros'])) 
+{
+    $id_logros=$_POST['select_logros'];
+    $id_alumnos=$_POST['select_alumnos'];
+    $id_asig = $_POST['id_asignatura'];
+    $id_anio_lec= $_POST['id_anio_lectivo'];
+    $perio_act= $_POST['id_periodo'];
+
+    
+    $logros_insert = "";
+
+    foreach ($id_logros as $id_logros) 
+    {
+       $logros_insert .= $id_logros.", "; 
+    }
+
+    $logros_insert .=".";
+
+    foreach ($id_alumnos as $id_alumnos)
+    {
+        /*
+        echo "ID LOGRO: ".$id_logros."<br>";
+        echo "ID ALUMNO: ".$id_alumnos."<br>";
+        echo "ID ASIG: ".$id_asig."<br>";
+        echo "ID ANIO: ".$id_anio_lec."<br>";
+        echo "ID ANIO: ".$perio_act."<br>";
+        */
+
+        $logros_alumnos->register_logros_alumno($id_asig,$id_alumnos,$id_anio_lec,$perio_act,$logros_insert);
+    }
+    
+     
+    if($logros_alumnos==true)
+    {
+        echo '<script type="text/javascript">';
+        echo 'setTimeout(function () { swal("Logro Asignados.","","success");';
+        echo '}, 1000);</script>';
+     }
+     else
+     {
+        echo '<script type="text/javascript">';
+        echo 'setTimeout(function () { swal("Logro NO Asignados.","","error");';
+        echo '}, 1000);</script>';
+     }
+     
+}
+
+
 //saber si el botonACTUALIZR_LOGROS ha sido inicializado
 if (isset($_POST['actualizar_logro'])) 
 {

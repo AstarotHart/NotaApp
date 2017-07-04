@@ -2,16 +2,16 @@
 $name='DejaVuSerifCondensed-BoldItalic';
 $type='TTF';
 $desc=array (
-  'CapHeight' => 729,
-  'XHeight' => 519,
+  'CapHeight' => 729.0,
+  'XHeight' => 519.0,
   'FontBBox' => '[-815 -389 1579 1145]',
   'Flags' => 262212,
-  'Ascent' => 939,
-  'Descent' => -236,
-  'Leading' => 0,
-  'ItalicAngle' => -11,
-  'StemV' => 165,
-  'MissingWidth' => 540,
+  'Ascent' => 939.0,
+  'Descent' => -236.0,
+  'Leading' => 0.0,
+  'ItalicAngle' => -11.0,
+  'StemV' => 165.0,
+  'MissingWidth' => 540.0,
 );
 $unitsPerEm=2048;
 $up=-63;

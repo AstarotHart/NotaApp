@@ -1,143 +1,251 @@
 ﻿<?php 
 require_once("class.user.php");
-$grupo = new USER();
-$object = new USER();
+
+$anios          =   new USER();
+$object         =   new USER();
+$grupos         =   new USER();
+$nombre_sede    =   new USER();
+$asignar_alumno    =   new USER();
+
+$show_table_alumnos = "none";
 
 
-if(isset($_POST['Detalles']))
+//saber si el boton CREAR de logro a sido inicializado
+if (isset($_POST['asignar_alumno'])) 
 {
-    $id_alumno = strip_tags($_POST['Detalles']);
+    $id_grupo_old=$_POST['id_grupo_old'];
+    $id_alumno=$_POST['select_alumnos'];
+    $id_grupo_new = $_POST['id_grupo_new'];
+    $id_anio_lec= $_POST['id_anio_lectivo'];
 
-    $detalles_alumnos = $object->detalles_alumno($id_alumno);
-
-    if($detalles_alumnos!==false)
+    foreach ($id_alumno as $id_alumno)
     {
-        /*
-            echo '<div class="panel panel-info" id="DetallesAlumno" tabindex="-1" role="dialog">';
-            echo '    <div class="modal-dialog" role="document">';
-            echo '        <div class="modal-content">';
-            echo '            <div class="modal-body">';
-            echo '                <div class="panel panel-info">';
-            echo '                    <div class="panel-heading">';
-            echo '                      <h3 class="panel-title">Sheena Shrestha</h3>';
-            echo '                    </div>';
-            echo '                    <div class="panel-body">';
-            echo '                      <div class="row">';
-            echo '                        <div class="col-md-9 col-lg-9 "> ';
-            echo '                          <table class="table table-user-information">';
-            echo '                            <tbody>';
-
-            echo '                              <tr>';
-            echo '                                <td>Codigo:</td>';
-            echo '                                <td>'.$detalles_alumnos["id_alumno"].'</td>';
-            echo '                              </tr>';
-            echo '                              <tr>';
-            echo '                                <td>Nombres:</td>';
-            echo '                                <td>'.$detalles_alumnos["nombre"].'</td>';
-            echo '                              </tr>';
-            echo '                              <tr>';
-            echo '                                <td>Primer Apellido:</td>';
-            echo '                                <td>'.$detalles_alumnos["primer_apellido"].'</td>';
-            echo '                              </tr>';
-            echo '                                <td>Segundo Apellido</td>';
-            echo '                                <td>'.$detalles_alumnos["segundo_apellido"].'</td>';
-            echo '                              </tr>';
-            echo '                                <td>Desplazado</td>';
-            echo '                                <td>'.$detalles_alumnos["desplazado"].'</td>';
-            echo '                              </tr>';
-            echo '                              <tr>';
-            echo '                                <td>Repitente</td>';
-            echo '                                <td>'.$detalles_alumnos["repitente"].'</td>';
-            echo '                              </tr>';
-            echo '                                <td>Nombes Acudiente</td>';
-            echo '                                <td>'.$detalles_alumnos["nombre_acudiente"].'</td>';
-            echo '                              </tr>';
-            echo '                              </tr>';
-            echo '                                <td>Apellidos Acudiente</td>';
-            echo '                                <td>'.$detalles_alumnos["apellidos_acudiente"].'</td>';
-            echo '                              </tr>';
-            echo '                              </tr>';
-            echo '                                <td>Telefono Acudiente</td>';
-            echo '                                <td>'.$detalles_alumnos["telefono_acudiente"].'</td>';
-            echo '                              </tr>';
-            echo '                              </tr>';
-            echo '                                <td>Fecha Matricula</td>';
-            echo '                                <td>'.$detalles_alumnos["fecha_matricula"].'</td>';
-            echo '                              </tr>';
-            
-            echo '                           </tbody>';
-            echo '                         </table>';
-            echo '                       </div>';
-            echo '                     </div>';
-            echo '                   </div>            ';
-            echo '               </div>';
-            echo '           </div>';
-            echo '           <div class="modal-footer">';
-            echo '               <button type="button" class="btn btn-warning waves-effect" data-dismiss="modal">Cerrar</button>';
-            echo '           </div>';
-            echo '       </div>';
-            echo '   </div>';
-            echo '/div>';
-        */
-       
-        echo "<PRE>";
-        print_r($detalles_alumnos);
-        echo "</PRE>";
-       
+        $asignar_alumno->cambio_alumno_grupo($id_grupo_new,$id_alumno,$id_anio_lec);
     }
-    else
+   
+     
+    if($asignar_alumno==true)
     {
         echo '<script type="text/javascript">';
-        echo 'setTimeout(function () { swal("Error al mostrar Detalles de Alumno","","error");';
+        echo 'setTimeout(function () { swal("Alumno Asignados.","","success");';
         echo '}, 1000);</script>';
-    }
+     }
+     else
+     {
+        echo '<script type="text/javascript">';
+        echo 'setTimeout(function () { swal("Alumno NO Asignados.","","error");';
+        echo '}, 1000);</script>';
+     }
+     
 }
+
+
  ?>
 <!DOCTYPE html>
 <html>
-
 
     <!-- Top Bar -->
     <?php include("../includes/header.php");?>
     <!-- #Top Bar -->
 
-    <!-- Menu -->
-    <?php include("../includes/menu.php");?>
-    <!-- end menu-->
 
-    
-    <section class="content">
-        <div class="container-fluid">
+<!-- Menu -->
+<?php 
+    include("../includes/menu.php");
+
+    //saber si el boton ACEPTAR de seleccionde SEDE a sido inicializado
+    if (isset($_POST['btn-select-SE'])) 
+    {
+        $_SESSION['id_sede_asig_alum_sede']=$_POST['id_sede'];
+    }
+
+    //saber si el boton CAMBIAR SEDE Y GRUPO a sido inicializado
+    if (isset($_POST['btn-select-destroy'])) 
+    {
+        $_SESSION['id_sede_asig_alum_sede'] = null;
+    }
+
+    //Saber si si la variable de session ID_SEDE
+    if (isset($_SESSION['id_sede_asig_alum_sede']))
+    {
+        $id_sede = $_SESSION['id_sede_asig_alum_sede'];
+    }
+
+    //Saber si si la variable ID_SEDE E ID_GRUPO
+    if (isset($id_sede))
+    {        
+        $num = 1;
+
+        $data_select = "";
             
-            <!-- Metarial Design Buttons -->
-            <div class="row">
-                <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
-                    <div class="card">
-                        <div class="header">
-                            <h2>
-                                Informes <small>Lista de Informes</small>
-                            </h2>
-                            <ul class="header-dropdown m-r--5">
-                                <li>
-                                    <a href="javascript:void(0);" data-toggle="cardloading" data-loading-effect="pulse">
-                                        <i class="material-icons">loop</i>
-                                    </a>
-                                </li>
-                            </ul>
-                        </div>
-                        <div class="doby">
-                            
-                        </div>
+        $alumnos_sede = $object->Read_alumnos_sede($id_sede);
+
+        $res_grupos  = " ";
+
+        // Saber si alumnos_sede esta vacio
+        if (count($alumnos_sede) > 0) 
+        {   
+            $show_table_alumnos = "show";
+
+            foreach ($alumnos_sede as $alumnos_sede) 
+            {
+                $data_select .= '<option value="' . $alumnos_sede['id_alumno'] . '">' . utf8_encode($alumnos_sede['primer_apellido']) . ' ' .utf8_encode($alumnos_sede['segundo_apellido']) . ' ' .utf8_encode($alumnos_sede['nombres']) .'</option>';                
+            }
+        }
+
+    }
+
+if (isset($id_sede))
+{
+    $sedes = $object->Read_sedes();
+    $nombre_sede = $object->nombre_sede($id_sede);
+
+    foreach ($nombre_sede as $nombre_sede) 
+    {
+        # code...
+    }
+}
+    
+
+?>
+<!-- end menu-->
+
+<section class="content">
+    <div class="container-fluid">
+
+        <!-- Lista de Docentes -->
+        <div class="row clearfix">
+            <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                <div class="card">
+                    <div class="header" style="padding-bottom: 10px;"">
+                        <h2>
+                            Informes Por Sede <small>Lista de Estudientes Por Sede</small>
+                        </h2>
+                        
+                        <?php 
+                        if (isset($id_sede))
+                        { 
+                            echo "<h4>".$nombre_sede['descripcion_sede']."</h4>";
+                        ?>
+                            <div class="align-right">
+                                <form id="destroy_variables" method="POST">
+                                    <button class="btn bg-teal btn-xs waves-effect" type="submit" name="btn-select-destroy">Cambiar Sede y Grupo</button>
+                                </form>
+                            </div>
+                        <?php 
+                        }
+                        else
+                        {
+                            ?>
+                            <!-- form para seleccionar GRUPO por ASIGNATURA -->
+                            <form style="margin-bottom: 2px;" method="POST">
+                                <div class="row clearfix">
+                                    <div class="col-lg-3 col-md-3 col-sm-3 col-xs-6">
+                                        <div class="form-group" style="margin-bottom: 2px;">
+                                            <div class="form-line">
+                                                <select class="form-control show-tick" name="id_sede" id="getSede">
+                                                        <option value="">-- Seleccione Sede --</option>
+                                                        <?php 
+                                                            $user = $object->combobox_sede();
+                                                        ?>
+                                                </select>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-lg-6 col-md-6 col-sm-6 col-xs-12">
+                                        <button class="btn bg-teal waves-effect" type="submit" name="btn-select-SE">Aceptar</button>
+                                    </div>
+                                </div>
+                            </form>
+
+                            <?php
+                        
+                        } 
+                        ?>
+
                     </div>
+                    
+
+                    <div class="body" style="display: <?php echo $show_table_alumnos; ?>;">
+                    
+
+            <!-- Div mostrar u ocultar tablas -->
+                <div  style="display: <?php echo $show_table_alumnos; ?>;">
+
+                    <div class="card">
+                        <div class="body" style="padding-top: 10px;">
+                        
+                                <!-- Mostrar Logros en un Quote-->
+                                <h5>Alumnos</h5>
+
+                                <!-- SlectBox Logros -->
+                                <form id="check_logros" method="POST">
+
+                                <!-- enviar de manera oculta datos id_asignatura e id_anio_lectivo --> 
+                                    <input type="hidden" class="form-control" name="id_grupo_old" value="<?php echo $id_grupo; ?>">
+                                    <input type="hidden" class="form-control" name="id_anio_lectivo" value="<?php echo $cabecera['id_anio_lectivo']; ?>">
+
+                                    <select class="form-control show-tick" name="id_grupo_new" id="getGrupo" size="3" tabindex="1">
+                                        <option value="">-- Seleccione Sede --</option>
+                                        <?php 
+                                        if (count($sedes) > 0) 
+                                        {                 
+                                            foreach ($sedes as $sedes)
+                                            {
+                                                ?>
+                                                <option value="<?php echo $sedes['id_sede']; ?>"><?php echo $sedes['descripcion_sede']; ?></option>'; 
+                                                <?php
+                                            }
+                                        } else {
+                                            ?>
+                                                <option value=""><p class="col-pink">Sin Sedes</p></option>';
+                                            <?php
+                                        }
+                                        ?>
+                                    </select>
+
+                                    <br>
+
+                                <!-- Multi Select Alumnos para LOGROS-->
+                                    
+                                    <select multiple id="optgroup" name="select_alumnos[]" class="searchable" multiple="multiple">
+                                        <?php
+                                            echo $data_select;
+                                         ?>
+                                    </select>
+
+                                    <!-- <div class="btn-group btn-group-xs" role="group" aria-label="Extra-small button group">
+                                        <button type="button" class="btn bg-blue waves-effect" id="select-all">Todos</button>
+                                        <button type="button" class="btn bg-red waves-effect" id="deselect-all">Ninguno</button>
+                                    </div> -->
+                                    
+                                    <div class='col-sm-12 align-right'>
+                                        <button class="btn bg-green waves-effect" type="submit" name="asignar_alumno">Aceptar</button>
+                                    </div>
+                                    <br><br>
+
+                                </form>                            
+                          
+                   
+                </div><!-- Fin div SHOW-->
+
                 </div>
+                </div>
+
             </div>
-
         </div>
-
+        <!-- #END# Lista Docentes -->
+        </div>
     </section>
 
-    </section>
+<!-- TFooter -->
+<?php include("../includes/footer.php");?>
+<!-- #Footer -->
 
-    <!-- TFooter -->
-    <?php include("../includes/footer.php");?>
-    <!-- #Footer -->
+<script src="../js/bootstrap-editable.js"></script>
+
+<!-- Select Plugin Js -->
+<script src="../plugins/bootstrap-select/js/bootstrap-select.js"></script>
+
+<!-- Jquery Form -->
+<script src="../plugins/jquery.form.min.js"></script>
