@@ -72,6 +72,12 @@ $nom_asignatura    = new USER();
 $desc_logro        = new USER();
 $desc_indicador    = new USER();
 
+/* --------------------------------- GRUPO ------------------------*/
+
+
+
+/* -------------------------------END GRUPO -----------------------*/
+
 
 $show_table_alumnos = "none";
 $show_table_logros  = "none";
@@ -143,33 +149,45 @@ if (isset($_POST['asignar_nota_tr']))
 //saber si el boton CREAR de logro a sido inicializado
 if (isset($_POST['asignar_logros'])) 
 {
-    $id_logros=$_POST['select_logros'];
+    $logros_insert = "";
+  
     $id_alumnos=$_POST['select_alumnos'];
     $id_asig = $_POST['id_asignatura'];
     $id_anio_lec= $_POST['id_anio_lectivo'];
     $perio_act= $_POST['id_periodo'];
 
-    
-    $logros_insert = "";
-
-    foreach ($id_logros as $id_logros) 
+    if (isset($_POST['select_logros']))
     {
-       $logros_insert .= $id_logros.", "; 
+        $id_logros=$_POST['select_logros'];
+
+
+        foreach ($id_logros as $id_logros) 
+        {
+           $logros_insert .= $id_logros.", "; 
+        }
+
+        $logros_insert .=".";
+    }
+    else
+    {
+        $logros_insert = "No hay logros.";
     }
 
-    $logros_insert .=".";
 
+   
     foreach ($id_alumnos as $id_alumnos)
     {
+        
         /*
-        echo "ID LOGRO: ".$id_logros."<br>";
         echo "ID ALUMNO: ".$id_alumnos."<br>";
         echo "ID ASIG: ".$id_asig."<br>";
         echo "ID ANIO: ".$id_anio_lec."<br>";
-        echo "ID ANIO: ".$perio_act."<br>";
+        echo "ID PERIODO: ".$perio_act."<br>";
+        echo "Logro Insert: ".$logros_insert."<br>";
         */
 
         $logros_alumnos->register_logros_alumno($id_asig,$id_alumnos,$id_anio_lec,$perio_act,$logros_insert);
+
     }
     
      
@@ -287,7 +305,7 @@ if (count($nom_asignatura) > 0)
 { 
     foreach ($nom_asignatura as $nom_asignatura) 
     {
-        $nombre_asig = utf8_encode($nom_asignatura['nombre_asignatura']);
+        $nombre_asig = $nom_asignatura['nombre_asignatura'];
     }
 
 }
@@ -297,7 +315,7 @@ if (count($nom_grupo) > 0)
 { 
     foreach ($nom_grupo as $nom_grupo) 
     {
-        $nombre_gr = utf8_encode($nom_grupo['descripcion_grupo']);
+        $nombre_gr = $nom_grupo['descripcion_grupo'];
     }
 
 }
@@ -344,7 +362,7 @@ if (count($nom_grupo) > 0)
 
                                                             foreach ($combox as $combox) 
                                                             {
-                                                                echo '<option value="'.$combox['id_asignatura']."#".$combox['id_grupo'].'">'.utf8_encode($combox['nombre_asignatura']).' '.$combox['descripcion_grado'].'-'.utf8_encode($combox['descripcion_grupo']).'</option>';
+                                                                echo '<option value="'.$combox['id_asignatura']."#".$combox['id_grupo'].'">'.$combox['nombre_asignatura'].' '.$combox['descripcion_grado'].'-'.$combox['descripcion_grupo'].'</option>';
                                                             }
 
                                                         ?>  
@@ -566,7 +584,7 @@ if (isset($tipo) AND ($tipo == "Tr"))
         $i=1;
         foreach ($logros as $logros)
         {
-            $list_logros .='<li>' . '<b class="font-10">[' .$logros['id_logro']. ']</b> ' . utf8_encode($logros['descripcion'])  .'
+            $list_logros .='<li>' . '<b class="font-10">[' .$logros['id_logro']. ']</b> ' . $logros['descripcion']  .'
                             
                             <div class="btn-group dropdown">
                                 <i class="material-icons" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">more_horiz</i>
@@ -746,7 +764,7 @@ if (isset($tipo) AND ($tipo == "Tr"))
                 $data .= '
                     <tr>
                         <td>' . $num. '</td>
-                        <td>' . utf8_encode($alumnos_grupo['primer_apellido']) . ' ' .utf8_encode($alumnos_grupo['segundo_apellido']) . ' ' .utf8_encode($alumnos_grupo['nombres']) .'</td>
+                        <td>' . $alumnos_grupo['primer_apellido'] . ' ' .$alumnos_grupo['segundo_apellido'] . ' ' .$alumnos_grupo['nombres'] .'</td>
                         <td>' . $alumnos_grupo['id_alumno'] . '</td>
                         <td><span id="periodo1" id_alumno="'.$alumnos_grupo['id_alumno'].'" name="nota1" materia="'.$id_asignatura.'" anio="'.$cabecera['id_anio_lectivo'].'">'.$res_nota1.'</span></td>
                         <td><span tipo="falta" class="'.$editar_tablas_p1.'" id="periodo1" id_alumno="'.$alumnos_grupo['id_alumno'].'" name="inasistencia_p1" materia="'.$id_asignatura.'" anio="'.$cabecera['id_anio_lectivo'].'">'.$res_falta1.'</span></td>
@@ -760,7 +778,7 @@ if (isset($tipo) AND ($tipo == "Tr"))
                     </tr>';
                 $num++;
 
-                $data_select .= '<option value="' . $alumnos_grupo['id_alumno'] . '">' . utf8_encode($alumnos_grupo['primer_apellido']) . ' ' .utf8_encode($alumnos_grupo['segundo_apellido']) . ' ' .utf8_encode($alumnos_grupo['nombres']) .'</option>';
+                $data_select .= '<option value="' . $alumnos_grupo['id_alumno'] . '">' . $alumnos_grupo['primer_apellido'] . ' ' .$alumnos_grupo['segundo_apellido'] . ' ' .$alumnos_grupo['nombres'] .'</option>';
             }
             
         }
@@ -793,14 +811,14 @@ if (isset($tipo) AND ($tipo == "Tr"))
                             <div class="col-sm-2">
                                 <b>Grupo:</b> <?php if (isset($cabecera['descripcion_grupo'])) 
                                 {
-                                    echo utf8_encode($cabecera['descripcion_grupo']);
+                                    echo $cabecera['descripcion_grupo'];
                                 }else{echo " ";} ?>
                             </div>
 
                             <div class="col-sm-3">
                                 <b>Asignatura:</b> <?php if (isset($cabecera['nombre_asignatura'])) 
                                 {
-                                     echo utf8_encode($cabecera['nombre_asignatura']);
+                                     echo $cabecera['nombre_asignatura'];
                                 }else{echo " ";} ?>
                             </div>
 
@@ -1161,7 +1179,7 @@ else
             $i=1;
             foreach ($logros as $logros)
             {
-                $list_logros .='<li>' . '<b class="font-10">[' .$logros['id_logro']. ']</b> ' . utf8_encode($logros['descripcion'])  .'
+                $list_logros .='<li>' . '<b class="font-10">[' .$logros['id_logro']. ']</b> ' . $logros['descripcion'] .'
                                 
                                 <div class="btn-group dropdown">
                                     <i class="material-icons" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">more_horiz</i>
@@ -1288,7 +1306,7 @@ else
                     $data .= '
                         <tr>
                             <td>' . $num. '</td>
-                            <td>' . utf8_encode($alumnos_grupo['primer_apellido']) . ' ' .utf8_encode($alumnos_grupo['segundo_apellido']) . ' ' .utf8_encode($alumnos_grupo['nombres']) .'</td>
+                            <td>' . $alumnos_grupo['primer_apellido'] . ' ' .$alumnos_grupo['segundo_apellido'] . ' ' .$alumnos_grupo['nombres'] .'</td>
                             <td>' . $alumnos_grupo['id_alumno'] . '</td>
                             <td><span class="'.$editar_tablas_p1.'" id="periodo1" id_alumno="'.$alumnos_grupo['id_alumno'].'" name="nota1" materia="'.$id_asignatura.'" anio="'.$cabecera['id_anio_lectivo'].'">'.$res_nota1.'</span></td>
                             <td><span tipo="falta" class="'.$editar_tablas_p1.'" id="periodo1" id_alumno="'.$alumnos_grupo['id_alumno'].'" name="inasistencia_p1" materia="'.$id_asignatura.'" anio="'.$cabecera['id_anio_lectivo'].'">'.$res_falta1.'</span></td>
@@ -1306,7 +1324,7 @@ else
                         </tr>';
                     $num++;
 
-                    $data_select .= '<option value="' . $alumnos_grupo['id_alumno'] . '">' . utf8_encode($alumnos_grupo['primer_apellido']) . ' ' .utf8_encode($alumnos_grupo['segundo_apellido']) . ' ' .utf8_encode($alumnos_grupo['nombres']) .'</option>';
+                    $data_select .= '<option value="' . $alumnos_grupo['id_alumno'] . '">' . $alumnos_grupo['primer_apellido'] . ' ' .$alumnos_grupo['segundo_apellido'] . ' ' .$alumnos_grupo['nombres'] .'</option>';
                 }
                 
             }
@@ -1338,14 +1356,14 @@ else
                     <div class="col-sm-2">
                         <b>Grupo:</b> <?php if (isset($cabecera['descripcion_grupo'])) 
                         {
-                            echo utf8_encode($cabecera['descripcion_grupo']);
+                            echo $cabecera['descripcion_grupo'];
                         }else{echo " ";} ?>
                     </div>
 
                     <div class="col-sm-3">
                         <b>Asignatura:</b> <?php if (isset($cabecera['nombre_asignatura'])) 
                         {
-                             echo utf8_encode($cabecera['nombre_asignatura']);
+                             echo $cabecera['nombre_asignatura'];
                         }else{echo " ";} ?>
                     </div>
 
@@ -1427,7 +1445,7 @@ else
 
                                     <!-- Multi Select Alumnos para LOGROS-->
                                         
-                                        <select multiple id="optgroup" name="select_alumnos[]" class="searchable" multiple="multiple">
+                                        <select multiple id="optgroup" name="select_alumnos[]" class="ms" multiple="multiple">
                                             <?php
                                                 echo $data_select;
                                              ?>
@@ -1569,6 +1587,8 @@ else
                 }
                 
             });
+
+            
     });
 </script>
 

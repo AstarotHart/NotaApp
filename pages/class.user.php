@@ -1140,7 +1140,7 @@ class USER
      */
     public function Read_asignatura_reporte($id_alumno,$id_anio_lectivo,$id_asignatura)
     { 
-        $query = $this->conn->prepare('SELECT nota1,nota2,nota3,nota4,nombre_asignatura,intensidad_horaria,nombre_area,id_logros, id_observacion FROM nota NT inner join asignatura ASI inner join area AR inner join alumnos_logros ALLO inner join asig_obser_alumno AOA ON NT.id_asignatura = ASI.id_asignatura AND ASI.id_area = AR.id_area AND ALLO.id_asignatura = NT.id_asignatura AND AOA.id_alumno = NT.id_alumno WHERE NT.id_alumno = :id_alumno AND NT.id_anio_lectivo = :id_anio_lectivo AND ASI.id_asignatura = :id_asignatura');
+        $query = $this->conn->prepare('SELECT nota1,nota2,nota3,nota4,nombre_asignatura,intensidad_horaria,nombre_area FROM nota NT inner join asignatura ASI inner join area AR ON NT.id_asignatura = ASI.id_asignatura AND ASI.id_area = AR.id_area WHERE NT.id_alumno = :id_alumno AND NT.id_anio_lectivo = :id_anio_lectivo AND ASI.id_asignatura = :id_asignatura');
         $query->bindParam(":id_alumno",$id_alumno);
         $query->bindParam(":id_anio_lectivo",$id_anio_lectivo);
         $query->bindParam(":id_asignatura",$id_asignatura);
@@ -2004,13 +2004,13 @@ class USER
 
         $N_logros++;
 
-        $id_logro = $id_asignatura.'L-'.$N_logros;
+        $id_logro = $id_asignatura.'-'.$N_logros;
 
 
         try
         {
-            $stmt = $this->conn->prepare("INSERT INTO logros(id_logro,id_asignatura,descripcion) 
-                                          VALUES(:id_logro,:id_asignatura,:logro)");
+            $stmt = $this->conn->prepare("INSERT INTO logros(id_logro,id_asignatura,descripcion,id_estado) 
+                                          VALUES(:id_logro,:id_asignatura,:logro,'1')");
                                                   
             $stmt->bindparam(":id_logro", $id_logro);
             $stmt->bindparam(":id_asignatura", $id_asignatura);
@@ -2040,6 +2040,7 @@ class USER
 
         try
         {
+
             $stmt1 = $this->conn->prepare("SELECT id_alumno FROM alumnos_logros WHERE id_alumno=:id_alumno AND id_asignatura=:id_asignatura AND id_anio_lectivo=:id_anio_lectivo AND id_periodo=:id_periodo");
 
             $stmt1->execute(array(
@@ -2055,13 +2056,12 @@ class USER
             if($stmt1->rowCount() == 1)
             {
 
-                $stmt=$this->conn->prepare("UPDATE alumnos_logros SET id_logros = :id_logros WHERE id_alumno=:id_alumno AND id_asignatura=:id_asignatura AND id_anio_lectivo=:id_anio_lectivo");
+                $stmt=$this->conn->prepare("UPDATE alumnos_logros SET id_logros=:id_logros WHERE id_alumno=:id_alumno AND id_asignatura=:id_asignatura AND id_anio_lectivo=:id_anio_lectivo");
 
+                $stmt->bindparam(":id_logros", $id_logros);
+                $stmt->bindparam(":id_alumno", $id_alumno);
                 $stmt->bindparam(":id_asignatura", $id_asignatura);
                 $stmt->bindparam(":id_anio_lectivo", $id_anio_lectivo);
-                $stmt->bindparam(":id_periodo", $id_periodo);
-                $stmt->bindparam(":id_alumno", $id_alumno);
-                $stmt->bindparam(":id_logros", $id_logros);
 
                 $stmt->execute();
 
@@ -2069,6 +2069,7 @@ class USER
             }
             else
             {
+
                 $stmt2 = $this->conn->prepare("INSERT INTO alumnos_logros(id_asignatura,id_alumno,id_anio_lectivo,id_periodo,id_logros) 
                                           VALUES(:id_asignatura,:id_alumno,:id_anio_lectivo,:id_periodo,:id_logros)");
                                                   

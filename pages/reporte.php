@@ -17,19 +17,19 @@ $html_asignaturas = "";
 //echo "Accion " . $_REQUEST['action'];
 //$action = $_REQUEST['action'];
 
-$id_alumno       = "666";
+$id_alumno       = "1088256153";
 $id_sede         = "IE";
-$id_asignatura   = "CieNatYEEdu-10-Q";
+$id_asignatura   = "CieNatYEEdu-6-CN";
 $id_anio_lectivo = "IE2017";
-$periodo         = "IE2017P13";
-$grupo           = "IE10-2";
+$periodo         = "IE2017P1";
+$grupo           = "IE6-1";
 
-
+/*
 echo "ID Alumno: ".$id_alumno  ."<br>";
 echo "ID Sede: ".$id_sede  ."<br>";
 echo "ID Asignatura: ".$id_asignatura."<br>";
 echo "ID periodo: ".$periodo."<br>";
-
+*/
 
 $informe_cabecera = $object->Read_cabecera_reporte($id_alumno,$id_anio_lectivo);
 
@@ -37,181 +37,6 @@ foreach ($informe_cabecera as $informe_cabecera)
 {
 	# code...
 }
-
-echo "Informe Cabecera<br>";
-print_r($informe_cabecera);
-
-$asignaturas_grupo = $object->Read_asignaturas_grupo($grupo);
-
-
-foreach ($asignaturas_grupo as $asignaturas_grupo)
-{
-	echo "Id asignatura: ".$asignaturas_grupo['id_asignatura']."<br>";
-
-	
-	$informe_asignaturas = $object->Read_asignatura_reporte($id_alumno,$id_anio_lectivo,$asignaturas_grupo['id_asignatura']);
-
-
-
-		foreach ($informe_asignaturas as $informe_asignaturas) 
-		{
-		/*
-		$html_asignaturas .= '<!-- Start Informe Area-Asignatura -->
-						<!-- Start Header Informe Area-Asignatura -->
-							<tr height="20">
-								<td COLSPAN="4" class="X37 MA9">
-									<span>
-										<span>Area</span>
-									</span>
-								</td>
-								<td class="X21 left">
-									<span>Nota Area</span>
-								</td>
-								<td class="X21 left">
-									<span>Desempeño</span>
-								</td>
-								<td COLSPAN="2" class="X37 MG9">
-									<span>
-										<span>Asigatura</span>
-									</span>
-								</td>
-								<td class="X21 left">
-									<span>Nota</span>
-								</td>
-								<td class="X21 left">
-									<span>IH</span>
-								</td>
-								<td class="X21 left">
-									<span>Faltas</span>
-								</td>
-								<td class="X22 left">
-									<span>Desempeño</span>
-								</td>
-							</tr>
-
-							<tr height="21">
-								<td COLSPAN="4" class="X54 MA10">
-									<span>
-										<span>'.utf8_encode($informe_asignaturas['nombre_area']).'</span>
-									</span>
-								</td>
-								<td class="X20">
-									<span>4.3</span>
-								</td>
-								<td class="X20">
-									<span>SUPERIOR</span>
-								</td>
-								<td COLSPAN="2" class="X54 MG10">
-									<span>
-										<span>'.utf8_encode($informe_asignaturas['nombre_asignatura']).'</span>
-									</span>
-								</td>
-								<td class="X20">
-									<span>'.$periodo_show.'</span>
-								</td>
-								<td class="X20">
-									<span>'.$informe_asignaturas['intensidad_horaria'].'</span>
-								</td>
-								<td class="X20">
-									<span>2</span>
-								</td>
-								<td class="X24">
-									<span>SUPERIOR</span>
-								</td>
-							</tr>
-						<!-- End Header Informe Area-Asignatura -->
-
-						<!-- Inicio TexArea logros Asignatura -->
-							<tr height="21">
-								<td COLSPAN="12" ROWSPAN="8" class="X31 MA11">
-									<span>&nbsp;</span>
-								</td>
-							</tr>
-
-							<tr height="21"></tr>
-							<tr height="21"></tr>
-							<tr height="21">
-								<td class="X11">&nbsp;</td>
-							</tr>
-							<tr height="21"></tr>
-							<tr height="20"></tr>
-							<tr height="20">
-								<td class="X11">&nbsp;</td>
-							</tr>
-							<tr height="20">
-								<td class="X11">&nbsp;</td>
-							</tr>
-						<!-- Fin TexArea logros Asignatura -->
-
-						<!-- Inicio Footer Informe Area-Asignatura -->
-							<tr height="21">
-								<td COLSPAN="2" class="X29 MA19">
-									<span>
-										<span>Nota Periodos Anteriores</span>
-									</span>
-								</td>
-								<td COLSPAN="3" class="X30 MC19">
-									<span>
-										<span>P1:  '.$informe_asignaturas['nota1'].'</span>
-									</span>
-								</td>
-								<td COLSPAN="1" class="X30 ME19">
-									<span>
-										<span>P2:  '.$informe_asignaturas['nota2'].'</span>
-									</span>
-								</td>
-								<td COLSPAN="2" class="X30 MG19">
-									<span>
-										<span>P3:   '.$informe_asignaturas['nota3'].'</span>
-									</span>
-								</td>
-								<td COLSPAN="2" class="X30 MI19">
-									<span>
-										<span>P4:   '.$informe_asignaturas['nota4'].'</span>
-									</span>
-								</td>
-								<td COLSPAN="2" class="X53 MK19">
-									<span>
-										<span>Acom: 10</span>
-									</span>
-								</td>
-								<td class="X11">&nbsp;</td>
-							</tr>
-						<!-- Fin Footer Informe Area-Asignatura -->
-					<!-- End Informe Area-Asignatura -->
-					
-					<!-- Inicio Epacio -->
-				<tr height="7">
-					<td class="X17">&nbsp;</td>
-					<td COLSPAN="6" class="X41 MB8">
-						<span>&nbsp;</span>
-					</td>
-					<td class="X13">&nbsp;</td>
-					<td class="X13">&nbsp;</td>
-					<td class="X13">&nbsp;</td>
-					<td class="X13">&nbsp;</td>
-					<td class="X13">&nbsp;</td>
-					<td width="8" class="X18">&nbsp;</td>
-				</tr>
-				<!-- Fin Epacio -->
-				
-					';
-
-					*/
-		
-	} 
-	
-
-}
-
-$html_asignaturas.= '</table>
-		  </body>';
-
-echo "<br>Asignaturas Grupo<br>";
-print_r($asignaturas_grupo);
-
-echo "<br>Informe Asignaturas<br>";
-print_r($informe_asignaturas);
 
 $anio_str=substr($informe_cabecera['fecha_inicio_periodo'], 0,4);
 $periodo_str=substr($periodo, -1);
@@ -221,6 +46,199 @@ $str_grupo=substr($informe_cabecera['descripcion_grupo'], -1);
 $str_grado=substr($informe_cabecera['descripcion_grupo'], -4, -2);
 
 $str = "2017IEIEM10-C-L1,2017IEIEM10-C-L2,2017IEIEM10-C-L3,";
+
+
+switch ($periodo_str) {
+	case '1':
+		$nota_show = "nota1";
+		break;
+
+	case '2':
+		$nota_show = "nota2";
+		break;
+
+	case '3':
+		$nota_show = "nota3";
+		break;
+
+	case '4':
+		$nota_show = "nota4";
+		break;
+	
+}
+
+/*
+echo "Informe Cabecera<br>";
+print_r($informe_cabecera);
+*/
+$asignaturas_grupo = $object->Read_asignaturas_grupo($grupo);
+
+
+foreach ($asignaturas_grupo as $asignaturas_grupo)
+{
+	//echo "Id asignatura: ".$asignaturas_grupo['id_asignatura']."<br>";
+
+	
+	$informe_asignaturas = $object->Read_asignatura_reporte($id_alumno,$id_anio_lectivo,$asignaturas_grupo['id_asignatura']);
+
+
+
+		foreach ($informe_asignaturas as $informe_asignaturas) 
+		{
+			
+			$html_asignaturas .= '<!-- Start Informe Area-Asignatura -->
+							<!-- Start Header Informe Area-Asignatura -->
+								<tr height="20">
+									<td COLSPAN="4" class="X37 MA9">
+										<span>
+											<span>Area</span>
+										</span>
+									</td>
+									<td class="X21 left">
+										<span>Nota Area</span>
+									</td>
+									<td class="X21 left">
+										<span>Desempeño</span>
+									</td>
+									<td COLSPAN="2" class="X37 MG9">
+										<span>
+											<span>Asigatura</span>
+										</span>
+									</td>
+									<td class="X21 left">
+										<span>Nota</span>
+									</td>
+									<td class="X21 left">
+										<span>IH</span>
+									</td>
+									<td class="X21 left">
+										<span>Faltas</span>
+									</td>
+									<td class="X22 left">
+										<span>Desempeño</span>
+									</td>
+								</tr>
+
+								<tr height="21">
+									<td COLSPAN="4" class="X54 MA10">
+										<span>
+											<span>'.$informe_asignaturas['nombre_area'].'</span>
+										</span>
+									</td>
+									<td class="X20">
+										<span>4.3</span>
+									</td>
+									<td class="X20">
+										<span>SUPERIOR</span>
+									</td>
+									<td COLSPAN="2" class="X54 MG10">
+										<span>
+											<span>'.$informe_asignaturas['nombre_asignatura'].'</span>
+										</span>
+									</td>
+									<td class="X20">
+										<span>'.$informe_asignaturas[$nota_show].'</span>
+									</td>
+									<td class="X20">
+										<span>'.$informe_asignaturas['intensidad_horaria'].'</span>
+									</td>
+									<td class="X20">
+										<span>2</span>
+									</td>
+									<td class="X24">
+										<span>SUPERIOR</span>
+									</td>
+								</tr>
+							<!-- End Header Informe Area-Asignatura -->
+
+							<!-- Inicio TexArea logros Asignatura -->
+								<tr height="21">
+									<td COLSPAN="12" ROWSPAN="8" class="X31 MA11">
+										<span>&nbsp;</span>
+									</td>
+								</tr>
+
+								<tr height="21"></tr>
+								<tr height="21"></tr>
+								<tr height="21">
+									<td class="X11">&nbsp;</td>
+								</tr>
+								<tr height="21"></tr>
+								<tr height="20"></tr>
+								<tr height="20">
+									<td class="X11">&nbsp;</td>
+								</tr>
+								<tr height="20">
+									<td class="X11">&nbsp;</td>
+								</tr>
+							<!-- Fin TexArea logros Asignatura -->
+
+							<!-- Inicio Footer Informe Area-Asignatura -->
+								<tr height="21">
+									<td COLSPAN="2" class="X29 MA19">
+										<span>
+											<span>Nota Periodos Anteriores</span>
+										</span>
+									</td>
+									<td COLSPAN="3" class="X30 MC19">
+										<span>
+											<span>P1:  '.$informe_asignaturas['nota1'].'</span>
+										</span>
+									</td>
+									<td COLSPAN="1" class="X30 ME19">
+										<span>
+											<span>P2:  '.$informe_asignaturas['nota2'].'</span>
+										</span>
+									</td>
+									<td COLSPAN="2" class="X30 MG19">
+										<span>
+											<span>P3:   '.$informe_asignaturas['nota3'].'</span>
+										</span>
+									</td>
+									<td COLSPAN="2" class="X30 MI19">
+										<span>
+											<span>P4:   '.$informe_asignaturas['nota4'].'</span>
+										</span>
+									</td>
+									<td COLSPAN="2" class="X53 MK19">
+										<span>
+											<span>Acom: 10</span>
+										</span>
+									</td>
+									<td class="X11">&nbsp;</td>
+								</tr>
+							<!-- Fin Footer Informe Area-Asignatura -->
+						<!-- End Informe Area-Asignatura -->
+						
+						<!-- Inicio Epacio -->
+					<tr height="7">
+						<td class="X17">&nbsp;</td>
+						<td COLSPAN="6" class="X41 MB8">
+							<span>&nbsp;</span>
+						</td>
+						<td class="X13">&nbsp;</td>
+						<td class="X13">&nbsp;</td>
+						<td class="X13">&nbsp;</td>
+						<td class="X13">&nbsp;</td>
+						<td class="X13">&nbsp;</td>
+						<td width="8" class="X18">&nbsp;</td>
+					</tr>
+					<!-- Fin Epacio -->
+					
+						';
+		
+	} 
+	
+
+}
+
+$html_asignaturas.= '</table>
+		  </body>';
+
+/*
+echo "<br>Informe Asignaturas<br>";
+print_r($informe_asignaturas);
+*/
 
 /*Test Cortar cadena separada por ,*/
 //print_r(explode(',', $str, -1));
@@ -371,7 +389,7 @@ $html_cabecera = '<body>
 					</td>
 					<td COLSPAN="4" class="X39 MB7">
 						<span>
-							<span>'.utf8_encode($informe_cabecera['primer_apellido']).' '.utf8_encode($informe_cabecera['segundo_apellido']).' '.utf8_encode($informe_cabecera['nombres']).'</span>
+							<span>'.$informe_cabecera['primer_apellido'].' '.$informe_cabecera['segundo_apellido'].' '.$informe_cabecera['nombres'].'</span>
 						</span>
 					</td>
 					<td COLSPAN="2" class="X39 MF7">
@@ -417,10 +435,10 @@ $html_cabecera = '<body>
 
 
 
-/*
+
 echo $html_cabecera;
 echo $html_asignaturas;
-*/
+
 
 /*
 $mpdf=new mPDF('', 'Letter', 0, '', 12.7, 12.7, 14, 12.7, 8, 8);
