@@ -6,10 +6,14 @@ include('class.user.php');
 
 $informe_cabecera    = new USER();
 $informe_asignaturas = new USER();
+$nota_acomulada_asig = new USER();
 $asignaturas_grupo   = new USER();
 $object              = new USER();
+$desc_logro          = new USER();
+$logros_alumno       = new USER();
 
 $html_asignaturas = "";
+$logros_print     = "";
 $desempe ;
 
 
@@ -46,8 +50,6 @@ $periodo_str2=substr($periodo, -2);
 $str_grupo=substr($informe_cabecera['descripcion_grupo'], -1);
 $str_grado=substr($informe_cabecera['descripcion_grupo'], -4, -2);
 
-$str = "2017IEIEM10-C-L1,2017IEIEM10-C-L2,2017IEIEM10-C-L3,";
-
 
 switch ($periodo_str) {
 	case '1':
@@ -74,7 +76,7 @@ print_r($informe_cabecera);
 */
 $asignaturas_grupo = $object->Read_asignaturas_grupo($grupo);
 
-
+$notaaaa = 4;
 
 foreach ($asignaturas_grupo as $asignaturas_grupo)
 {
@@ -82,12 +84,71 @@ foreach ($asignaturas_grupo as $asignaturas_grupo)
 
 	
 	$informe_asignaturas = $object->Read_asignatura_reporte($id_alumno,$id_anio_lectivo,$asignaturas_grupo['id_asignatura']);
+	$nota_acomulada_asig = $object->Read_nota_definitiva($id_alumno,$id_anio_lectivo,$asignaturas_grupo['id_asignatura']);
 
-print_r($informe_asignaturas);
+
+
+
+	$desc_logro = $object->Read_logros_asignatura_periodo($id_alumno,$id_anio_lectivo,$asignaturas_grupo['id_asignatura'],$periodo);
+
+
+	//print_r($desc_logro);
+
+	foreach ($nota_acomulada_asig as $nota_acomulada_asig)
+	{
+	
+	}
+
+	// WORKS
+	//print_r($nota_acomulada_asig);
+
+	
+
+	foreach ($desc_logro as $desc_logro)
+	{
+
+		$logros_alumno = explode( ',', $desc_logro['id_logros'] );
+
+		/*for($i=0; $i<count($logros_alumno); $i++)
+      	{
+      		//echo "Logros: ".$logros_alumno[$i]."<br>";
+
+	    	$desc_logro = $object->Read_logro_tr($logros_alumno[$i]);  
+      	}*/
+
+      	foreach ($logros_alumno as $logros_alumno)
+      	{
+      		//echo "Logros: ".$logros_alumno."<br>";
+      		$desc_logro = $object->Read_logro_tr($logros_alumno);
+
+      		foreach ($desc_logro as $desc_logro)
+	      	{
+	      		$logros_print  .= $desc_logro['descripcion']."<br>";
+	      	}
+      	}
+
+      	
+		
+
+		//$desc_logro = $object->Read_logro_tr($logros_alumno[]);
+	}
+
+	//WORKS
+	//print_r($logros_alumno);
+
+	// WORKS
+	//print_r($nota_acomulada_asig);
+	
+	//echo "<br>Desc Logros<br>";
+	//print_r($desc_logro);
+	
+	//WORKS
+	//echo $logros_print;
+
 
 		foreach ($informe_asignaturas as $informe_asignaturas) 
 		{
-			$nota_num = number_format($informe_asignaturas[$nota_show],1);
+			$nota_num = number_format($nota_acomulada_asig['nota_definitiva_asig'],1);
 
 			if (($nota_num>1) AND ($nota_num<2.9))
 			{
@@ -161,7 +222,7 @@ print_r($informe_asignaturas);
 										</span>
 									</td>
 									<td class="X20">
-										<span>'.$nota_num.'</span>
+										<span>'.$informe_asignaturas[$nota_show].'</span>
 									</td>
 									<td class="X20">
 										<span>'.$informe_asignaturas['intensidad_horaria'].'</span>
@@ -178,7 +239,7 @@ print_r($informe_asignaturas);
 							<!-- Inicio TexArea logros Asignatura -->
 								<tr height="21">
 									<td COLSPAN="12" ROWSPAN="8" class="X31 MA11">
-										<span>&nbsp;</span>
+										'.$logros_print.'
 									</td>
 								</tr>
 
@@ -226,7 +287,7 @@ print_r($informe_asignaturas);
 									</td>
 									<td COLSPAN="2" class="X53 MK19">
 										<span>
-											<span>Acom: '.$informe_asignaturas['nota_definitiva_asig'].'</span>
+											<span>Acom: '.$nota_num.'</span>
 										</span>
 									</td>
 									<td class="X11">&nbsp;</td>

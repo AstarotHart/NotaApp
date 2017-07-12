@@ -56,12 +56,12 @@ if (count($cabecera_print) > 0)
    //echo "Nombre Area: ".$cabecera_print['nombre_area']."<br>";
 
    $objPHPExcel->setActiveSheetIndex(0)
-                           ->setCellValue("F4", utf8_encode($cabecera_print['nombre_area']))
-                           ->setCellValue("M4", utf8_encode($cabecera_print['descripcion_grupo']))
-                           ->setCellValue("M5", utf8_encode($cabecera_print['intensidad_horaria']))
-                           ->setCellValue("R4", utf8_encode($cabecera_print['id_anio_lectivo']))
-                           ->setCellValue("R5", utf8_encode($id_asignatura))
-                           ->setCellValue("F5", utf8_encode($cabecera_print['nombre_asignatura']));
+                           ->setCellValue("F4", $cabecera_print['nombre_area'])
+                           ->setCellValue("M4", $cabecera_print['descripcion_grupo'])
+                           ->setCellValue("M5", $cabecera_print['intensidad_horaria'])
+                           ->setCellValue("R4", $cabecera_print['id_anio_lectivo'])
+                           ->setCellValue("R5", $id_asignatura)
+                           ->setCellValue("F5", $cabecera_print['nombre_asignatura']);
                            
 }
 
@@ -72,7 +72,7 @@ if (count($users) > 0)
    $fullName = "";
    foreach ($users as $users)
    {
-      $fullName = utf8_encode($users['primer_apellido'])." ".utf8_encode($users['segundo_apellido'])." ".utf8_encode($users['nombres']);
+      $fullName = $users['primer_apellido']." ".$users['segundo_apellido']." ".$users['nombres'];
       $objPHPExcel->setActiveSheetIndex(0)
                            ->setCellValue("C$i", $fullName)
                            ->setCellValue("F$i", $users['id_alumno']);
@@ -82,7 +82,7 @@ if (count($users) > 0)
 
 //echo $cabecera['nombre_area'];
 
-$filename = str_replace(' ', '_', (utf8_encode($cabecera_print['nombre_asignatura'])."_".utf8_encode($cabecera_print['descripcion_grupo']).".xlsx"));
+$filename = str_replace(' ', '_', ($cabecera_print['nombre_asignatura']."_".$cabecera_print['descripcion_grupo'].".xlsx"));
 // Renombrar Hoja
 //$objPHPExcel->getActiveSheet()->setTitle($cabecera_print['descripcion_grupo']);
 // Establecer la hoja activa, para que cuando se abra el documento se muestre primero.

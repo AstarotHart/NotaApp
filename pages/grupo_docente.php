@@ -59,6 +59,7 @@ $nota              = new USER();
 $nota_final_reg    = new USER();
 $falta             = new USER();
 $logros            = new USER();
+$nota_tr           = new USER();
 $newLogro          = new USER();
 $updateLogro       = new USER();
 $object            = new USER();
@@ -129,10 +130,10 @@ if (isset($_POST['asignar_nota_tr']))
             echo "ID INDICADOR: ".$indicador."<br>";
             */
             
-            $logros_alumnos->update_nota_tr($id_alumnos,$nota_name,$id_logro,$indicador,$id_asig,$id_anio_lec);
+            $nota_tr->update_nota_tr($id_alumnos,$nota_name,$id_logro,$indicador,$id_asig,$id_anio_lec);
         }
 
-        if($logros_alumnos==true)
+        if($nota_tr==true)
         {
             echo '<script type="text/javascript">';
             echo 'setTimeout(function () { swal("Indicador Asignados.","","success");';
@@ -159,60 +160,98 @@ if (isset($_POST['asignar_nota_tr']))
 //saber si el boton CREAR de logro a sido inicializado
 if (isset($_POST['asignar_logros'])) 
 {
+    //echo "Se pulso boton ASIGNAR_LOGROS<br>";
+
     $logros_insert = "";
-  
-    $id_alumnos=$_POST['select_alumnos'];
-    $id_asig = $_POST['id_asignatura'];
-    $id_anio_lec= $_POST['id_anio_lectivo'];
-    $perio_act= $_POST['id_periodo'];
-
-    if (isset($_POST['select_logros']))
+    
+    if (isset($_POST['select_logros']) AND isset($_POST['select_alumnos']))
     {
-        $id_logros=$_POST['select_logros'];
+        //echo "Primer IF<br>";
 
-
-        foreach ($id_logros as $id_logros) 
+        if (($_POST['select_logros']!=NULL) AND ($_POST['select_alumnos']!=NULL)) 
         {
-           $logros_insert .= $id_logros.", "; 
-        }
+            //echo "Segundo IF<br>";
 
-        $logros_insert .=".";
+            $id_alumnos=$_POST['select_alumnos'];
+            $id_asig = $_POST['id_asignatura'];
+            $id_anio_lec= $_POST['id_anio_lectivo'];
+            $perio_act= $_POST['id_periodo'];
+
+            if (isset($_POST['select_logros']))
+            {
+                //echo "Tercer IF<br>";
+                $id_logros=$_POST['select_logros'];
+
+
+                foreach ($id_logros as $id_logros) 
+                {
+                   $logros_insert .= $id_logros.","; 
+                }
+
+            }
+            else
+            {
+                //echo "Tercer ELSE<br>";
+                $logros_insert = "No hay logros.";
+            }
+
+
+           
+            foreach ($id_alumnos as $id_alumnos)
+            {
+                
+                /*
+                echo "ID ALUMNO: ".$id_alumnos."<br>";
+                echo "ID ASIG: ".$id_asig."<br>";
+                echo "ID ANIO: ".$id_anio_lec."<br>";
+                echo "ID PERIODO: ".$perio_act."<br>";
+                echo "Logro Insert: ".$logros_insert."<br>";
+                */
+
+                $logros_alumnos->register_logros_alumno($id_asig,$id_alumnos,$id_anio_lec,$perio_act,$logros_insert);
+
+            }
+            
+             
+            if($logros_alumnos==true)
+            {
+                //echo "Cuarto IF<br>";
+
+                echo '<script type="text/javascript">';
+                echo 'setTimeout(function () { swal("Logro Asignados.","","success");';
+                echo '}, 1000);</script>';
+             }
+             else
+             {
+                //echo "Cuarto ELSE<br>";
+
+                echo '<script type="text/javascript">';
+                echo 'setTimeout(function () { swal("Logro NO Asignados.","","error");';
+                echo '}, 1000);</script>';
+             }
+        }
+        else
+        {
+            //echo "SEGUNDO ELSE<br>";
+
+            echo '<script type="text/javascript">';
+            echo 'setTimeout(function () { swal("Seleccione Logro(s) y Alumno(s).","","error");';
+            echo '}, 1000);</script>';
+        } 
+        
     }
     else
     {
-        $logros_insert = "No hay logros.";
-    }
+        //echo "PRIMER ELSE<br>";
 
+        echo '<script type="text/javascript">';
+        echo 'setTimeout(function () { swal("Seleccione Logro(s) y Alumno(s).","","error");';
+        echo '}, 1000);</script>';
+    } 
 
-   
-    foreach ($id_alumnos as $id_alumnos)
-    {
-        
-        /*
-        echo "ID ALUMNO: ".$id_alumnos."<br>";
-        echo "ID ASIG: ".$id_asig."<br>";
-        echo "ID ANIO: ".$id_anio_lec."<br>";
-        echo "ID PERIODO: ".$perio_act."<br>";
-        echo "Logro Insert: ".$logros_insert."<br>";
-        */
-
-        $logros_alumnos->register_logros_alumno($id_asig,$id_alumnos,$id_anio_lec,$perio_act,$logros_insert);
-
-    }
     
-     
-    if($logros_alumnos==true)
-    {
-        echo '<script type="text/javascript">';
-        echo 'setTimeout(function () { swal("Logro Asignados.","","success");';
-        echo '}, 1000);</script>';
-     }
-     else
-     {
-        echo '<script type="text/javascript">';
-        echo 'setTimeout(function () { swal("Logro NO Asignados.","","error");';
-        echo '}, 1000);</script>';
-     }
+
+    
      
 }
 
@@ -1254,9 +1293,9 @@ else
                         $res_nota2  = $notas['nota2'];
                         $res_nota3  = $notas['nota3'];
                         $res_nota4  = $notas['nota4'];
-                        $nota_final = (($res_nota1*$porcentaje_periodo1)+($res_nota2*$porcentaje_periodo2)+($res_nota3*$porcentaje_periodo3)+($res_nota4*$porcentaje_periodo4))/4;
+                        $nota_final = (($res_nota1*$porcentaje_periodo1)+($res_nota2*$porcentaje_periodo2)+($res_nota3*$porcentaje_periodo3)+($res_nota4*$porcentaje_periodo4)) ;
 
-                        $nota_final = $nota_final*(0.1);
+                        $nota_final = $nota_final/(100);
 
                         $nota_final =  number_format($nota_final,1);
 

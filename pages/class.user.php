@@ -1152,6 +1152,50 @@ class USER
         return $data;
     }
 
+
+    /**
+     * [Read_nota_definitiva description]
+     * @param [type] $id_alumno       [description]
+     * @param [type] $id_anio_lectivo [description]
+     * @param [type] $id_asignatura   [description]
+     */
+    public function Read_nota_definitiva($id_alumno,$id_anio_lectivo,$id_asignatura)
+    { 
+        $query = $this->conn->prepare('SELECT * FROM nota_definitiva_asignatura WHERE id_alumno = :id_alumno AND id_anio_lectivo = :id_anio_lectivo AND id_asignatura = :id_asignatura');
+        $query->bindParam(":id_alumno",$id_alumno);
+        $query->bindParam(":id_anio_lectivo",$id_anio_lectivo);
+        $query->bindParam(":id_asignatura",$id_asignatura);
+        $query->execute();  
+        $data = array();
+        while ($row = $query->fetch(PDO::FETCH_ASSOC)) {
+            $data[] = $row;
+        }
+        return $data;
+    }
+
+
+    /**
+     * [Read_logros_asignatura_periodo description]
+     * @param [type] $id_alumno       [description]
+     * @param [type] $id_anio_lectivo [description]
+     * @param [type] $id_asignatura   [description]
+     * @param [type] $id_periodo      [description]
+     */
+    public function Read_logros_asignatura_periodo($id_alumno,$id_anio_lectivo,$id_asignatura,$id_periodo)
+    { 
+        $query = $this->conn->prepare('SELECT * FROM alumnos_logros WHERE id_alumno = :id_alumno AND id_asignatura = :id_asignatura AND id_anio_lectivo = :id_anio_lectivo AND  id_periodo = :id_periodo');
+        $query->bindParam(":id_alumno",$id_alumno);
+        $query->bindParam(":id_anio_lectivo",$id_anio_lectivo);
+        $query->bindParam(":id_asignatura",$id_asignatura);
+        $query->bindParam(":id_periodo",$id_periodo);
+        $query->execute();  
+        $data = array();
+        while ($row = $query->fetch(PDO::FETCH_ASSOC)) {
+            $data[] = $row;
+        }
+        return $data;
+    }
+
     /**
      * [Read_asignaturas_grupo description]
      * @param [type] $id_grupo [description]
