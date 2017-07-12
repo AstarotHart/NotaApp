@@ -108,41 +108,51 @@ if (isset($_POST['crear']))
 //saber si el boton CREAR de logro a sido inicializado
 if (isset($_POST['asignar_nota_tr'])) 
 {
-    $id_logro    = $_POST['id_logro'];
-    $id_alumnos  = $_POST['select_alumnos'];
-    $id_asig     = $_POST['id_asignatura'];
-    $id_anio_lec = $_POST['id_anio_lectivo'];
-    $nota_name   = $_POST['name_nota'];
-    $indicador   = $_POST['id_indicador'];
-
-    foreach ($id_alumnos as $id_alumnos)
-    {
-        /*
-        echo "ID LOGRO: ".$id_logro."<br>";
-        echo "ID ALUMNO: ".$id_alumnos."<br>";
-        echo "ID ASIG: ".$id_asig."<br>";
-        echo "ID ANIO: ".$id_anio_lec."<br>";
-        echo "ID NAME NOTA: ".$nota_name."<br>";
-        echo "ID INDICADOR: ".$indicador."<br>";
-        */
-        
-        $logros_alumnos->update_nota_tr($id_alumnos,$nota_name,$id_logro,$indicador,$id_asig,$id_anio_lec);
-    }
     
-     
-    if($logros_alumnos==true)
+    if (($_POST['id_indicador']!=NULL) AND ($_POST['id_logro']!=NULL)) 
+    {
+        $id_logro    = $_POST['id_logro'];
+        $id_alumnos  = $_POST['select_alumnos'];
+        $id_asig     = $_POST['id_asignatura'];
+        $id_anio_lec = $_POST['id_anio_lectivo'];
+        $nota_name   = $_POST['name_nota'];
+        $indicador   = $_POST['id_indicador'];
+
+       foreach ($id_alumnos as $id_alumnos)
+        {
+            /*
+            echo "ID LOGRO: ".$id_logro."<br>";
+            echo "ID ALUMNO: ".$id_alumnos."<br>";
+            echo "ID ASIG: ".$id_asig."<br>";
+            echo "ID ANIO: ".$id_anio_lec."<br>";
+            echo "ID NAME NOTA: ".$nota_name."<br>";
+            echo "ID INDICADOR: ".$indicador."<br>";
+            */
+            
+            $logros_alumnos->update_nota_tr($id_alumnos,$nota_name,$id_logro,$indicador,$id_asig,$id_anio_lec);
+        }
+
+        if($logros_alumnos==true)
+        {
+            echo '<script type="text/javascript">';
+            echo 'setTimeout(function () { swal("Indicador Asignados.","","success");';
+            echo '}, 1000);</script>';
+         }
+         else
+         {
+            echo '<script type="text/javascript">';
+            echo 'setTimeout(function () { swal("Indicador NO Asignados.","","error");';
+            echo '}, 1000);</script>';
+         }
+    }
+    else
     {
         echo '<script type="text/javascript">';
-        echo 'setTimeout(function () { swal("Indicador Asignados.","","success");';
+        echo 'setTimeout(function () { swal("Seleccione Indicador y Competencia.","","error");';
         echo '}, 1000);</script>';
-     }
-     else
-     {
-        echo '<script type="text/javascript">';
-        echo 'setTimeout(function () { swal("Indicador NO Asignados.","","error");';
-        echo '}, 1000);</script>';
-     }
-     
+    }
+
+        
 }
 
 
@@ -493,12 +503,6 @@ if (isset($tipo) AND ($tipo == "Tr"))
                 $fin_periodo2 = ((array_column($fechas_periodos, "fecha_fin_periodo"))[1]);
                 $fin_periodo3 = ((array_column($fechas_periodos, "fecha_fin_periodo"))[2]);
                 $fin_periodo4 = ((array_column($fechas_periodos, "fecha_fin_periodo"))[3]);
-
-                //Fecha InicioPeridos
-                $desc_periodo1 = ((array_column($fechas_periodos, "desc_periodo"))[0]);
-                $desc_periodo2 = ((array_column($fechas_periodos, "desc_periodo"))[1]);
-                $desc_periodo3 = ((array_column($fechas_periodos, "desc_periodo"))[2]);
-                $desc_periodo4 = ((array_column($fechas_periodos, "desc_periodo"))[3]);
 
                 $editar_tablas_p1="none";
                 $editar_tablas_p2="none";
@@ -853,9 +857,9 @@ if (isset($tipo) AND ($tipo == "Tr"))
                                     
                                     <!-- Boton para cargar collpse de LOGOS -->
                                         <div class='col-sm-12'>
-                                            <button class="btn bg-cyan waves-effect" type="button" data-toggle="collapse" data-target="#collapseExample" aria-expanded="false" aria-controls="collapseExample">Logros</button>
+                                            <button class="btn bg-cyan waves-effect" type="button" data-toggle="collapse" data-target="#collapseExample" aria-expanded="false" aria-controls="collapseExample">Indicadores</button>
 
-                                            <button type='button' class='btn bg-teal waves-effect' data-toggle='modal' data-target='#NewLogro'>Nuevo Logro</button>
+                                            <button type='button' class='btn bg-teal waves-effect' data-toggle='modal' data-target='#NewLogro'>Nuevo Indicador</button>
                                         </div>
 
                                         <!--Boton crear Nuevo Logro-->
@@ -1089,11 +1093,17 @@ else
                 $fin_periodo3 = ((array_column($fechas_periodos, "fecha_fin_periodo"))[2]);
                 $fin_periodo4 = ((array_column($fechas_periodos, "fecha_fin_periodo"))[3]);
 
-                //Fecha InicioPeridos
+                //Descripcion Periodos
                 $desc_periodo1 = ((array_column($fechas_periodos, "desc_periodo"))[0]);
                 $desc_periodo2 = ((array_column($fechas_periodos, "desc_periodo"))[1]);
                 $desc_periodo3 = ((array_column($fechas_periodos, "desc_periodo"))[2]);
                 $desc_periodo4 = ((array_column($fechas_periodos, "desc_periodo"))[3]);
+
+                //Porcentajes Periodos
+                $porcentaje_periodo1 = ((array_column($fechas_periodos, "porcentaje"))[0]);
+                $porcentaje_periodo2 = ((array_column($fechas_periodos, "porcentaje"))[1]);
+                $porcentaje_periodo3 = ((array_column($fechas_periodos, "porcentaje"))[2]);
+                $porcentaje_periodo4 = ((array_column($fechas_periodos, "porcentaje"))[3]);
 
                 $editar_tablas_p1="none";
                 $editar_tablas_p2="none";
@@ -1244,7 +1254,10 @@ else
                         $res_nota2  = $notas['nota2'];
                         $res_nota3  = $notas['nota3'];
                         $res_nota4  = $notas['nota4'];
-                        $nota_final = ($res_nota1+$res_nota2+$res_nota3+$res_nota4)/4;
+                        $nota_final = (($res_nota1*$porcentaje_periodo1)+($res_nota2*$porcentaje_periodo2)+($res_nota3*$porcentaje_periodo3)+($res_nota4*$porcentaje_periodo4))/4;
+
+                        $nota_final = $nota_final*(0.1);
+
                         $nota_final =  number_format($nota_final,1);
 
                         $nota_final_reg = $object->update_nota_final($alumnos_grupo['id_alumno'],$id_asignatura,$cabecera['id_anio_lectivo'],$nota_final); 

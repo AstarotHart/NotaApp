@@ -10,6 +10,7 @@ $asignaturas_grupo   = new USER();
 $object              = new USER();
 
 $html_asignaturas = "";
+$desempe ;
 
 
 
@@ -74,6 +75,7 @@ print_r($informe_cabecera);
 $asignaturas_grupo = $object->Read_asignaturas_grupo($grupo);
 
 
+
 foreach ($asignaturas_grupo as $asignaturas_grupo)
 {
 	//echo "Id asignatura: ".$asignaturas_grupo['id_asignatura']."<br>";
@@ -81,11 +83,33 @@ foreach ($asignaturas_grupo as $asignaturas_grupo)
 	
 	$informe_asignaturas = $object->Read_asignatura_reporte($id_alumno,$id_anio_lectivo,$asignaturas_grupo['id_asignatura']);
 
-
+print_r($informe_asignaturas);
 
 		foreach ($informe_asignaturas as $informe_asignaturas) 
 		{
-			
+			$nota_num = number_format($informe_asignaturas[$nota_show],1);
+
+			if (($nota_num>1) AND ($nota_num<2.9))
+			{
+				$desempe = "Bajo";
+			}
+			elseif (($nota_num>3) AND ($nota_num<3.9))
+			{
+				$desempe = "Básico";
+			}
+			elseif (($nota_num>4) AND ($nota_num<4.5))
+			{
+				$desempe = "Alto";
+			}elseif (($nota_num>4) AND ($nota_num<4.5))
+			{
+				$desempe = "Alto";
+			}
+			elseif (($nota_num>4.6) AND ($nota_num<5))
+			{
+				$desempe = "Superior";
+			}
+
+
 			$html_asignaturas .= '<!-- Start Informe Area-Asignatura -->
 							<!-- Start Header Informe Area-Asignatura -->
 								<tr height="20">
@@ -137,7 +161,7 @@ foreach ($asignaturas_grupo as $asignaturas_grupo)
 										</span>
 									</td>
 									<td class="X20">
-										<span>'.$informe_asignaturas[$nota_show].'</span>
+										<span>'.$nota_num.'</span>
 									</td>
 									<td class="X20">
 										<span>'.$informe_asignaturas['intensidad_horaria'].'</span>
@@ -146,7 +170,7 @@ foreach ($asignaturas_grupo as $asignaturas_grupo)
 										<span>2</span>
 									</td>
 									<td class="X24">
-										<span>SUPERIOR</span>
+										<span>'.$desempe.'</span>
 									</td>
 								</tr>
 							<!-- End Header Informe Area-Asignatura -->
@@ -202,7 +226,7 @@ foreach ($asignaturas_grupo as $asignaturas_grupo)
 									</td>
 									<td COLSPAN="2" class="X53 MK19">
 										<span>
-											<span>Acom: 10</span>
+											<span>Acom: '.$informe_asignaturas['nota_definitiva_asig'].'</span>
 										</span>
 									</td>
 									<td class="X11">&nbsp;</td>
@@ -231,6 +255,7 @@ foreach ($asignaturas_grupo as $asignaturas_grupo)
 	
 
 }
+
 
 $html_asignaturas.= '</table>
 		  </body>';
