@@ -28,6 +28,10 @@ $id_asignatura   = "CieNatYEEdu-6-CN";
 $id_anio_lectivo = "IE2017";
 $periodo         = "IE2017P1";
 $grupo           = "IE6-1";
+$id_informe      = "";
+
+
+$id_informe = $periodo.'-'.$id_alumno;
 
 /*
 echo "ID Alumno: ".$id_alumno  ."<br>";
@@ -76,7 +80,7 @@ print_r($informe_cabecera);
 */
 $asignaturas_grupo = $object->Read_asignaturas_grupo($grupo);
 
-$notaaaa = 4;
+//$notaaaa = 4;
 
 foreach ($asignaturas_grupo as $asignaturas_grupo)
 {
@@ -109,13 +113,6 @@ foreach ($asignaturas_grupo as $asignaturas_grupo)
 
 		$logros_alumno = explode( ',', $desc_logro['id_logros'] );
 
-		/*for($i=0; $i<count($logros_alumno); $i++)
-      	{
-      		//echo "Logros: ".$logros_alumno[$i]."<br>";
-
-	    	$desc_logro = $object->Read_logro_tr($logros_alumno[$i]);  
-      	}*/
-
       	foreach ($logros_alumno as $logros_alumno)
       	{
       		//echo "Logros: ".$logros_alumno."<br>";
@@ -127,10 +124,11 @@ foreach ($asignaturas_grupo as $asignaturas_grupo)
 	      	}
       	}
 
-      	
-		
 
-		//$desc_logro = $object->Read_logro_tr($logros_alumno[]);
+      	if (count($logros_print)>=0) 
+      	{
+      		//$logros_print  = "No hay logros para mostrar.";
+      	}
 	}
 
 	//WORKS
@@ -148,26 +146,36 @@ foreach ($asignaturas_grupo as $asignaturas_grupo)
 
 		foreach ($informe_asignaturas as $informe_asignaturas) 
 		{
-			$nota_num = number_format($nota_acomulada_asig['nota_definitiva_asig'],1);
+			$nota_num = number_format($informe_asignaturas[$nota_show],1);
 
-			if (($nota_num>1) AND ($nota_num<2.9))
+			if (($nota_num>0) AND ($nota_num<=2.9))
 			{
 				$desempe = "Bajo";
+
 			}
-			elseif (($nota_num>3) AND ($nota_num<3.9))
+			elseif (($nota_num>=3) AND ($nota_num<=3.9))
 			{
 				$desempe = "Básico";
+
 			}
-			elseif (($nota_num>4) AND ($nota_num<4.5))
+			elseif (($nota_num>=4) AND ($nota_num<=4.5))
 			{
 				$desempe = "Alto";
-			}elseif (($nota_num>4) AND ($nota_num<4.5))
-			{
-				$desempe = "Alto";
+
 			}
-			elseif (($nota_num>4.6) AND ($nota_num<5))
+			elseif (($nota_num>=4.6) AND ($nota_num<=5))
 			{
 				$desempe = "Superior";
+
+			}
+
+			if ($logros_print !="")
+			{
+
+			}
+			else
+			{
+				$logros_print = "No hay logros para mostrar.";
 			}
 
 
@@ -211,10 +219,10 @@ foreach ($asignaturas_grupo as $asignaturas_grupo)
 										</span>
 									</td>
 									<td class="X20">
-										<span>4.3</span>
+										<span>4.3 NO</span>
 									</td>
 									<td class="X20">
-										<span>SUPERIOR</span>
+										<span>SUPERIOR NO</span>
 									</td>
 									<td COLSPAN="2" class="X54 MG10">
 										<span>
@@ -228,7 +236,7 @@ foreach ($asignaturas_grupo as $asignaturas_grupo)
 										<span>'.$informe_asignaturas['intensidad_horaria'].'</span>
 									</td>
 									<td class="X20">
-										<span>2</span>
+										<span>2 NO</span>
 									</td>
 									<td class="X24">
 										<span>'.$desempe.'</span>
@@ -238,24 +246,11 @@ foreach ($asignaturas_grupo as $asignaturas_grupo)
 
 							<!-- Inicio TexArea logros Asignatura -->
 								<tr height="21">
-									<td COLSPAN="12" ROWSPAN="8" class="X31 MA11">
+									<td COLSPAN="12" ROWSPAN="auto" class="X31 MA11">
 										'.$logros_print.'
 									</td>
 								</tr>
-
-								<tr height="21"></tr>
-								<tr height="21"></tr>
-								<tr height="21">
-									<td class="X11">&nbsp;</td>
-								</tr>
-								<tr height="21"></tr>
-								<tr height="20"></tr>
-								<tr height="20">
-									<td class="X11">&nbsp;</td>
-								</tr>
-								<tr height="20">
-									<td class="X11">&nbsp;</td>
-								</tr>
+															
 							<!-- Fin TexArea logros Asignatura -->
 
 							<!-- Inicio Footer Informe Area-Asignatura -->
@@ -287,7 +282,7 @@ foreach ($asignaturas_grupo as $asignaturas_grupo)
 									</td>
 									<td COLSPAN="2" class="X53 MK19">
 										<span>
-											<span>Acom: '.$nota_num.'</span>
+											<span>Acom: '.$nota_acomulada_asig['nota_definitiva_asig'].'</span>
 										</span>
 									</td>
 									<td class="X11">&nbsp;</td>
@@ -312,8 +307,8 @@ foreach ($asignaturas_grupo as $asignaturas_grupo)
 					
 						';
 		
-	} 
-	
+		}
+	$logros_print = '';
 
 }
 
@@ -367,6 +362,7 @@ print_r($informe_asignaturas);
 
 */
 
+
 $html_cabecera = '<body>
 		    <table cellspacing="0">
 
@@ -396,7 +392,7 @@ $html_cabecera = '<body>
 				<tr height="20">
 					<td COLSPAN="2" class="X57 MK2">
 						<span>
-							<span>IE-2017-1-000001</span>
+							<span>'.$id_informe.'</span>
 						</span>
 					</td>
 				</tr>
@@ -483,20 +479,20 @@ $html_cabecera = '<body>
 							<span>'.$id_alumno.'</span>
 						</span>
 					</td>
-					<td class="X15">
+					<td class="X15 center">
 						<span>'.$str_grado.'</span>
 					</td>
-					<td class="X15">
+					<td class="X15 center">
 						<span>'.$str_grupo.'</span>
 					</td>
-					<td class="X16">
-						<span>4.5</span>
+					<td class="X16 center">
+						<span>4.5 NO</span>
 					</td>
-					<td class="X16">
-						<span>7</span>
+					<td class="X16 center">
+						<span>7 NO</span>
 					</td>
-					<td class="X14 left">
-						<span>Diurna</span>
+					<td class="X14 center">
+						<span>Diurna NO</span>
 					</td>
 				</tr>
 		<!-- End Header INFORME -->
@@ -522,11 +518,11 @@ $html_cabecera = '<body>
 
 
 
-echo $html_cabecera;
-echo $html_asignaturas;
+//echo $html_cabecera;
+//echo $html_asignaturas;
 
 
-/*
+
 $mpdf=new mPDF('', 'Letter', 0, '', 12.7, 12.7, 14, 12.7, 8, 8);
 $mpdf->SetDisplayMode('fullwidth');
 $mpdf->SetHTMLFooter('
@@ -549,7 +545,21 @@ $css = file_get_contents('plantillas/style_informe.css'); //if you wanted some s
 $mpdf->WriteHTML($css,1);
 $mpdf->WriteHTML($html_cabecera);
 $mpdf->WriteHTML($html_asignaturas);
-$mpdf->Output();
+
+$folder="Informes/".$id_sede."/".$id_anio_lectivo."/".$grupo;
+
+      if (!is_dir($folder))
+      {
+        mkdir($folder, 0777, true);
+        $folder .= "/";
+      }
+      else
+      {
+        $folder .= "/";
+      }
+
+//$mpdf->Output(''.$folder.'informe_'.$id_informe.'.pdf','F');
+$mpdf->Output();   
 exit;
-*/
+
 ?>

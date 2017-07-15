@@ -583,8 +583,8 @@ if (isset($tipo) AND ($tipo == "Tr"))
 
                 date_default_timezone_set('America/Bogota');
 
-                $fechaHoy = date('Y-m-d');
-                //$fechaHoy = "2017-03-18";
+                //$fechaHoy = date('Y-m-d');
+                $fechaHoy = "2017-02-18";
 
                 //comparar fecha primer periodo
                 if ($fechaHoy > $inicio_periodo1 AND $fechaHoy < $fin_periodo1) 
