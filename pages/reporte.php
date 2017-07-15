@@ -1,3 +1,4 @@
+<link href="plantillas/style_informe.css" rel="stylesheet">
 <?php 
 ini_set('memory_limit', '512M');
 require_once('../plugins/mpdf/mpdf.php');
@@ -7,6 +8,7 @@ include('class.user.php');
 $informe_cabecera    = new USER();
 $informe_asignaturas = new USER();
 $nota_acomulada_asig = new USER();
+$faltas_asignatura   = new USER();
 $asignaturas_grupo   = new USER();
 $object              = new USER();
 $desc_logro          = new USER();
@@ -15,6 +17,7 @@ $logros_alumno       = new USER();
 $html_asignaturas = "";
 $logros_print     = "";
 $desempe ;
+$faltas_print ;
 
 
 
@@ -57,19 +60,23 @@ $str_grado=substr($informe_cabecera['descripcion_grupo'], -4, -2);
 
 switch ($periodo_str) {
 	case '1':
-		$nota_show = "nota1";
+		$nota_show  = "nota1";
+		$falta_show = "inasistencia_p1";
 		break;
 
 	case '2':
-		$nota_show = "nota2";
+		$nota_show  = "nota2";
+		$falta_show = "inasistencia_p2";
 		break;
 
 	case '3':
-		$nota_show = "nota3";
+		$nota_show  = "nota3";
+		$falta_show = "inasistencia_p3";
 		break;
 
 	case '4':
-		$nota_show = "nota4";
+		$nota_show  = "nota4";
+		$falta_show = "inasistencia_p4";
 		break;
 	
 }
@@ -89,6 +96,7 @@ foreach ($asignaturas_grupo as $asignaturas_grupo)
 	
 	$informe_asignaturas = $object->Read_asignatura_reporte($id_alumno,$id_anio_lectivo,$asignaturas_grupo['id_asignatura']);
 	$nota_acomulada_asig = $object->Read_nota_definitiva($id_alumno,$id_anio_lectivo,$asignaturas_grupo['id_asignatura']);
+	$faltas_asignatura   = $object->Read_faltas_reporte($id_alumno,$id_anio_lectivo,$asignaturas_grupo['id_asignatura']);
 
 
 
@@ -103,9 +111,15 @@ foreach ($asignaturas_grupo as $asignaturas_grupo)
 	
 	}
 
+	foreach ($faltas_asignatura as $faltas_asignatura)
+	{
+		$faltas_print = $faltas_asignatura[$falta_show];
+	}
+
 	// WORKS
 	//print_r($nota_acomulada_asig);
 
+	print_r($faltas_asignatura);
 	
 
 	foreach ($desc_logro as $desc_logro)
@@ -146,8 +160,11 @@ foreach ($asignaturas_grupo as $asignaturas_grupo)
 
 		foreach ($informe_asignaturas as $informe_asignaturas) 
 		{
+			// convertir la nota de string a numero
 			$nota_num = number_format($informe_asignaturas[$nota_show],1);
 
+
+			//hacer comparaciones de la nota con los valores establesidos
 			if (($nota_num>0) AND ($nota_num<=2.9))
 			{
 				$desempe = "Bajo";
@@ -169,6 +186,7 @@ foreach ($asignaturas_grupo as $asignaturas_grupo)
 
 			}
 
+			//saber de la variable LOGRO_PRINT esta inicializado con ""
 			if ($logros_print !="")
 			{
 
@@ -176,6 +194,17 @@ foreach ($asignaturas_grupo as $asignaturas_grupo)
 			else
 			{
 				$logros_print = "No hay logros para mostrar.";
+			}
+
+
+			//saber de la variable LOGRO_PRINT esta inicializado con ""
+			if ($faltas_print !="")
+			{
+
+			}
+			else
+			{
+				$faltas_print = 0;
 			}
 
 
@@ -236,7 +265,7 @@ foreach ($asignaturas_grupo as $asignaturas_grupo)
 										<span>'.$informe_asignaturas['intensidad_horaria'].'</span>
 									</td>
 									<td class="X20">
-										<span>2 NO</span>
+										<span>'.$faltas_print.'</span>
 									</td>
 									<td class="X24">
 										<span>'.$desempe.'</span>
@@ -309,8 +338,49 @@ foreach ($asignaturas_grupo as $asignaturas_grupo)
 		
 		}
 	$logros_print = '';
+	$faltas_print = 0;
+
+	
 
 }
+
+$html_asignaturas .= '<!-- Start Informe Area-Asignatura -->
+							<!-- Start Header Informe Area-Asignatura -->
+								<tr height="20">
+									<td COLSPAN="12" class="X37 MA9" style="border-right:1px solid black;">
+										<span>
+											<span>Observaciones</span>
+										</span>
+									</td>
+								</tr>
+							
+							<!-- End Header Informe Area-Asignatura -->
+
+							<!-- Inicio TexArea logros Asignatura -->
+								<tr height="21">
+									<td COLSPAN="12" ROWSPAN="auto" class="X31 MA11" style="border-bottom:1px solid black;">
+										'.$logros_print.'
+									</td>
+								</tr>
+															
+							<!-- Fin TexArea logros Asignatura -->
+					
+						<!-- Inicio Epacio -->
+						<tr height="7">
+							<span>
+											<span>Observaciones</span>
+										</span>
+
+							
+						</tr>
+						<!-- Fin Epacio -->
+
+
+						<span>
+											<span>Observaciones</span>
+										</span>
+					
+						';
 
 
 $html_asignaturas.= '</table>
@@ -518,11 +588,11 @@ $html_cabecera = '<body>
 
 
 
-//echo $html_cabecera;
-//echo $html_asignaturas;
+echo $html_cabecera;
+echo $html_asignaturas;
 
 
-
+/*
 $mpdf=new mPDF('', 'Letter', 0, '', 12.7, 12.7, 14, 12.7, 8, 8);
 $mpdf->SetDisplayMode('fullwidth');
 $mpdf->SetHTMLFooter('
@@ -561,5 +631,5 @@ $folder="Informes/".$id_sede."/".$id_anio_lectivo."/".$grupo;
 //$mpdf->Output(''.$folder.'informe_'.$id_informe.'.pdf','F');
 $mpdf->Output();   
 exit;
-
+*/
 ?>

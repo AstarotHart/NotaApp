@@ -1152,6 +1152,26 @@ class USER
         return $data;
     }
 
+    /**
+     * [Read_faltas_reporte description]
+     * @param [type] $id_alumno       [description]
+     * @param [type] $id_anio_lectivo [description]
+     * @param [type] $id_asignatura   [description]
+     */
+    public function Read_faltas_reporte($id_alumno,$id_anio_lectivo,$id_asignatura)
+    { 
+        $query = $this->conn->prepare('SELECT inasistencia_p1,inasistencia_p2,inasistencia_p3,inasistencia_p4 FROM asistencia WHERE id_alumno = :id_alumno AND id_anio_lectivo = :id_anio_lectivo AND id_asignatura = :id_asignatura');
+        $query->bindParam(":id_alumno",$id_alumno);
+        $query->bindParam(":id_anio_lectivo",$id_anio_lectivo);
+        $query->bindParam(":id_asignatura",$id_asignatura);
+        $query->execute();  
+        $data = array();
+        while ($row = $query->fetch(PDO::FETCH_ASSOC)) {
+            $data[] = $row;
+        }
+        return $data;
+    }
+
 
     /**
      * [Read_nota_definitiva description]
