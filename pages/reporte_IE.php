@@ -16,8 +16,9 @@ $logros_alumno       = new USER();
 $desc_observacion    = new USER();
 $observacion_alumno  = new USER();
 
-$html_asignaturas = "";
-$logros_print     = "";
+$html_asignaturas    = "";
+$logros_print        = "";
+$observaciones_print = "";
 $desempe ;
 $faltas_print ;
 
@@ -25,58 +26,56 @@ $faltas_print ;
 
 
 /**
- *  NOTAS FINALES
+ *  NOTAS FINALES ASIGNATURA
  */
 
-$notas  = new USER();
-$nota_final_reg = new USER();
+/**
+	$notas  = new USER();
+	$nota_final_reg = new USER();
 
-$notas  = $object->Read_notas($id_asignatura,$alumnos_grupo['id_alumno'],$cabecera['id_anio_lectivo']);
-
-$res_nota1      = "0";
-$res_nota2      = "0";
-$res_nota3      = "0";
-$res_nota4      = "0";
-$nota_final     = 0;
-$res_nota_final = "0";
-
-$porcentaje_periodo1 = 20;
-$porcentaje_periodo2 = 20;
-$porcentaje_periodo3 = 35;
-$porcentaje_periodo4 = 25;
+	$id_anio_lectivo = "IE2017";
 
 
-if (isset($notas) and count($notas) > 0) 
-{
-    foreach ($notas as $notas) 
-    {
-        $res_nota1  = $notas['nota1'];
-        $res_nota2  = $notas['nota2'];
-        $res_nota3  = $notas['nota3'];
-        $res_nota4  = $notas['nota4'];
-        $nota_final = (($res_nota1*$porcentaje_periodo1)+($res_nota2*$porcentaje_periodo2)+($res_nota3*$porcentaje_periodo3)+($res_nota4*$porcentaje_periodo4)) ;
+	$notas  = $object->Read_notas_sede($id_anio_lectivo);
 
-        $nota_final = $nota_final/(100);
+	$res_nota1      = "0";
+	$res_nota2      = "0";
+	$res_nota3      = "0";
+	$res_nota4      = "0";
+	$nota_final     = 0;
+	$res_nota_final = "0";
 
-        $nota_final =  number_format($nota_final,1);
-
-        $nota_final_reg = $object->update_nota_final($alumnos_grupo['id_alumno'],$id_asignatura,$cabecera['id_anio_lectivo'],$nota_final); 
-    }
-    if ($nota_final <= 2.9) 
-    {
-        $res_nota_final = '<p class="font-bold col-pink">'.$nota_final.'</p>';
-    }
-    else
-    {
-        $res_nota_final = '<b>'.$nota_final.'</b>';
-    }
-    
-}
+	$porcentaje_periodo1 = 20;
+	$porcentaje_periodo2 = 20;
+	$porcentaje_periodo3 = 35;
+	$porcentaje_periodo4 = 25;
 
 
+	if (isset($notas) and count($notas) > 0) 
+	{
+	    foreach ($notas as $notas) 
+	    {	
+	        $res_nota1  = $notas['nota1'];
+	        $res_nota2  = $notas['nota2'];
+	        $res_nota3  = $notas['nota3'];
+	        $res_nota4  = $notas['nota4'];
+	        $nota_final = (($res_nota1*$porcentaje_periodo1)+($res_nota2*$porcentaje_periodo2)+($res_nota3*$porcentaje_periodo3)+($res_nota4*$porcentaje_periodo4)) ;
+
+	        $nota_final = $nota_final/(100);
+
+	        $nota_final =  number_format($nota_final,1);
+
+	        //echo "Nota Final: ". $nota_final."<br>";
+
+	        $nota_final_reg = $object->update_nota_final($notas['id_alumno'],$notas['id_asignatura'],$id_anio_lectivo,$nota_final); 
+	    }
+	    
+	}
 
 
+	print_r($notas);
 
+**/
 
 
 
@@ -94,7 +93,7 @@ if (isset($notas) and count($notas) > 0)
 
 $id_alumno       = "1088256153";
 $id_sede         = "IE";
-$id_asignatura   = "CieNatYEEdu-6-CN";
+//$id_asignatura   = "CieNatYEEdu-6-CN";
 $id_anio_lectivo = "IE2017";
 $periodo         = "IE2017P1";
 $grupo           = "IE6-1";
@@ -106,9 +105,9 @@ $id_informe = $periodo.'-'.$id_alumno;
 /*
 echo "ID Alumno: ".$id_alumno  ."<br>";
 echo "ID Sede: ".$id_sede  ."<br>";
-echo "ID Asignatura: ".$id_asignatura."<br>";*/
+echo "ID Asignatura: ".$id_asignatura."<br>";
 echo "ID periodo: ".$periodo."<br>";
-
+*/
 
 $informe_cabecera = $object->Read_cabecera_reporte($id_alumno,$id_anio_lectivo);
 
@@ -158,31 +157,31 @@ $asignaturas_grupo = $object->Read_asignaturas_grupo($grupo);
 //$notaaaa = 4;
 
 
-$desc_observacion = $object->Read_observaciones_periodo($id_alumno,$id_anio_lectivo,$id_periodo);
+$desc_observacion = $object->Read_observaciones_periodo($id_alumno,$id_anio_lectivo);
 
-print_r($desc_observacion);
+//print_r($desc_observacion);
 
 
 // Recorrer y leer logros de alumno
 foreach ($desc_observacion as $desc_observacion)
 {
+	$observacion_alumno = $object->Read_observaciones_reporte($desc_observacion['id_observacion']);
 
-  	foreach ($observacion_alumno as $observacion_alumno)
-  	{
-  		//echo "Logros: ".$logros_alumno."<br>";
-  		$desc_observacion = $object->Read_observaciones_reporte($desc_observacion['id_observacion']);
+	//print_r($observacion_alumno);
 
-  		foreach ($desc_observacion as $desc_observacion)
-      	{
-      		$observaciones_print  .= $desc_observacion['descripcion']."<br>";
-      	}
-  	}
+	foreach ($observacion_alumno as $observacion_alumno)
+	{
+		$observaciones_print  = $observacion_alumno['descripcion']."<br>";
+	}
 
+  	if ($observaciones_print !="")
+	{
 
-  	if (count($logros_print)>=0) 
-  	{
-  		//$logros_print  = "No hay logros para mostrar.";
-  	}
+	}
+	else
+	{
+		$observaciones_print = "No hay Observaciones para este Periodo.";
+	}
 }
 
 //WORKS
@@ -195,8 +194,8 @@ foreach ($desc_observacion as $desc_observacion)
 //print_r($desc_logro);
 
 //WORKS
-echo "Algo?";
-echo $observaciones_print;
+//echo "Algo?<br>";
+//echo $observaciones_print;
 
 
 foreach ($asignaturas_grupo as $asignaturas_grupo)
@@ -249,11 +248,6 @@ foreach ($asignaturas_grupo as $asignaturas_grupo)
 	      	}
       	}
 
-
-      	if (count($logros_print)>=0) 
-      	{
-      		//$logros_print  = "No hay logros para mostrar.";
-      	}
 	}
 
 	//WORKS
@@ -566,7 +560,7 @@ $html_asignaturas .= '<!-- Start Informe Area-Asignatura -->
 							<!-- Inicio TexArea logros Asignatura -->
 								<tr height="21">
 									<td COLSPAN="12" ROWSPAN="auto" class="X31 MA11">
-										Observaciones 17
+										'.$observaciones_print.'
 									</td>
 								</tr>
 															
@@ -824,11 +818,11 @@ $html_cabecera = '<body>
 
 
 
-echo $html_cabecera;
-echo $html_asignaturas;
+//echo $html_cabecera;
+//echo $html_asignaturas;
 
 
-/*
+
 $mpdf=new mPDF('', 'Letter', 0, '', 12.7, 12.7, 14, 12.7, 8, 8);
 $mpdf->SetDisplayMode('fullwidth');
 $mpdf->SetHTMLFooter('
@@ -868,5 +862,5 @@ $folder="Informes/".$id_sede."/".$id_anio_lectivo."/".$grupo;
 //$mpdf->Output(''.$folder.'informe_'.$id_informe.'.pdf','F');
 $mpdf->Output();   
 exit;
-*/
+
 ?>

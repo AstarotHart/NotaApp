@@ -1232,6 +1232,42 @@ class USER
         return $data;
     }
 
+    /**
+     * [Read_observaciones_periodo description]
+     * @param [type] $id_alumno       [description]
+     * @param [type] $id_anio_lectivo [description]
+     * @param [type] $id_periodo      [description]
+     */
+     public function Read_observaciones_periodo($id_alumno,$id_anio_lectivo/*,$id_periodo*/)
+    { 
+        $query = $this->conn->prepare('SELECT * FROM asig_obser_alumno WHERE id_alumno = :id_alumno AND id_anio_lectivo = :id_anio_lectivo /*AND  id_periodo = :id_periodo*/');
+        $query->bindParam(":id_alumno",$id_alumno);
+        $query->bindParam(":id_anio_lectivo",$id_anio_lectivo);
+        //$query->bindParam(":id_periodo",$id_periodo);
+        $query->execute();  
+        $data = array();
+        while ($row = $query->fetch(PDO::FETCH_ASSOC)) {
+            $data[] = $row;
+        }
+        return $data;
+    }
+
+    /**
+     * [Read_observaciones description]
+     * @param [type] $id_observacion [description]
+     */
+    public function Read_observaciones_reporte($id_observacion)
+    {
+        $query = $this->conn->prepare('SELECT descripcion FROM observaciones WHERE  id_observacion = :id_observacion');
+        $query->bindParam(":id_observacion",$id_observacion);
+        $query->execute();
+        $data = array();
+        while ($row = $query->fetch(PDO::FETCH_ASSOC)) {
+            $data[] = $row;
+        }
+        return $data;
+    }
+
 
 
     
@@ -1580,6 +1616,60 @@ class USER
         }
         return $data;
     }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+/**
+ * [Read_notas_sede description]
+ * @param [type] $id_sede [description]
+ */
+    public function Read_notas_sede($id_anio_lectivo)
+    {
+        $query = $this->conn->prepare('SELECT * FROM nota WHERE id_anio_lectivo = :id_anio_lectivo');
+        $query->bindParam(":id_anio_lectivo",$id_anio_lectivo);
+        $query->execute();
+        $data = array();
+        while ($row = $query->fetch(PDO::FETCH_ASSOC)) {
+            $data[] = $row;
+        }
+        return $data;
+    }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
     /**
      * [Read_notas_tr description]
@@ -2037,11 +2127,12 @@ class USER
      * @param [type] $id_asignatura [description]
      * @param [type] $id_alumno     [description]
      */
-    public function Read_logros_alumno($id_asignatura,$id_alumno)
+    public function Read_logros_alumno($id_asignatura,$id_alumno,$id_periodo)
     {
-        $query = $this->conn->prepare('SELECT * FROM alumnos_logros AL inner join logros L ON AL.id_asignatura = L.id_asignatura WHERE Al.id_asignatura = :id_asignatura AND Al.id_alumno = :id_alumno');
+        $query = $this->conn->prepare('SELECT * FROM alumnos_logros AL inner join logros L ON AL.id_asignatura = L.id_asignatura WHERE Al.id_asignatura = :id_asignatura AND Al.id_alumno = :id_alumno AND Al.id_periodo = :id_periodo');
         $query->bindParam(":id_asignatura",$id_asignatura);
         $query->bindParam(":id_alumno",$id_alumno);
+        $query->bindParam(":id_periodo",$id_periodo);
         $query->execute();
         $data = array();
         while ($row = $query->fetch(PDO::FETCH_ASSOC)) {
@@ -2283,7 +2374,7 @@ class USER
 
       $N_observacion++;
 
-      $id_observacion = $id_grupo.'O-'.$N_observacion;
+      $id_observacion = $id_grupo.'-O-'.$N_observacion;
 
 
       try

@@ -584,7 +584,7 @@ if (isset($tipo) AND ($tipo == "Tr"))
                 date_default_timezone_set('America/Bogota');
 
                 //$fechaHoy = date('Y-m-d');
-                $fechaHoy = "2017-02-18";
+                $fechaHoy = "2017-01-24";
 
                 //comparar fecha primer periodo
                 if ($fechaHoy > $inicio_periodo1 AND $fechaHoy < $fin_periodo1) 
@@ -1185,7 +1185,7 @@ else
                 date_default_timezone_set('America/Bogota');
 
                 $fechaHoy = date('Y-m-d');
-                //$fechaHoy = "2017-03-18";
+                //$fechaHoy = "2017-02-24";
 
                 //comparar fecha primer periodo
                 if ($fechaHoy > $inicio_periodo1 AND $fechaHoy < $fin_periodo1) 
@@ -1336,7 +1336,7 @@ else
                 // Saber si $id_asignatura & $cabecera['id_alumno'] han sido inicializados
                 if (isset($id_asignatura) and isset($alumnos_grupo['id_alumno']))
                 {                
-                    $logros_alumnos = $object->Read_logros_alumno($id_asignatura,$alumnos_grupo['id_alumno']);                
+                    $logros_alumnos = $object->Read_logros_alumno($id_asignatura,$alumnos_grupo['id_alumno'],$periodo_Actual);                
                 }
 
                 /** Saber si $logros_alunos han sido inicializados y hay registros encontrados**/

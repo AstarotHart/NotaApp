@@ -163,9 +163,9 @@ if (isset($_POST['actualizar_Observacion']))
             foreach ($cabecera_tabla_director as $cabecera_tabla_director) 
             {
                 $ini_asignatura = $object->iniciales_asignaturas($cabecera_tabla_director['nombre_asignatura']);
-                $data .='<th>'.utf8_encode($ini_asignatura).'</th>';
+                $data .='<th>'.$ini_asignatura.'</th>';
 
-                $footer_table .= "<b>".utf8_encode($ini_asignatura)."</b>:".utf8_encode($cabecera_tabla_director['nombre_asignatura']).". ";
+                $footer_table .= "<b>".$ini_asignatura."</b>:".$cabecera_tabla_director['nombre_asignatura'].". ";
 
 
                 $ids_asignaturas[$cont_ids_asig] = $cabecera_tabla_director['id_asignatura'];
@@ -204,29 +204,8 @@ if (isset($_POST['actualizar_Observacion']))
 
                         <div class="body">
 
-                            <div class="card">
-                                <div class="body">
+                                <?php 
 
-                                    <div class="col-sm-3">
-                                        <b>Grupo:</b> <?php echo $cabecera_director['descripcion_grupo'] ?>
-                                    </div>
-
-                                    <div class="col-sm-3">
-                                        <b>Sede:</b> <?php echo $cabecera_director['id_sede'] ; ?>
-                                    </div>
-
-                                    <div class="col-sm-3">
-                                        <b>Periodo:</b> 1
-                                    </div>
-
-                                    <div class="col-sm-3">
-                                        <b>Año Lectivo:</b> <?php echo $cabecera_director['id_anio_lectivo'] ; ?>
-                                    </div>
-                                </div>
-                            </div>
-
-                                <?php
-                                
                                 $alumnos_grupo = $object->Read_alumnos_grupo($id_grupo);
                                 $Observaciones = $object->Read_observaciones($id_grupo);
                                 $fechas        = $object->Read_fecha_periodos($cabecera_director['id_anio_lectivo'],$cabecera_director['id_jornada']);
@@ -312,8 +291,10 @@ if (isset($_POST['actualizar_Observacion']))
 
                                         date_default_timezone_set('America/Bogota');
 
+                                        // Fecha Actual
                                         $fechaHoy = date('Y-m-d');
-                                        //$fechaHoy = "2017-03-18";
+
+                                        $fechaHoy = "2017-01-24";
 
                                         //comparar fecha primer periodo
                                         if ($fechaHoy > $inicio_periodo1 AND $fechaHoy < $fin_periodo1) 
@@ -338,7 +319,32 @@ if (isset($_POST['actualizar_Observacion']))
                                     }
                                 }
 
-                                //echo $data;
+                                 ?>
+
+                            <div class="card">
+                                <div class="body">
+
+                                    <div class="col-sm-3">
+                                        <b>Grupo:</b> <?php echo $cabecera_director['descripcion_grupo'] ?>
+                                    </div>
+
+                                    <div class="col-sm-3">
+                                        <b>Sede:</b> <?php echo $cabecera_director['id_sede'] ; ?>
+                                    </div>
+
+                                    <div class="col-sm-3">
+                                        <b>Periodo:</b> <?php echo $periodo_Actual ; ?>
+                                    </div>
+
+                                    <div class="col-sm-3">
+                                        <b>Año Lectivo:</b> <?php echo $cabecera_director['id_anio_lectivo'] ; ?>
+                                    </div>
+                                </div>
+                            </div>
+
+                                <?php
+                                
+                                                                //echo $data;
 
                                 $num = 1;
 
@@ -350,7 +356,7 @@ if (isset($_POST['actualizar_Observacion']))
                                     {
                                         $data_inside .= '<tr>
                                                             <td>' . $num. '</td>
-                                                            <td>' . utf8_encode($alumnos_grupo['primer_apellido']) . ' ' .utf8_encode($alumnos_grupo['segundo_apellido']) . ' ' .utf8_encode($alumnos_grupo['nombres']) .'</td>
+                                                            <td>' . $alumnos_grupo['primer_apellido'] . ' ' .$alumnos_grupo['segundo_apellido'] . ' ' .$alumnos_grupo['nombres'] .'</td>
                                                             <td>' . $alumnos_grupo['id_alumno'] . '</td>';
 
                                         $Observaciones_alumnos = $object->Read_observaciones_alumno($id_grupo,$alumnos_grupo['id_alumno'],$cabecera_director['id_anio_lectivo']);
@@ -395,7 +401,7 @@ if (isset($_POST['actualizar_Observacion']))
                                         $data_inside .= '</tr>';
                                         $num++;
 
-                                        $data_select .= '<option value="' . $alumnos_grupo['id_alumno'] . '">' . utf8_encode($alumnos_grupo['primer_apellido']) . ' ' .utf8_encode($alumnos_grupo['segundo_apellido']) . ' ' .utf8_encode($alumnos_grupo['nombres']) .'</option>';
+                                        $data_select .= '<option value="' . $alumnos_grupo['id_alumno'] . '">' . $alumnos_grupo['primer_apellido'] . ' ' .$alumnos_grupo['segundo_apellido'] . ' ' .$alumnos_grupo['nombres'] .'</option>';
                                     
                                     }
                                 }
