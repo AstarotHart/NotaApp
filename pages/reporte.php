@@ -16,77 +16,18 @@ $logros_alumno       = new USER();
 $desc_observacion    = new USER();
 $observacion_alumno  = new USER();
 
-$html_asignaturas = "";
-$logros_print     = "";
+$director_grupo      = new USER();
+
+$html_asignaturas    = "";
+$logros_print        = "";
+$observaciones_print = "";
 $desempe ;
 $faltas_print ;
 
+$acomu_notas         = array();
+$promedio            = 0;
 
-
-
-/**
- *  NOTAS FINALES
- */
-
-$notas  = new USER();
-$nota_final_reg = new USER();
-
-$notas  = $object->Read_notas($id_asignatura,$alumnos_grupo['id_alumno'],$cabecera['id_anio_lectivo']);
-
-$res_nota1      = "0";
-$res_nota2      = "0";
-$res_nota3      = "0";
-$res_nota4      = "0";
-$nota_final     = 0;
-$res_nota_final = "0";
-
-$porcentaje_periodo1 = 20;
-$porcentaje_periodo2 = 20;
-$porcentaje_periodo3 = 35;
-$porcentaje_periodo4 = 25;
-
-
-if (isset($notas) and count($notas) > 0) 
-{
-    foreach ($notas as $notas) 
-    {
-        $res_nota1  = $notas['nota1'];
-        $res_nota2  = $notas['nota2'];
-        $res_nota3  = $notas['nota3'];
-        $res_nota4  = $notas['nota4'];
-        $nota_final = (($res_nota1*$porcentaje_periodo1)+($res_nota2*$porcentaje_periodo2)+($res_nota3*$porcentaje_periodo3)+($res_nota4*$porcentaje_periodo4)) ;
-
-        $nota_final = $nota_final/(100);
-
-        $nota_final =  number_format($nota_final,1);
-
-        $nota_final_reg = $object->update_nota_final($alumnos_grupo['id_alumno'],$id_asignatura,$cabecera['id_anio_lectivo'],$nota_final); 
-    }
-    if ($nota_final <= 2.9) 
-    {
-        $res_nota_final = '<p class="font-bold col-pink">'.$nota_final.'</p>';
-    }
-    else
-    {
-        $res_nota_final = '<b>'.$nota_final.'</b>';
-    }
-    
-}
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+$fechaHoy = date('d/m/Y');
 
 
 //echo "Accion " . $_REQUEST['action'];
@@ -94,7 +35,7 @@ if (isset($notas) and count($notas) > 0)
 
 $id_alumno       = "1088256153";
 $id_sede         = "IE";
-$id_asignatura   = "CieNatYEEdu-6-CN";
+//$id_asignatura   = "CieNatYEEdu-6-CN";
 $id_anio_lectivo = "IE2017";
 $periodo         = "IE2017P1";
 $grupo           = "IE6-1";
@@ -106,16 +47,28 @@ $id_informe = $periodo.'-'.$id_alumno;
 /*
 echo "ID Alumno: ".$id_alumno  ."<br>";
 echo "ID Sede: ".$id_sede  ."<br>";
-echo "ID Asignatura: ".$id_asignatura."<br>";*/
+echo "ID Asignatura: ".$id_asignatura."<br>";
 echo "ID periodo: ".$periodo."<br>";
-
+*/
 
 $informe_cabecera = $object->Read_cabecera_reporte($id_alumno,$id_anio_lectivo);
+
 
 foreach ($informe_cabecera as $informe_cabecera) 
 {
 	# code...
 }
+
+
+$director_grupo=$object->Read_director_grupo($informe_cabecera['id_grupo'],$id_anio_lectivo);
+
+foreach ($director_grupo as $director_grupo) 
+{
+	# code...
+}
+
+
+
 
 $anio_str=substr($informe_cabecera['fecha_inicio_periodo'], 0,4);
 $periodo_str=substr($periodo, -1);
@@ -155,34 +108,28 @@ switch ($periodo_str) {
 
 $asignaturas_grupo = $object->Read_asignaturas_grupo($grupo);
 
+
+
 //$notaaaa = 4;
 
 
-$desc_observacion = $object->Read_observaciones_periodo($id_alumno,$id_anio_lectivo,$id_periodo);
+$desc_observacion = $object->Read_observaciones_periodo($id_alumno,$id_anio_lectivo);
 
-print_r($desc_observacion);
+//print_r($desc_observacion);
 
 
 // Recorrer y leer logros de alumno
 foreach ($desc_observacion as $desc_observacion)
 {
+	$observacion_alumno = $object->Read_observaciones_reporte($desc_observacion['id_observacion']);
 
-  	foreach ($observacion_alumno as $observacion_alumno)
-  	{
-  		//echo "Logros: ".$logros_alumno."<br>";
-  		$desc_observacion = $object->Read_observaciones_reporte($desc_observacion['id_observacion']);
+	//print_r($observacion_alumno);
 
-  		foreach ($desc_observacion as $desc_observacion)
-      	{
-      		$observaciones_print  .= $desc_observacion['descripcion']."<br>";
-      	}
-  	}
+	foreach ($observacion_alumno as $observacion_alumno)
+	{
+		$observaciones_print  = $observacion_alumno['descripcion']."<br>";
+	}
 
-
-  	if (count($logros_print)>=0) 
-  	{
-  		//$logros_print  = "No hay logros para mostrar.";
-  	}
 }
 
 //WORKS
@@ -195,8 +142,8 @@ foreach ($desc_observacion as $desc_observacion)
 //print_r($desc_logro);
 
 //WORKS
-echo "Algo?";
-echo $observaciones_print;
+//echo "Algo?<br>";
+//echo $observaciones_print;
 
 
 foreach ($asignaturas_grupo as $asignaturas_grupo)
@@ -249,11 +196,6 @@ foreach ($asignaturas_grupo as $asignaturas_grupo)
 	      	}
       	}
 
-
-      	if (count($logros_print)>=0) 
-      	{
-      		//$logros_print  = "No hay logros para mostrar.";
-      	}
 	}
 
 	//WORKS
@@ -308,6 +250,17 @@ foreach ($asignaturas_grupo as $asignaturas_grupo)
 			}
 
 
+			//saber de la variable OBSERVACIONES_PRINT esta inicializado con ""
+			if ($observaciones_print !="")
+			{
+
+			}
+			else
+			{
+				$observaciones_print = "No hay Observaciones en este periodo.";
+			}
+
+
 			//saber de la variable LOGRO_PRINT esta inicializado con ""
 			if ($faltas_print !="")
 			{
@@ -317,6 +270,9 @@ foreach ($asignaturas_grupo as $asignaturas_grupo)
 			{
 				$faltas_print = 0;
 			}
+
+
+			$acomu_notas [] = $informe_asignaturas[$nota_show];
 
 
 			$html_asignaturas .= '<!-- Start Informe Area-Asignatura -->
@@ -455,92 +411,6 @@ foreach ($asignaturas_grupo as $asignaturas_grupo)
 
 }
 
-/*
-$html_asignaturas .= '<!-- Start Informe Area-Asignatura -->
-							<!-- Start Header Informe Area-Asignatura -->
-								<tr height="20">
-									<td COLSPAN="12" class="X37 MA9 X54 MA10" style="border-right:1px solid black;">
-										<span>
-											<span>Observaciones</span>
-										</span>
-									</td>
-								</tr>
-
-								<tr height="21">
-									<td COLSPAN="12" class="X54 MA10" style="border-right:1px solid black;">
-										<span>
-											
-										</span>
-									</td>
-								</tr>
-							<!-- End Header Informe Area-Asignatura -->
-
-							<!-- Inicio TexArea logros Asignatura -->
-								<tr height="21">
-									<td COLSPAN="12" ROWSPAN="auto" class="X31 MA11">
-										<span>Observaciones 7</span>
-									</td>
-								</tr>
-															
-							<!-- Fin TexArea logros Asignatura -->
-
-							<!-- Inicio Footer Informe Area-Asignatura -->
-								<tr height="21">
-									
-									<td COLSPAN="12" class="X37 MB6">							
-										<span> &nbsp;</span>									
-										
-									</td>
-
-									<td class="X11">&nbsp;</td>
-
-								</tr>
-								
-
-								<tr height="21">
-									
-									<td COLSPAN="6" class="X39 MB7" style="border-right:none; text-align: center;">
-										<span>
-											<span>&nbsp;</span><br>
-											<span>Director(a) Grupo</span>
-										</span>
-									</td>
-
-									<td COLSPAN="6" class="X39 MB7" style="border-left: inset 0pt; text-align: center;">
-										<span>
-											<span>_______________________________</span><br>
-											<span>'.$informe_cabecera['primer_apellido'].' '.$informe_cabecera['segundo_apellido'].' '.$informe_cabecera['nombres'].'</span>
-										</span>
-									</td>
-																		
-									<td class="X11">&nbsp;</td>
-								</tr>
-
-							<!-- Fin Footer Informe Area-Asignatura -->
-						<!-- End Informe Area-Asignatura -->
-						
-						<!-- Inicio Epacio -->
-					<tr height="7">
-						<td class="X17">&nbsp;</td>
-						<td COLSPAN="6" class="X41 MB8">
-							<span>&nbsp;</span>
-						</td>
-						<td class="X13">&nbsp;</td>
-						<td class="X13">&nbsp;</td>
-						<td class="X13">&nbsp;</td>
-						<td class="X13">&nbsp;</td>
-						<td class="X13">&nbsp;</td>
-						<td width="8" class="X18">&nbsp;</td>
-					</tr>
-					<!-- Fin Epacio -->
-
-					</table>
-		  </body>
-					
-						';
-*/
-
-
 
 
 $html_asignaturas .= '<!-- Start Informe Area-Asignatura -->
@@ -566,7 +436,7 @@ $html_asignaturas .= '<!-- Start Informe Area-Asignatura -->
 							<!-- Inicio TexArea logros Asignatura -->
 								<tr height="21">
 									<td COLSPAN="12" ROWSPAN="auto" class="X31 MA11">
-										Observaciones 17
+										'.$observaciones_print.'
 									</td>
 								</tr>
 															
@@ -580,14 +450,14 @@ $html_asignaturas .= '<!-- Start Informe Area-Asignatura -->
 										</span>
 									</td>
 									
-									<td COLSPAN="6" class="X301 MI19">
+									<td COLSPAN="6" class="X301 MI19" align="center">
 										<span>
 											<span>&nbsp;</span><br>
 											<span>&nbsp;</span><br>
 											<span>&nbsp;</span><br>
 											<span>&nbsp;</span><br>
 											<span>_______________________________</span><br>
-											<span>'.$informe_cabecera['primer_apellido'].' '.$informe_cabecera['segundo_apellido'].' '.$informe_cabecera['nombres'].'</span>
+											<span>'.$director_grupo['nombres'].' '.$director_grupo['prim_apelido'].' '.$director_grupo['seg_apellido'].'</span>
 											<span>&nbsp;</span><br>
 										</span>
 									</td>
@@ -653,6 +523,12 @@ switch ($periodo_str2) {
 		break;
 }
 
+
+$promedio = array_sum($acomu_notas)/count($acomu_notas);
+
+$promedio = round($promedio, 1);
+
+
 /*
 echo "<br>ID grupo ".$informe_cabecera['descripcion_grupo']."<br>";
 echo "Perdio Str: ".$periodo_str."<br>";
@@ -717,10 +593,10 @@ $html_cabecera = '<body>
 				</tr>
 				<tr height="20">
 					<td class="X28 left">
-						<span>Pagina</span>
+						<span>Fecha Impresión</span>
 					</td>
 					<td class="X27">
-						<span>{PAGENO} de {nbpg}</span>
+						<span>'.$fechaHoy.'</span>
 					</td>
 				</tr>
 
@@ -792,10 +668,10 @@ $html_cabecera = '<body>
 						<span>'.$str_grupo.'</span>
 					</td>
 					<td class="X16 center">
-						<span>4.5 NO</span>
+						<span>'.$promedio.'</span>
 					</td>
 					<td class="X16 center">
-						<span>7 NO</span>
+						<span>-</span>
 					</td>
 					<td class="X14 center">
 						<span>'.$informe_cabecera['descripcion_jornada'].'</span>

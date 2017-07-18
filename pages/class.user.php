@@ -1113,6 +1113,27 @@ class USER
 
     /* -------------F U N C I O N E S  R E P O R T E S ----------*/
 
+
+    /**
+     * [Read_fecha_periodo_informe description]
+     * @param [type] $id_anio_lectivo [description]
+     * @param [type] $id_jornada      [description]
+     * @param [type] $id_periodo      [description]
+     */
+      public function Read_fecha_periodo_reporte($id_periodo)
+    {
+              
+        $query = $this->conn->prepare('SELECT * FROM periodo WHERE id_periodo = :id_periodo');
+        $query->bindParam(":id_periodo",$id_periodo);
+        $query->execute();
+        $data = array();
+        while ($row = $query->fetch(PDO::FETCH_ASSOC)) {
+            $data[] = $row;
+        }
+        return $data;
+    }
+
+
     /**
      * [Read_cabecera_reporte description]
      * @param [type] $id_alumno [description]
@@ -1120,10 +1141,9 @@ class USER
      */
     public function Read_cabecera_reporte($id_alumno,$id_anio_lectivo)
     { 
-        $query = $this->conn->prepare('SELECT descripcion_grupo,nombres,primer_apellido,segundo_apellido,descripcion_jornada,id_periodo,fecha_inicio_periodo,GRU.id_grupo FROM asig_alumno_grupo AALG inner join alumno AL inner join grupo GRU inner join jornada JRN inner join periodo PR ON AALG.id_alumno = AL.id_alumno AND AALG.id_grupo = GRU.id_grupo AND GRU.id_jornada = JRN.id_jornada WHERE AALG.id_alumno = :id_alumno AND AALG.id_anio_lectivo = :id_anio_lectivo');
+        $query = $this->conn->prepare('SELECT descripcion_grupo,nombres,primer_apellido,segundo_apellido,descripcion_jornada,GRU.id_grupo,JRN.id_jornada FROM asig_alumno_grupo AALG inner join alumno AL inner join grupo GRU inner join jornada JRN ON AALG.id_alumno = AL.id_alumno AND AALG.id_grupo = GRU.id_grupo AND GRU.id_jornada = JRN.id_jornada WHERE AALG.id_alumno = :id_alumno AND AALG.id_anio_lectivo = :id_anio_lectivo');
         $query->bindParam(":id_alumno",$id_alumno);
         $query->bindParam(":id_anio_lectivo",$id_anio_lectivo);
-        //$query->bindParam(":periodo",$periodo);
         $query->execute();  
         $data = array();
         while ($row = $query->fetch(PDO::FETCH_ASSOC)) {
@@ -1405,9 +1425,11 @@ class USER
     /**
      * Leer lista de doncente desde Base de Datos
      */
-    public function Read_director_grupo($id_docente)
+    public function Read_director_grupo($id_grupo,$id_anio_lectivo)
     {        
-        $query = $this->conn->prepare('SELECT * FROM alumno A inner join nota N inner join periodo P inner Join  ON D.id_sede = S.id_sede AND D.id_tipo_usuario = TU.id_tipo_usuario');
+        $query = $this->conn->prepare('SELECT D.nombres, D.prim_apellido, D.seg_apellido FROM asig_director_grupo ADG inner join docente D ON ADG.id_docente = D.id_docente WHERE ADG.id_grupo = :id_grupo AND ADG.id_anio_lectivo = :id_anio_lectivo');
+        $query->bindParam(":id_grupo",$id_grupo);
+        $query->bindParam(":id_anio_lectivo",$id_anio_lectivo);
         $query->execute();
         $data = array();
         while ($row = $query->fetch(PDO::FETCH_ASSOC)) {
