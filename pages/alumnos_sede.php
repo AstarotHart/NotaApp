@@ -1,11 +1,13 @@
 <?php 
 require_once("class.user.php");
 
-$anios          =   new USER();
+$anios_sede     =   new USER();
 $object         =   new USER();
 $grupos         =   new USER();
 $nombre_sede    =   new USER();
-$asignar_alumno    =   new USER();
+$asignar_alumno =   new USER();
+
+
 
 $show_table_alumnos = "none";
 
@@ -13,29 +15,49 @@ $show_table_alumnos = "none";
 //saber si el boton CREAR de logro a sido inicializado
 if (isset($_POST['asignar_alumno'])) 
 {
-    $id_grupo_old=$_POST['id_grupo_old'];
-    $id_alumno=$_POST['select_alumnos'];
-    $id_grupo_new = $_POST['id_grupo_new'];
-    $id_anio_lec= $_POST['id_anio_lectivo'];
+    $id_alumno   =$_POST['select_alumnos'];
+    $id_sede_new = $_POST['id_sede_new'];
+    $id_anio_lec = $_POST['id_anio_lectivo'];
 
-    foreach ($id_alumno as $id_alumno)
+    echo "Id_alunos: ".$id_alumno."<br>";
+    echo "id_sede new: ".$id_sede_new ."<br>";
+    echo "anio lectivo: ".$id_anio_lec."<br>";
+
+    if (isset($_POST['select_alumnos']) AND isset($_POST['id_sede_new']) AND isset($_POST['id_anio_lectivo']))
     {
-        $asignar_alumno->cambio_alumno_grupo($id_grupo_new,$id_alumno,$id_anio_lec);
+        foreach ($id_alumno as $id_alumno)
+        {
+            $asignar_alumno->cambio_alumno_sede($id_alumno,$id_sede_new,$id_anio_lec);
+        }
+       
+         
+        if($asignar_alumno==true)
+        {
+            echo '<script type="text/javascript">';
+            echo 'setTimeout(function () { swal("Alumno Asignados.","","success");';
+            echo '}, 1000);</script>';
+        }
+        else
+        {
+            echo '<script type="text/javascript">';
+            echo 'setTimeout(function () { swal("Alumno NO Asignados.","","error");';
+            echo '}, 1000);</script>';
+        }
     }
-   
-     
-    if($asignar_alumno==true)
+    elseif (!isset($_POST['select_alumnos'])) 
     {
         echo '<script type="text/javascript">';
-        echo 'setTimeout(function () { swal("Alumno Asignados.","","success");';
+        echo 'setTimeout(function () { swal("Seleccione Almenos un Alumno.","","error");';
         echo '}, 1000);</script>';
-     }
-     else
-     {
+    }
+    elseif (!isset($_POST['id_sede_new']))
+    {
         echo '<script type="text/javascript">';
-        echo 'setTimeout(function () { swal("Alumno NO Asignados.","","error");';
+        echo 'setTimeout(function () { swal("Seleccione Nueva Sede.","","error");';
         echo '}, 1000);</script>';
-     }
+    }
+
+    
      
 }
 
@@ -69,6 +91,13 @@ if (isset($_POST['asignar_alumno']))
     if (isset($_SESSION['id_sede_asig_alum_sede']))
     {
         $id_sede = $_SESSION['id_sede_asig_alum_sede'];
+
+        $anios_sede = $object->anio_actual($id_sede);
+
+        foreach ($anios_sede as $anios_sede)
+        {
+            $id_anio_lestivo_sede = $anios_sede['id_anio_lectivo'];
+        }
     }
 
     //Saber si si la variable ID_SEDE E ID_GRUPO
@@ -89,7 +118,7 @@ if (isset($_POST['asignar_alumno']))
 
             foreach ($alumnos_sede as $alumnos_sede) 
             {
-                $data_select .= '<option value="' . $alumnos_sede['id_alumno'] . '">' . utf8_encode($alumnos_sede['primer_apellido']) . ' ' .utf8_encode($alumnos_sede['segundo_apellido']) . ' ' .utf8_encode($alumnos_sede['nombres']) .'</option>';                
+                $data_select .= '<option value="' . $alumnos_sede['id_alumno'] . '">' . $alumnos_sede['primer_apellido'] . ' ' .$alumnos_sede['segundo_apellido'] . ' ' .$alumnos_sede['nombres'] .'</option>';                
             }
         }
 
@@ -143,10 +172,10 @@ if (isset($id_sede))
                                     <div class="col-lg-3 col-md-3 col-sm-3 col-xs-6">
                                         <div class="form-group" style="margin-bottom: 2px;">
                                             <div class="form-line">
-                                                <select class="form-control show-tick" name="id_sede" id="getSede">
+                                                <select class="form-control show-tick" name="id_sede" id="getSede" size="3">
                                                         <option value="">-- Seleccione Sede --</option>
                                                         <?php 
-                                                            $user = $object->combobox_sede();
+                                                            $user = $object->combobox_sede_alumno_sede();
                                                         ?>
                                                 </select>
                                             </div>
@@ -181,11 +210,10 @@ if (isset($id_sede))
                                 <!-- SlectBox Logros -->
                                 <form id="check_logros" method="POST">
 
-                                <!-- enviar de manera oculta datos id_asignatura e id_anio_lectivo --> 
-                                    <input type="hidden" class="form-control" name="id_grupo_old" value="<?php echo $id_grupo; ?>">
-                                    <input type="hidden" class="form-control" name="id_anio_lectivo" value="<?php echo $cabecera['id_anio_lectivo']; ?>">
+                                <!-- enviar de manera oculta datos id_asignatura e id_anio_lectivo -->
+                                    <input type="hidden" class="form-control" name="id_anio_lectivo" value="<?php echo $id_anio_lestivo_sede; ?>">
 
-                                    <select class="form-control show-tick" name="id_grupo_new" id="getGrupo" size="3" tabindex="1">
+                                    <select class="form-control show-tick" name="id_sede_new" id="getSede" size="3" tabindex="1">
                                         <option value="">-- Seleccione Sede --</option>
                                         <?php 
                                         if (count($sedes) > 0) 

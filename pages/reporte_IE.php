@@ -26,6 +26,29 @@ $director_grupo      = new USER();
 
 $alumnos_sede      = new USER();
 
+
+$alunos_promedio = array();
+
+function orderMultiDimensionalArray ($toOrderArray, $field, $inverse = false) {
+    $position = array();
+    $newRow = array();
+    foreach ($toOrderArray as $key => $row) {
+            $position[$key]  = $row[$field];
+            $newRow[$key] = $row;
+    }
+    if ($inverse) {
+        arsort($position);
+    }
+    else {
+        asort($position);
+    }
+    $returnArray = array();
+    foreach ($position as $key => $pos) {     
+        $returnArray[] = $newRow[$key];
+    }
+    return $returnArray;
+}
+
 /*$html_asignaturas    = "";
 $logros_print        = "";
 $observaciones_print = "";
@@ -716,14 +739,15 @@ foreach ($alumnos_sede as $alumnos_sede)
 	{
 		$promedio = array_sum($acomu_notas)/count($acomu_notas);
 
-		$promedio = round($promedio, 1);
+		$promedio = round($promedio, 3);
 	}
 	else
 	{
 		$promedio = 0;
 	}
 
-	
+
+
 
 
 	/*
@@ -895,13 +919,15 @@ foreach ($alumnos_sede as $alumnos_sede)
 
 
 
+	echo $str_grado."_".$str_grupo."|".$informe_cabecera['primer_apellido'].' '.$informe_cabecera['segundo_apellido'].' '.$informe_cabecera['nombres'].'|'.$promedio."|<br>";
 
+	
 
 	//echo $html_cabecera;
 	//echo $html_asignaturas;
 
 
-	
+	/*
 	$mpdf=new mPDF('', 'Letter', 0, '', 12.7, 12.7, 14, 12.7, 8, 8);
 	$mpdf->SetDisplayMode('fullwidth');
 	$mpdf->SetHTMLFooter('
@@ -942,7 +968,10 @@ foreach ($alumnos_sede as $alumnos_sede)
 	//$mpdf->Output();   
 	//exit;
 	
+	*/
+	
 }
 
 
 ?>
+

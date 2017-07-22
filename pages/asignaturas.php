@@ -416,17 +416,6 @@ if (isset($_POST['actualizar_logro']))
                             </select>
                             </div>
                         </div>
-                        
-                        <div class="input-group">
-                            <span class="input-group-addon">
-                                <i class="material-icons">person</i>
-                            </span>
-                            <div class="form-line">
-                                <select class="form-control show-tick" name="id_docente" id="display">
-                                        
-                            </select>
-                            </div>
-                        </div>
 
                         <div class="input-group">
                             <span class="input-group-addon">

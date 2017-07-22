@@ -9,25 +9,49 @@ $object = new USER();
 
 if(isset($_POST['matricular']))
 {
-    $id_alumno           = strip_tags($_POST['id_alumno']);
-    $id_sede             = strip_tags($_POST['id_sede']);
-    $id_grado            = strip_tags($_POST['id_grado']);
-    $nombres             = strip_tags($_POST['nombres']);
-    $primer_apellido     = strip_tags($_POST['primer_apellido']);
-    $segundo_apellido    = strip_tags($_POST['segundo_apellido']);
-    $desplazado          = isset($_POST['desplazado']) ? $_POST['desplazado'] : "No" ;
-    $repitente           = isset($_POST['repitente']) ? $_POST['repitente'] : "No" ;  
-    $nombres_acudiente   = strip_tags($_POST['nombres_acudiente']);
-    $apellidos_acudiente = strip_tags($_POST['apellidos_acudiente']);
-    $telefono_acudiente  = strip_tags($_POST['telefono_acudiente']);
-    $fecha_matricula     = strip_tags($_POST['fecha_matricula']);
+    $id_alumno        = strip_tags($_POST['id_alumno']);
+    $id_sede          = strip_tags($_POST['id_sede']);
+    $id_grupo         = strip_tags($_POST['id_grupo']);
+    $nombres          = strip_tags($_POST['nombres']);
+    $primer_apellido  = strip_tags($_POST['primer_apellido']);
+    $segundo_apellido = strip_tags($_POST['segundo_apellido']);
+    $desplazado       = isset($_POST['desplazado']) ? $_POST['desplazado'] : "No" ;
+    $repitente        = isset($_POST['repitente']) ? $_POST['repitente'] : "No" ; 
+    $sisben        = strip_tags($_POST['sisben']);
+    $full_name_padre  = strip_tags($_POST['full_name_padre']);
+    $tel_padre        = strip_tags($_POST['telefono_padre']);
+    $full_name_madre  = strip_tags($_POST['full_name_madre']);
+    $tel_madre        = strip_tags($_POST['telefono_madre']);
+    $fecha_matricula        = strip_tags($_POST['fecha_matricula']);
 
-    if(($user->register_alumno($id_alumno,$id_sede,$id_grado,$nombres,$primer_apellido,$segundo_apellido,$desplazado,$repitente,$nombres_acudiente,$apellidos_acudiente,$telefono_acudiente,$fecha_matricula))==true)
+
+    if (isset($id_sede))
     {
-        echo '<script type="text/javascript">';
-        echo 'setTimeout(function () { swal("Alumno Matriculado","","success");';
-       // echo 'setTimeout(function () {swal({title: "Datos Actualizados",text: "",timer: 2000,showConfirmButton: false});';
-        echo '}, 1000);</script>';
+        $anio_actual = $user->anio_actual($id_sede);
+    }
+
+    foreach ($anio_actual as $anio_actual)
+    {
+
+    }
+
+
+    if(($user->register_alumno($id_alumno,$nombres,$primer_apellido,$segundo_apellido,$desplazado,$repitente,$sisben,$full_name_padre,$tel_padre,$full_name_madre,$tel_madre,$fecha_matricula))==true)
+    {
+       
+        if (($user->cambio_alumno_sede($id_alumno,$id_sede))==true) 
+        {
+           
+            if (($user->cambio_alumno_grupo($id_grupo,$id_alumno,$anio_actual['id_anio_lectivo']))==true)
+            {
+                
+                echo '<script type="text/javascript">';
+                echo 'setTimeout(function () { swal("Alumno Matriculado","","success");';
+               // echo 'setTimeout(function () {swal({title: "Datos Actualizados",text: "",timer: 2000,showConfirmButton: false});';
+                echo '}, 1000);</script>';
+            }
+
+        }
      }
      else
      {
@@ -109,9 +133,22 @@ if(isset($_POST['matricular']))
                                         </div>
                                     </div>
                                     <div class="col-sm-4">
+                                        <div class="input-group">
+                                            <div class="form-line">
+                                                <select class="form-control show-tick" name="sisben" id="display">
+                                                    <option value="">-- Nivel Sisben --</option>
+                                                    <option value="0">Nivel 0</option>
+                                                    <option value="1">Nivel 1</option>';
+                                                    <option value="2">Nivel 2</option>';
+                                                    <option value="3">Nivel 3</option>';    
+                                                </select>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-sm-4">
                                         <div class="form-group form-float">
                                             <div class="form-line">
-                                                <select class="form-control show-tick" name="id_sede" required>
+                                                <select class="form-control show-tick" name="id_sede" id="getSede" required>
                                                     <option value="">-- Seleccione Sede --</option>
                                                     <?php 
                                                         $user = $object->combobox_sede();
@@ -123,11 +160,8 @@ if(isset($_POST['matricular']))
                                     <div class="col-sm-4">
                                         <div class="form-group form-float">
                                             <div class="form-line">
-                                                <select class="form-control show-tick" name="id_grado" required>
-                                                    <option value="">-- Seleccione Grado --</option>
-                                                    <?php 
-                                                        $user = $object->combobox_grupo();
-                                                     ?>
+                                                <select class="form-control show-tick" name="id_grupo" id="getGrupo">
+                                                        
                                                 </select>
                                             </div>
                                         </div>
@@ -145,30 +179,38 @@ if(isset($_POST['matricular']))
                             
                                     
                                     
-                                <h2 class="card-inside-title">Informacion Acudiente</h2>
+                                <h2 class="card-inside-title">Informacion Padres de Familia</h2>
 
                                     <div class="row clearfix">
 
-                                        <div class="col-sm-4">
+                                        <div class="col-sm-3">
                                             <div class="form-group form-float">
                                                 <div class="form-line">
-                                                    <input type="text" name="nombres_acudiente" class="form-control" required>
-                                                    <label class="form-label">Nombre Acudiente*</label>
+                                                    <input type="text" name="full_name_padre" class="form-control" required>
+                                                    <label class="form-label">Nombre Completo Padre*</label>
                                                 </div>
                                             </div>
                                         </div>
-                                        <div class="col-sm-4">
+                                        <div class="col-sm-3">
                                             <div class="form-group form-float">
                                                 <div class="form-line">
-                                                    <input type="text" name="apellidos_acudiente" class="form-control" required>
-                                                    <label class="form-label">Apellidos*</label>
+                                                    <input type="text" name="telefono_padre" class="form-control" required>
+                                                    <label class="form-label">Telefono*</label>
                                                 </div>
                                             </div>
                                         </div>
-                                        <div class="col-sm-4">
+                                        <div class="col-sm-3">
                                             <div class="form-group form-float">
                                                 <div class="form-line">
-                                                    <input type="text" name="telefono_acudiente" class="form-control" required>
+                                                    <input type="text" name="full_name_madre" class="form-control" required>
+                                                    <label class="form-label">Nombre Completo Madre*</label>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-sm-3">
+                                            <div class="form-group form-float">
+                                                <div class="form-line">
+                                                    <input type="text" name="telefono_madre" class="form-control" required>
                                                     <label class="form-label">Telefono*</label>
                                                 </div>
                                             </div>
@@ -195,3 +237,52 @@ if(isset($_POST['matricular']))
     <!-- TFooter -->
     <?php include("../includes/footer.php");?>
     <!-- #Footer -->
+
+    <!-- Jquery Core Js -->
+    
+    <script type="text/javascript">
+    $(document).ready(function()
+    {       
+        
+    //----------FUNCION SELECCIONAR DOCENTE--------------
+        // function to get all records from table
+        function getAll(){
+            
+            $.ajax
+            ({
+                url: 'getGrupoSede.php',
+                data: 'action=showAll',
+                cache: false,
+                success: function(r)
+                {
+                    $("#getGrupo").html(r);
+                }
+            });         
+        }
+        
+        getAll();
+        // function to get all records from table
+        
+        
+        // code to get all records from table via select box
+        $("#getSede").change(function()
+        {               
+            var id = $(this).find(":selected").val();
+
+            var dataString = 'action='+ id;
+                    
+            $.ajax
+            ({
+                url: 'getGrupoSede.php',
+                data: dataString,
+                cache: false,
+                success: function(r)
+                {
+                    $("#getGrupo").html(r);
+                } 
+            });
+        })
+        // code to get all records from table via select box
+
+    });
+    </script>

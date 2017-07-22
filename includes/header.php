@@ -3,12 +3,60 @@
 <?php
     require("session.php");
     require_once("class.user.php");
-    $user_app = new USER();
-      
-    $user_id=$_SESSION['user_session'];
+    
+    $user_app           = new USER();
+    $anio_actual        = new USER();
+    $fechas_anio        = new USER();
+    $cambio_estado_anio = new USER();
 
-    $user = $user_app->user_data($user_id);
+
+    date_default_timezone_set('America/Bogota');
+
+    $today = date('Y-m-d');
+      
+     
+    $user_id=$_SESSION['user_session'];
+    $sede_id=$_SESSION['sede_session'];
+
+    $user      = $user_app->user_data($user_id);
     $user_type = $user_app->tipo_user($user->id_tipo_usuario);
+
+    $anio_actual = $user_app->anio_actual($sede_id);
+
+    $fechas_anio = $user_app->Read_fecha_anio($sede_id);
+
+    //print_r($fechas_anio);
+
+
+    // cargar Informacion Periodos
+    if (count($fechas_anio) > 0)
+    { 
+        $fechas_periodos=array();
+        $cont_fechas=0;
+
+
+        foreach ($fechas_anio as $fechas_anio)
+        {
+            if ($today >= $fechas_anio['fecha_inicio'] AND $today < $fechas_anio['fecha_fin'])
+            {
+                $cambio_estado_anio = $user_app->Cambio_estado_anio($fechas_anio['id_anio_lectivo'],"1");
+            }
+            elseif ($today < $fechas_anio['fecha_inicio'])
+            {
+                $cambio_estado_anio = $user_app->Cambio_estado_anio($fechas_anio['id_anio_lectivo'],"0");
+            }
+            elseif ($today > $fechas_anio['fecha_fin'])
+            {
+                $cambio_estado_anio = $user_app->Cambio_estado_anio($fechas_anio['id_anio_lectivo'],"0");
+            }
+        }
+
+    }
+
+
+
+    
+
 ?>
 <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />

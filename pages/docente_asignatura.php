@@ -105,8 +105,8 @@ if (isset($_POST['asignar_docente_asignatura']))
             }
         }
 
-        $asignatura = $object_docente_grupo->Read_asignaturas_sede($id_sede);
-        $asignatura_asig = $object_docente_grupo->Read_asignaturas_asig_asignatura($id_sede);
+        //$asignatura = $object_docente_grupo->Read_asignaturas_sede($id_sede);
+        //$asignatura_asig = $object_docente_grupo->Read_asignaturas_asig_asignatura($id_sede);
 
         $grupos = $object_docente_grupo->Read_grupos_sede($id_sede);
         $nombre_sede = $object_docente_grupo->nombre_sede($id_sede);
@@ -116,7 +116,7 @@ if (isset($_POST['asignar_docente_asignatura']))
             # code...
         }
 
-        $docentes = $object_docente_grupo->Read_docente_sede($id_sede);
+        //$docentes = $object_docente_grupo->Read_docente_sede($id_sede);
         $res_grupos  = " ";
 
 

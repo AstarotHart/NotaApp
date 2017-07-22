@@ -107,7 +107,7 @@ if (isset($_POST['asignar_alumno']))
 
             foreach ($alumnos_grupo as $alumnos_grupo) 
             {
-                $data_select .= '<option value="' . $alumnos_grupo['id_alumno'] . '">' . utf8_encode($alumnos_grupo['primer_apellido']) . ' ' .utf8_encode($alumnos_grupo['segundo_apellido']) . ' ' .utf8_encode($alumnos_grupo['nombres']) .'</option>';                
+                $data_select .= '<option value="' . $alumnos_grupo['id_alumno'] . '">' . $alumnos_grupo['primer_apellido'] . ' ' .$alumnos_grupo['segundo_apellido'] . ' ' .$alumnos_grupo['nombres'] .'</option>';                
             }
         }
 
@@ -212,7 +212,7 @@ if (isset($id_sede))
                                                                 foreach ($grupos as $grupo)
                                                                 {
                                                                     ?>
-                                                                    <option value="<?php echo $grupo['id_grupo']; ?>"><?php echo utf8_encode($grupo['descripcion_grupo']); ?></option>'; 
+                                                                    <option value="<?php echo $grupo['id_grupo']; ?>"><?php echo $grupo['descripcion_grupo']; ?></option>'; 
                                                                     <?php
                                                                 }
                                                             } else {

@@ -16,6 +16,8 @@ if(isset($_POST['btn-login']))
 		
 	if($login->doLogin($u_id,$u_pass))
 	{
+        echo $login->doLogin($u_id,$u_pass);
+
 		$login->redirect('pages/index.php');
 	}
 	else
