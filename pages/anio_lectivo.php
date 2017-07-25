@@ -4,6 +4,7 @@ $anios = new USER();
 $object = new USER();
 
 $show_table= "none";
+$show_combox_sede  = "show";
 
 
 if (isset($_POST['crear'])) 
@@ -54,15 +55,33 @@ if (isset($_POST['crear']))
 
     <?php 
 
-    //saber si el boton CREAR de logro a sifo inicializado
-    if (isset($_POST['btn-select-SEDE'])) 
+    //saber si el boton CAMBIAR SEDE Y GRUPO a sido inicializado
+    if (isset($_POST['btn-select-destroy'])) 
     {
-        $_SESSION['id_sede']=$_POST['id_sede'];    
+         $_SESSION['id_sede_anio']  = null;
     }
 
-    if (isset($_SESSION['id_sede']))
+    //saber si el boton CREAR de logro a sifo inicializado
+    if (isset($_POST['btn-select-SE'])) 
     {
-        $id_sede = $_SESSION['id_sede'];
+        $_SESSION['id_sede_anio']=$_POST['id_sede'];    
+    }
+
+    if (isset($_SESSION['id_sede_anio']))
+    {
+        $id_sede = $_SESSION['id_sede_anio'];
+    }
+
+    if (isset($id_sede))
+    {
+        $show_combox_sede  = "none";
+        
+        $nombre_sede = $object->nombre_sede($id_sede);
+
+        foreach ($nombre_sede as $nombre_sede) 
+        {
+            # code...
+        }
     }
 
      ?>
@@ -78,33 +97,52 @@ if (isset($_POST['crear']))
                             <h2>
                                 Año Lectivo <small>Lista de Años lectivo por sede</small>
                             </h2>
-                            <ul class="header-dropdown m-r--5">
-                                <li>
-                                    <a href="javascript:void(0);" data-toggle="cardloading" data-loading-effect="pulse">
-                                        <i class="material-icons">loop</i>
-                                    </a>
-                                </li>
-                            </ul>
+                            <?php
 
+            /*-------------------------- COMBOBOX SEDE --------------------*/ 
+                        if (isset($id_sede))
+                        {
+                            echo "<h5>".$nombre_sede['descripcion_sede']."</h5>";
+
+                           ?>
+                            <div class="align-right">
+                                <form id="destroy_variables" method="POST">
+                                    <button class="btn bg-teal btn-xs waves-effect" type="submit" name="btn-select-destroy">Cambiar Sede</button>
+                                </form>
+                            </div>
+                            <?php
+
+                             
+                        }
+                        else
+                        {
+                            ?>
                             <!-- form para seleccionar GRUPO por ASIGNATURA -->
-                            <form style="margin-bottom: 2px;" method="POST">
-                                <div class="row clearfix">
-                                    <div class="col-lg-3 col-md-3 col-sm-3 col-xs-6">
-                                        <div class="form-group" style="margin-bottom: 2px;">
-                                            <div class="form-line">
-                                                <select class="form-control show-tick" name="id_sede">
-                                                        <?php 
-                                                            $user = $object->combobox_sede();
-                                                        ?>
-                                                </select>
+                            <div  style="display: <?php echo $show_combox_sede; ?>;">
+                                <form style="margin-bottom: 2px;" method="POST">
+                                    <div class="row clearfix">
+                                        <div class="col-lg-3 col-md-3 col-sm-3 col-xs-6">
+                                            <div class="form-group" style="margin-bottom: 2px;">
+                                                <div class="form-line">
+                                                    <select class="form-control show-tick" name="id_sede" id="getSede">
+                                                            <option value="">-- Seleccione Sede --</option>
+                                                            <?php 
+                                                                $user = $object->combobox_sede();
+                                                            ?>
+                                                    </select>
+                                                </div>
                                             </div>
                                         </div>
+                                        <div class="col-lg-6 col-md-6 col-sm-6 col-xs-12">
+                                            <button class="btn bg-teal waves-effect" type="submit" name="btn-select-SE">Aceptar</button>
+                                        </div>
                                     </div>
-                                    <div class="col-lg-6 col-md-6 col-sm-6 col-xs-12">
-                                        <button class="btn bg-teal waves-effect" type="submit" name="btn-select-SEDE">Aceptar</button>
-                                    </div>
-                                </div>
-                            </form>
+                                </form>
+                            </div>
+                            <?php
+                        
+                        } 
+                        ?>
 
                         </div>
                     <div class="body">

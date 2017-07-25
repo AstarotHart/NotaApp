@@ -23,6 +23,7 @@ if(isset($_POST['matricular']))
     $full_name_madre  = strip_tags($_POST['full_name_madre']);
     $tel_madre        = strip_tags($_POST['telefono_madre']);
     $fecha_matricula        = strip_tags($_POST['fecha_matricula']);
+    $estado        = strip_tags($_POST['estado']);
 
 
     if (isset($id_sede))
@@ -36,7 +37,7 @@ if(isset($_POST['matricular']))
     }
 
 
-    if(($user->register_alumno($id_alumno,$nombres,$primer_apellido,$segundo_apellido,$desplazado,$repitente,$sisben,$full_name_padre,$tel_padre,$full_name_madre,$tel_madre,$fecha_matricula))==true)
+    if(($user->register_alumno($id_alumno,$nombres,$primer_apellido,$segundo_apellido,$desplazado,$repitente,$sisben,$full_name_padre,$tel_padre,$full_name_madre,$tel_madre,$fecha_matricula,$estado))==true)
     {
        
         if (($user->cambio_alumno_sede($id_alumno,$id_sede))==true) 
@@ -160,7 +161,7 @@ if(isset($_POST['matricular']))
                                     <div class="col-sm-4">
                                         <div class="form-group form-float">
                                             <div class="form-line">
-                                                <select class="form-control show-tick" name="id_grupo" id="getGrupo">
+                                                <select class="form-control show-tick" name="id_grupo" id="getGrupo" required>
                                                         
                                                 </select>
                                             </div>
@@ -216,8 +217,10 @@ if(isset($_POST['matricular']))
                                             </div>
                                         </div>
 
+                                        <input type="hidden" name="estado" class="form-control" value="1">
+
                                         <div class="col-sm-12">
-                                            <button class="btn btn-block btn-lg bg-teal waves-effect" type="submit" name="matricular">Matricular</button>
+                                            <button class="btn btn-block btn-lg bg-teal waves-effect" type="submit" name="matricular">Actualizar</button>
                                         </div>
 
                                     </div>

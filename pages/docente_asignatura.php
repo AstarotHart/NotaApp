@@ -3,7 +3,6 @@ require_once("class.user.php");
 
 $anios                  =   new USER();
 $object_docente_grupo   =   new USER();
-$grupos                 =   new USER();
 $nombre_sede            =   new USER();
 $asignar_docente_asignatura =   new USER();
 
@@ -105,10 +104,9 @@ if (isset($_POST['asignar_docente_asignatura']))
             }
         }
 
-        //$asignatura = $object_docente_grupo->Read_asignaturas_sede($id_sede);
-        //$asignatura_asig = $object_docente_grupo->Read_asignaturas_asig_asignatura($id_sede);
+        $asignatura = $object_docente_grupo->Read_asignaturas_sede($id_sede);
+        $asignatura_asig = $object_docente_grupo->Read_asignaturas_asig_asignatura($id_sede);
 
-        $grupos = $object_docente_grupo->Read_grupos_sede($id_sede);
         $nombre_sede = $object_docente_grupo->nombre_sede($id_sede);
 
         foreach ($nombre_sede as $nombre_sede) 
@@ -116,7 +114,7 @@ if (isset($_POST['asignar_docente_asignatura']))
             # code...
         }
 
-        //$docentes = $object_docente_grupo->Read_docente_sede($id_sede);
+        $docentes = $object_docente_grupo->Read_docente_sede($id_sede);
         $res_grupos  = " ";
 
 
@@ -139,7 +137,7 @@ if (isset($_POST['asignar_docente_asignatura']))
                 }
                 if(!$foundflag)
                 {
-                    $data_select .= '<option value="' . $item['id_asignatura'] . '">' . $item['nombre_asignatura'] .'</option>';
+                    $data_select .= '<option value="' . $item['id_asignatura'] . '">' . $item['nombre_asignatura'] .' ' . $item1['descripcion_grupo'] .'</option>';
                 }
             }
 
@@ -147,7 +145,7 @@ if (isset($_POST['asignar_docente_asignatura']))
             {
                 if(!(in_array($item1['id_asignatura'],$array)))
                  {
-                    $data_select .= '<option value="' . $item1['id_asignatura'] . '">' . $item1['nombre_asignatura'] .'</option>';
+                    $data_select .= '<option value="' . $item1['id_asignatura'] . '">' . $item1['nombre_asignatura'] .' ' . $item1['descripcion_grupo'] .'</option>';
                  }
             }
         }
@@ -218,7 +216,6 @@ if (isset($_POST['asignar_docente_asignatura']))
                     <div class="body" style="display: <?php echo $show_table_asignatura; ?>;>
                     
 
-            <!-- Div mostrar u ocultar tablas -->
                 <div  style="display: <?php echo $show_table_asignatura; ?>;">
 
                     <div class="card">
@@ -243,26 +240,7 @@ if (isset($_POST['asignar_docente_asignatura']))
                                             }
                                         } else {
                                             ?>
-                                                <option value=""><p class="col-pink">Sin Grupos en la Sede</p></option>';
-                                            <?php
-                                        }
-                                        ?>
-                                    </select>
-
-                                    <select class="form-control show-tick" name="id_grupo" id="getGrupo" size="3" tabindex="1">
-                                        <option value="">-- Seleccione Grupo --</option>
-                                        <?php 
-                                        if (count($grupos) > 0) 
-                                        {                 
-                                            foreach ($grupos as $grupo)
-                                            {
-                                                ?>
-                                                <option value="<?php echo $grupo['id_grupo']; ?>"><?php echo $grupo['descripcion_grado']."-".$grupo['descripcion_grupo']; ?></option>'; 
-                                                <?php
-                                            }
-                                        } else {
-                                            ?>
-                                                <option value=""><p class="col-pink">Sin Grupos en la Sede</p></option>';
+                                                <option value=""><p class="col-pink">Sin Docentes en la Sede</p></option>';
                                             <?php
                                         }
                                         ?>

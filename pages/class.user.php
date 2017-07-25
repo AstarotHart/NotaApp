@@ -344,6 +344,41 @@ class USER
         return $data;
     }
 
+
+    /**
+     * [descripcion_estado description]
+     * @param  [type] $id_estado [description]
+     * @return [type]            [description]
+     */
+    public function descripcion_estado($id_estado)
+    {
+        $query = $this->conn->prepare('SELECT descripcion FROM estado WHERE id_estado = :id_estado');
+        $query->bindParam(":id_estado",$id_estado);
+        $query->execute();
+        $data = array();
+        while ($row = $query->fetch(PDO::FETCH_ASSOC)) {
+            $data[] = $row;
+        }
+        return $data;
+    }
+
+    /**
+     * [Descripcion_grupo_alumno description]
+     * @param [type] $id_alumno [description]
+     */
+    public function Descripcion_grupo_alumno($id_alumno)
+    {
+        $query = $this->conn->prepare('SELECT * FROM asig_alumno_grupo AAG inner join grupo GR ON AAG.id_grupo  = GR.id_grupo WHERE AAG.id_alumno = :id_alumno');
+        $query->bindParam(":id_alumno",$id_alumno);
+        $query->execute();
+        $data = array();
+        while ($row = $query->fetch(PDO::FETCH_ASSOC)) {
+            $data[] = $row;
+        }
+        return $data;
+    }
+
+
     /**
      * [nombre_sede description]
      * @param  [type] $id_sede [description]
@@ -370,6 +405,24 @@ class USER
     {
         $query = $this->conn->prepare('SELECT descripcion_grupo FROM grupo WHERE id_grupo = :id_grupo');
         $query->bindParam(":id_grupo",$id_grupo);
+        $query->execute();
+        $data = array();
+        while ($row = $query->fetch(PDO::FETCH_ASSOC)) {
+            $data[] = $row;
+        }
+        return $data;
+    }
+
+
+    /**
+     * [nombre_alumno description]
+     * @param  [type] $id_alumno [description]
+     * @return [type]            [description]
+     */
+    public function nombre_alumno($id_alumno)
+    {
+        $query = $this->conn->prepare('SELECT * FROM alumno WHERE id_alumno = :id_alumno');
+        $query->bindParam(":id_alumno",$id_alumno);
         $query->execute();
         $data = array();
         while ($row = $query->fetch(PDO::FETCH_ASSOC)) {
@@ -881,12 +934,45 @@ class USER
     }
 
     /**
+     * [Read_grupos_grado description]
+     * @param [type] $id_grado [description]
+     */
+    public function Read_grupos_grado($id_grado,$id_sede)
+    {
+        $query = $this->conn->prepare('SELECT * FROM grupo WHERE id_grado = :id_grado AND id_sede = :id_sede');
+        $query->bindparam(":id_grado",$id_grado);
+        $query->bindparam(":id_sede",$id_sede);
+        $query->execute();
+        $data = array();
+        while ($row = $query->fetch(PDO::FETCH_ASSOC)) {
+            $data[] = $row;
+        }
+        return $data;
+    }
+
+    /**
+     * [Read_periodos_anio description]
+     * @param [type] $id_anio_lectivo [description]
+     */
+    public function Read_periodos_anio($id_anio_lectivo)
+    {
+        $query = $this->conn->prepare('SELECT * FROM periodo WHERE id_anio_lectivo = :id_anio_lectivo');
+        $query->bindparam(":id_anio_lectivo",$id_anio_lectivo);
+        $query->execute();
+        $data = array();
+        while ($row = $query->fetch(PDO::FETCH_ASSOC)) {
+            $data[] = $row;
+        }
+        return $data;
+    }
+
+    /**
      * [Read_asignaturas_sede description]
      * @param [type] $id_sede [description]
      */
     public function Read_asignaturas_sede($id_sede)
     {
-        $query = $this->conn->prepare('SELECT * FROM asignatura ASI inner join area AR ON AR.id_area = ASI.id_area WHERE AR.id_sede = :id_sede');
+        $query = $this->conn->prepare('SELECT * FROM asignatura ASI inner join asig_area_sede AAS inner join asig_asignatura_grupo AAG inner join grupo GRU ON AAS.id_area = ASI.id_area AND ASI.id_asignatura = AAG.id_asignatura AND AAG.id_grupo = GRU.id_grupo WHERE AAS.id_sede = :id_sede');
         $query->bindparam(":id_sede",$id_sede);
         $query->execute();
         $data = array();
@@ -902,7 +988,7 @@ class USER
      */
     public function Read_asignaturas_asig_asignatura($id_sede)
     {
-        $query = $this->conn->prepare('SELECT * FROM asignatura ASI inner join area AR inner join asig_docente_asignatura ADA ON AR.id_area = ASI.id_area AND ADA.id_asignatura = ASI.id_asignatura WHERE AR.id_sede = :id_sede');
+        $query = $this->conn->prepare('SELECT * FROM asignatura ASI inner join asig_area_sede AAS inner join asig_asignatura_docente AAD ON AAS.id_area = ASI.id_area AND AAD.id_asignatura = ASI.id_asignatura WHERE AAS.id_sede = :id_sede');
         $query->bindparam(":id_sede",$id_sede);
         $query->execute();
         $data = array();
@@ -913,8 +999,8 @@ class USER
     }
 
     /**
-     * [Read_grupos_sede description]
-     * @param [type] $id_sede [description]
+     * [Read_grupo_alumno description]
+     * @param [type] $id_alumno [description]
      */
     public function Read_grupo_alumno($id_alumno)
     {
@@ -1488,7 +1574,7 @@ class USER
      */
     public function Read_docente_sede($id_sede)
     {
-        $query = $this->conn->prepare('SELECT * FROM docente WHERE id_sede = :id_sede AND id_tipo_usuario = "3"');
+        $query = $this->conn->prepare('SELECT * FROM asig_docente_sede ADS inner join docente D ON ADS.id_docente = D.id_docente WHERE ADS.id_sede = :id_sede AND D.id_tipo_usuario = "3"');
         $query->bindParam(":id_sede",$id_sede);
         $query->execute();
         $data = array();
@@ -1504,7 +1590,7 @@ class USER
      */
     public function Read_alumnos_sede($id_sede)
     {
-       $query = $this->conn->prepare('SELECT AL.id_alumno,AL.nombres,AL.primer_apellido,AL.segundo_apellido FROM alumno AL inner join asig_alumno_sede AAS ON AL.id_alumno = AAS.id_alumno WHERE AAS.id_sede = :id_sede ORDER BY AL.primer_apellido ');
+       $query = $this->conn->prepare('SELECT AL.id_alumno,AL.nombres,AL.primer_apellido,AL.segundo_apellido FROM alumno AL inner join asig_alumno_sede AAS ON AL.id_alumno = AAS.id_alumno WHERE AAS.id_sede = :id_sede AND AL.id_estado = "1" ORDER BY AL.primer_apellido ');
         $query->bindParam(":id_sede",$id_sede);
         $query->execute();
         $data = array();
@@ -1514,13 +1600,14 @@ class USER
         return $data;
     }
 
+
     /**
      * [Read_alumnos_grupo description]
      * @param [type] $id_docente [description]
      */
     public function Read_alumnos_grupo($id_grupo)
     {
-        $query = $this->conn->prepare('SELECT AL.id_alumno,AL.nombres,AL.primer_apellido,AL.segundo_apellido FROM alumno AL inner join asig_alumno_grupo AALG ON AL.id_alumno = AALG.id_alumno WHERE AALG.id_grupo = :id_grupo ORDER BY AL.primer_apellido ');
+        $query = $this->conn->prepare('SELECT AL.id_alumno,AL.nombres,AL.primer_apellido,AL.segundo_apellido FROM alumno AL inner join asig_alumno_grupo AALG ON AL.id_alumno = AALG.id_alumno WHERE AALG.id_grupo = :id_grupo AND AL.id_estado = "1" ORDER BY AL.primer_apellido ');
         $query->bindParam(":id_grupo",$id_grupo);
         $query->execute();
         $data = array();
@@ -1581,8 +1668,10 @@ class USER
 
 
     /**
-     * [Read_alumnos_grupo description]
-     * @param [type] $id_docente [description]
+     * [Read_cabecera_grupo description]
+     * @param [type] $id_docente    [description]
+     * @param [type] $id_asignatura [description]
+     * @param [type] $id_grupo      [description]
      */
     public function Read_cabecera_grupo($id_docente,$id_asignatura,$id_grupo)
     {
@@ -2077,6 +2166,103 @@ class USER
             echo $e->getMessage();
              $res = "False";
         }
+
+        //echo "RES: ".$res."<br>";
+        return $res;
+        
+    }
+
+    /**
+     * [update_promedio_periodo description]
+     * @param  [type] $id_alumno     [description]
+     * @param  [type] $promedio_name [description]
+     * @param  [type] $nota          [description]
+     * @param  [type] $anio          [description]
+     * @return [type]                [description]
+     */
+    public function update_promedio_periodo($id_alumno,$promedio_name,$nota,$anio)
+    {
+        //echo "Id asignatura: ".$materia."<br>";
+        //echo "Id asig file:  ".$materia_file."<br><br>";
+
+        $res = "false";
+
+        try
+        {
+
+            $stmt1 = $this->conn->prepare("SELECT id_alumno FROM promedio_periodo WHERE id_alumno=:id_alumno AND id_anio_lectivo=:anio");
+
+            $stmt1->execute(array(
+                                  ':id_alumno'   => $id_alumno,
+                                  ':anio'   => $anio 
+                                    ));
+
+            $userRow=$stmt1->fetch(PDO::FETCH_ASSOC);
+
+            if($stmt1->rowCount() == 1)
+            {
+                if ($promedio_name == "promedio_p1") 
+                {
+                    $stmt=$this->conn->prepare("UPDATE promedio_periodo SET promedio_p1=:nota WHERE id_alumno=:id_alumno AND id_anio_lectivo=:anio");
+                }
+                elseif ($promedio_name == "promedio_p2") 
+                {
+                    $stmt=$this->conn->prepare("UPDATE promedio_periodo SET promedio_p2=:nota WHERE id_alumno=:id_alumno AND id_anio_lectivo=:anio");
+                }
+                elseif ($promedio_name == "promedio_p3") 
+                {
+                    $stmt=$this->conn->prepare("UPDATE promedio_periodo SET promedio_p3=:nota WHERE id_alumno=:id_alumno AND id_anio_lectivo=:anio");
+                }
+                elseif ($promedio_name == "promedio_p4") 
+                {
+                    $stmt=$this->conn->prepare("UPDATE promedio_periodo SET promedio_p4=:nota WHERE id_alumno=:id_alumno AND id_anio_lectivo=:anio");
+                }
+
+                $stmt->bindparam(":nota",$nota);
+                $stmt->bindparam(":id_alumno",$id_alumno);
+                $stmt->bindparam(":anio",$anio);
+
+                $stmt->execute();
+
+            }else
+            {                                                  
+                if ($promedio_name == "promedio_p1") 
+                {
+                    $stmt2 = $this->conn->prepare("INSERT INTO promedio_periodo(id_alumno,id_anio_lectivo,promedio_p1) 
+                                          VALUES(:id_alumno,:anio,:nota");
+                }
+                elseif ($promedio_name == "promedio_p2") 
+                {
+                    $stmt2 = $this->conn->prepare("INSERT INTO  promedio_periodo(id_alumno,id_anio_lectivo,promedio_p2) 
+                                          VALUES(:id_alumno,:anio,:nota");
+                }
+                elseif ($promedio_name == "promedio_p3") 
+                {
+                    $stmt2 = $this->conn->prepare("INSERT INTO  promedio_periodo(id_alumno,id_anio_lectivo,promedio_p3) 
+                                          VALUES(:id_alumno,:anio,:nota");
+                elseif ($promedio_name == "promedio_p4") 
+                {
+                    $stmt2 = $this->conn->prepare("INSERT INTO  promedio_periodo(id_alumno,id_anio_lectivo,promedio_p4) 
+                                          VALUES(:id_alumno,:anio,:nota");
+                }
+
+                $stmt2->bindparam(":nota",$nota);
+                $stmt2->bindparam(":id_alumno",$id_alumno);
+                $stmt2->bindparam(":anio",$anio);
+
+                $stmt2->execute();
+
+            }
+
+                $res = "True";            
+        }
+
+        catch(PDOException $e)
+        {
+            echo $e->getMessage();
+             $res = "False";
+        }
+        
 
         //echo "RES: ".$res."<br>";
         return $res;
@@ -2938,136 +3124,81 @@ class USER
      * @param  [type] $fecha_matricula  [description]
      * @return [type]                   [description]
      */
-    public function register_alumno($id_alumno,$nombres,$primer_apellido,$segundo_apellido,$desplazado,$repitente,$sisben,$full_name_padre,$tel_padre,$full_name_madre,$tel_madre,$fecha_matricula)
+    public function register_alumno($id_alumno,$nombres,$primer_apellido,$segundo_apellido,$desplazado,$repitente,$sisben,$full_name_padre,$tel_padre,$full_name_madre,$tel_madre,$fecha_matricula,$id_estado)
     {
-        try
-        {
-            $stmt = $this->conn->prepare("INSERT INTO alumno(id_alumno,nombres,primer_apellido,segundo_apellido,desplazado,repitente,sisben,full_name_padre,telefono_padre,full_name_madre,telefono_madre,fecha_matricula,id_estado) 
+
+        //echo "Id asignatura: ".$materia."<br>";
+        //echo "Id asig file:  ".$materia_file."<br><br>";
+        $matricula = false;
+
+            try
+            {
+
+                $stmt1 = $this->conn->prepare("SELECT id_alumno FROM alumno WHERE id_alumno=:id_alumno");
+                $stmt1->execute(array(':id_alumno'=>$id_alumno));
+                $userRow=$stmt1->fetch(PDO::FETCH_ASSOC);
+
+                if($stmt1->rowCount() == 1)
+                {
+
+                    $stmt = $this->conn->prepare("UPDATE alumno SET id_alumno=:id_alumno,nombres=:nombres,primer_apellido=:primer_apellido,segundo_apellido=:segundo_apellido,desplazado=:desplazado,repitente=:repitente,sisben=:sisben,full_name_padre=:full_name_padre,telefono_padre=:tel_padre,full_name_madre=:full_name_madre,telefono_madre=:tel_madre,fecha_matricula=:nombres,id_estado=:id_estado");
+                                                  
+                    $stmt->bindparam(":id_alumno", $id_alumno);
+                    $stmt->bindparam(":nombres", $nombres);
+                    $stmt->bindparam(":primer_apellido", $primer_apellido);
+                    $stmt->bindparam(":segundo_apellido", $segundo_apellido);
+                    $stmt->bindparam(":desplazado", $desplazado);
+                    $stmt->bindparam(":repitente", $repitente);
+                    $stmt->bindparam(":sisben", $sisben);
+                    $stmt->bindparam(":full_name_padre", $full_name_padre);
+                    $stmt->bindparam(":tel_padre", $tel_padre);                                    
+                    $stmt->bindparam(":full_name_madre", $full_name_madre);
+                    $stmt->bindparam(":tel_madre", $tel_madre);
+                    $stmt->bindparam(":fecha_matricula", $fecha_matricula);
+                    $stmt->bindparam(":id_estado", $id_estado);
+                        
+                    $stmt->execute();
+
+                    $matricula = true;
+        
+
+                }
+                else
+                {                                                  
+                    $stmt2 = $this->conn->prepare("INSERT INTO alumno(id_alumno,nombres,primer_apellido,segundo_apellido,desplazado,repitente,sisben,full_name_padre,telefono_padre,full_name_madre,telefono_madre,fecha_matricula,id_estado) 
                                           VALUES(:id_alumno,:nombres,:primer_apellido,:segundo_apellido,:desplazado,:repitente,:sisben,:full_name_padre,:tel_padre,:full_name_madre,:tel_madre,:fecha_matricula,'1')");
                                                   
-            $stmt->bindparam(":id_alumno", $id_alumno);
-            $stmt->bindparam(":nombres", $nombres);
-            $stmt->bindparam(":primer_apellido", $primer_apellido);
-            $stmt->bindparam(":segundo_apellido", $segundo_apellido);
-            $stmt->bindparam(":desplazado", $desplazado);
-            $stmt->bindparam(":repitente", $repitente);
-            $stmt->bindparam(":sisben", $sisben);
-            $stmt->bindparam(":full_name_padre", $full_name_padre);
-            $stmt->bindparam(":tel_padre", $tel_padre);                                    
-            $stmt->bindparam(":full_name_madre", $full_name_madre);
-            $stmt->bindparam(":tel_madre", $tel_madre);
-            $stmt->bindparam(":fecha_matricula", $fecha_matricula);
-                
-            $stmt->execute();   
-            
-            return $stmt;   
-        }
-        catch(PDOException $e)
-        {
-            echo $e->getMessage();
-        }               
-    }
+                    $stmt2->bindparam(":id_alumno", $id_alumno);
+                    $stmt2->bindparam(":nombres", $nombres);
+                    $stmt2->bindparam(":primer_apellido", $primer_apellido);
+                    $stmt2->bindparam(":segundo_apellido", $segundo_apellido);
+                    $stmt2->bindparam(":desplazado", $desplazado);
+                    $stmt2->bindparam(":repitente", $repitente);
+                    $stmt2->bindparam(":sisben", $sisben);
+                    $stmt2->bindparam(":full_name_padre", $full_name_padre);
+                    $stmt2->bindparam(":tel_padre", $tel_padre);                                    
+                    $stmt2->bindparam(":full_name_madre", $full_name_madre);
+                    $stmt2->bindparam(":tel_madre", $tel_madre);
+                    $stmt2->bindparam(":fecha_matricula", $fecha_matricula);
+                        
+                    $stmt2->execute();
 
-
-    /**
-     * Leer detalles de alumno por ID_ALUMNO
-     */
-    public function detalles_alumno($alumno_id)
-    {
-        $data_volean=false;
-        try 
-        {
-            /*$stmt = $this->conn->prepare("SELECT id_alumno,id_grado,nombres,primer_apellido,segundo_apellido,desplazado,repitente,nombre_acudiente,apellidos_acudiente,telefono_acudiente,fecha_matricula FROM alumno WHERE id_alumno=:alumno_id");
-            $stmt->bindparam(":alumno_id", $alumno_id);
-            $stmt->execute();*/
-
-            $query = $this->conn->prepare("SELECT * FROM alumno WHERE id_alumno=:alumno_id");
-            $query->bindParam(":alumno_id",$alumno_id,PDO::PARAM_INT,1);
-            $data = array();
-
-            if ($query->execute()) 
-            {
-                $row = $query->fetch(PDO::FETCH_ASSOC);
-                //<!-- Modal Detalles Alumno -->
-                $data[] = "<div class='panel panel-info' id='DetallesAlumno' tabindex='-1' role='dialog'>
-                            <div class='modal-dialog' role='document'>
-                                <div class='modal-content'>
-                                    <div class='modal-body'>
-                                        <div class='panel panel-info'>
-                                            <div class='panel-heading'>
-                                              <h3 class='panel-title'>Sheena Shrestha</h3>
-                                            </div>
-                                            <div class='panel-body'>
-                                              <div class='row'>
-                                                <div class=' col-md-9 col-lg-9 '> 
-                                                  <table class='table table-user-information'>
-                                                    <tbody>
-
-                                                  <tr>
-                                                        <td>Codigo:</td>
-                                                        <td>".$row['id_alumno']."</td>
-                                                      </tr>
-                                                      <tr>
-                                                        <td>Nombres:</td>
-                                                        <td>".$row['nombres']."</td>
-                                                      </tr>
-                                                      <tr>
-                                                        <td>Primer Apellido:</td>
-                                                        <td>".$row['primer_apellido']."</td>
-                                                      </tr>
-                                                        <td>Segundo Apellido</td>
-                                                        <td>".$row['segundo_apellido']."</td>
-                                                      </tr>
-                                                        <td>Desplazado</td>
-                                                        <td>".$row['desplazado']."</td>
-                                                      </tr>
-                                                      <tr>
-                                                        <td>Repitente</td>
-                                                        <td>".$row['repitente']."</td>
-                                                      </tr>
-                                                        <td>Nombes Acudiente</td>
-                                                        <td>".$row['nombre_acudiente']."</td>
-                                                      </tr>
-                                                      </tr>
-                                                        <td>Apellidos Acudiente</td>
-                                                        <td>".$row['apellidos_acudiente']."</td>
-                                                      </tr>
-                                                      </tr>
-                                                        <td>Telefono Acudiente</td>
-                                                        <td>".$row['telefono_acudiente']."</td>
-                                                      </tr>
-                                                      </tr>
-                                                        <td>Fecha Matricula</td>
-                                                        <td>".$row['fecha_matricula']."</td>
-                                                      </tr>
-                                                     
-                                                    </tbody>
-                                                  </table>
-                                                </div>
-                                              </div>
-                                            </div>            
-                                        </div>
-                                    </div>
-                                    <div class='modal-footer'>
-                                        <button type='button' class='btn btn-warning waves-effect' data-dismiss='modal'>Cerrar</button>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>";
-
-                        return $data;
+                    $matricula = true;
+        
                 }
+            
+            }
 
-                return $data_volean;
+            catch(PDOException $e)
+            {
+                echo $e->getMessage();
+                $matricula = false;
+    
+            }
 
-        } 
-
-        catch(PDOException $e)
-        {
-            echo $e->getMessage();
-            return false;
-        }
+        return $matricula;             
     }
+
 
 /*-------------------------------------------------------------------------------------------------------*/    
     public function pass_uncrypted($id_docente,$pass)

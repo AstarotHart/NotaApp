@@ -217,7 +217,7 @@ if (isset($id_sede))
                                             foreach ($grupos as $grupo)
                                             {
                                                 ?>
-                                                <option value="<?php echo $grupo['id_grupo']; ?>"><?php echo $grupo['descripcion_grado']."-".$grupo['descripcion_grupo']; ?></option>'; 
+                                                <option value="<?php echo $grupo['id_grupo']; ?>"><?php echo $grupo['descripcion_grupo']; ?></option>'; 
                                                 <?php
                                             }
                                         } else {

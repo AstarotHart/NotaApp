@@ -29,6 +29,15 @@ if (isset($_POST['crear']))
 
 }
 
+//saber si el boton CAMBIAR SEDE Y GRUPO a sido inicializado
+    if (isset($_POST['btn-select-destroy'])) 
+    {
+        $_SESSION['opcion']   = null;
+        $_SESSION['id_sede']  = null;
+        $_SESSION['id_grupo'] = null;
+        $_SESSION['id_grado'] = null;
+    }
+
  ?>
 <!DOCTYPE html>
 <html>
@@ -65,7 +74,10 @@ if (isset($_POST['crear']))
                     <?php 
                         $sedes = $object->Read_sedes();
                                  
-                            if (count($sedes) > 0) $show_table= "show";
+                            if (count($sedes) > 0) 
+                            {
+                                $show_table= "show";
+                            }
                     ?>
 
                         <!-- Div mostrar u ocultar tablas -->
@@ -80,7 +92,6 @@ if (isset($_POST['crear']))
                                                         <tr>
                                                             <th>Codigo</th>
                                                             <th>Nombre</th>
-                                                            <th>Acciones</th>
                                                         </tr>
                                                     <thead>
 
@@ -93,19 +104,8 @@ if (isset($_POST['crear']))
                                 {
                                     foreach ($sedes as $sede) {
                                         $data .=    '<tr>
-        
                                                         <td>' . $sede['id_sede'] . '</td>
                                                         <td>' . $sede['descripcion_sede'] . '</td>
-                                                        <td>
-                                                            <div class="btn-group" role="group">
-                                                                <button data-toggle="modal" data-target="#view-modal" data-id="'.$sede['id_sede'].'" id="getUser" class="btn btn-primary btn-xs waves-effect"><i class="material-icons">info_outline    </i></button>
-
-                                                                <button type="submit" class="btn btn-warning btn-xs waves-effect" data-toggle="modal" data-target="#Detallesarea" name="Detalles" onclick="' . $sede['id_sede'] . '"><i class="material-icons">mode_edit</i></button>
-
-                                                                <button type="submit" class="btn btn-danger btn-xs waves-effect" data-toggle="modal" data-target="#Detallesarea" name="Detalles" onclick="' . $sede['id_sede'] . '"><i class="material-icons">delete</i></button>
-                                                            </div>
-                                                        
-                                                        </td>
                                                     </tr>';
 
                                     }

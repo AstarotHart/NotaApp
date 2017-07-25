@@ -40,8 +40,6 @@
     <!-- Bootstrap Material Datetime Picker Plugin Js -->
     <script src="../plugins/bootstrap-material-datetimepicker/js/bootstrap-material-datetimepicker.js"></script>
 
-    <!-- Jquery CountTo Plugin Js -->
-    <script src="../plugins/jquery-countto/jquery.countTo.js"></script>
 
     <!-- Multi Select Plugin Js -->
     <script src="../plugins/multi-select/js/jquery.multi-select.js"></script>
