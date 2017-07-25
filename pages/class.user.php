@@ -1862,7 +1862,7 @@ class USER
      */
     public function Read_promedio_grupo($id_grupo)
     {
-        $query = $this->conn->prepare('SELECT * FROM grupo GRU inner join asig_alumno_grupo AAG inner join promedio_periodo PP ON GRU.id_grupo = AAG.id_grupo AND AAG.id_alumno = PP.id_alumno WHERE id_grupo = :id_grupo');
+        $query = $this->conn->prepare('SELECT * FROM grupo GRU inner join asig_alumno_grupo AAG inner join promedio_periodo PP ON GRU.id_grupo = AAG.id_grupo AND AAG.id_alumno = PP.id_alumno WHERE GRU.id_grupo = :id_grupo');
         $query->bindParam(":id_grupo",$id_grupo);
         $query->execute();
         $data = array();
@@ -2286,6 +2286,103 @@ class USER
         
     }
 
+    /**
+     * [update_puesto_periodo description]
+     * @param  [type] $id_alumno   [description]
+     * @param  [type] $puesto_name [description]
+     * @param  [type] $id_grupo    [description]
+     * @param  [type] $nota        [description]
+     * @param  [type] $anio        [description]
+     * @return [type]              [description]
+     */
+    public function update_puesto_periodo($id_alumno,$puesto_name,$id_grupo,$nota,$anio)
+    {
+        $res = "false";
+
+        try
+        {
+
+            $stmt1 = $this->conn->prepare("SELECT id_alumno FROM puesto_periodo WHERE id_alumno=:id_alumno AND id_grupo = :id_grupo AND id_anio_lectivo=:anio");
+
+            $stmt1->execute(array(
+                                  ':id_alumno'   => $id_alumno,
+                                  ':id_grupo'   => $id_grupo,
+                                  ':anio'   => $anio 
+                                    ));
+
+            $userRow=$stmt1->fetch(PDO::FETCH_ASSOC);
+
+            if($stmt1->rowCount() == 1)
+            {
+                if ($puesto_name == "puesto_p1") 
+                {
+                    $stmt=$this->conn->prepare("UPDATE puesto_periodo SET puesto_p1=:nota WHERE id_alumno=:id_alumno AND id_grupo = :id_grupo");
+                }
+                elseif ($puesto_name == "puesto_p2") 
+                {
+                    $stmt=$this->conn->prepare("UPDATE puesto_periodo SET puesto_p2=:nota WHERE id_alumno=:id_alumno AND id_grupo = :id_grupo");
+                }
+                elseif ($puesto_name == "puesto_p3") 
+                {
+                    $stmt=$this->conn->prepare("UPDATE puesto_periodo SET puesto_p3=:nota WHERE id_alumno=:id_alumno AND id_grupo = :id_grupo");
+                }
+                elseif ($puesto_name == "puesto_p4") 
+                {
+                    $stmt=$this->conn->prepare("UPDATE puesto_periodo SET puesto_p4=:nota WHERE id_alumno=:id_alumno AND id_grupo = :id_grupo");
+                }
+
+                $stmt->bindparam(":nota",$nota);
+                $stmt->bindparam(":id_alumno",$id_alumno);
+                $stmt->bindparam(":id_grupo",$id_grupo);
+
+                $stmt->execute();
+
+            }else
+            {                                                  
+                if ($puesto_name == "puesto_p1") 
+                {
+                    $stmt2 = $this->conn->prepare("INSERT INTO puesto_periodo(id_alumno,id_anio_lectivo,id_grupo,puesto_p1) 
+                                          VALUES(:id_alumno,:anio,:id_grupo,:nota)");
+                }
+                elseif ($puesto_name == "puesto_p2") 
+                {
+                    $stmt2 = $this->conn->prepare("INSERT INTO puesto_periodo(id_alumno,id_anio_lectivo,id_grupo,puesto_p2) 
+                                          VALUES(:id_alumno,:anio,:id_grupo,:nota)");
+                }
+                elseif ($puesto_name == "puesto_p3") 
+                {
+                    $stmt2 = $this->conn->prepare("INSERT INTO puesto_periodo(id_alumno,id_anio_lectivo,id_grupo,puesto_p3) 
+                                          VALUES(:id_alumno,:anio,:id_grupo,:nota)");
+                }
+                elseif ($puesto_name == "puesto_p4") 
+                {
+                    $stmt2 = $this->conn->prepare("INSERT INTO puesto_periodo(id_alumno,id_anio_lectivo,id_grupo,puesto_p4) 
+                                          VALUES(:id_alumno,:anio,:id_grupo,:nota)");
+                }
+
+                $stmt2->bindparam(":nota",$nota);
+                $stmt2->bindparam(":id_alumno",$id_alumno);
+                $stmt2->bindparam(":anio",$anio);
+                $stmt2->bindparam(":id_grupo",$id_grupo);
+
+                $stmt2->execute();
+
+            }
+
+            $res = "True";            
+        }
+
+        catch(PDOException $e)
+        {
+            echo $e->getMessage();
+             $res = "False";
+        }
+        
+
+        //echo "RES: ".$res."<br>";
+        return $res;
+        
+    }
 
     /**
      * [update_faltas description]
@@ -3332,6 +3429,63 @@ class USER
     {
         unset($variable);
     }
+
+
+  public function Ordenar_array($toOrderArray, $field, $inverse)
+  {
+      $position = array();
+      $newRow = array();
+
+      foreach ($toOrderArray as $key => $row)
+      {
+              $position[$key]  = $row[$field];
+              $newRow[$key] = $row;
+      }
+      if ($inverse) 
+      {
+          arsort($position);
+      }
+      else 
+      {
+          asort($position);
+      }
+
+      $returnArray = array();
+
+      foreach ($position as $key => $pos) 
+      {     
+          $returnArray[] = $newRow[$key];
+      }
+
+      return $returnArray;
+  }
+
+  public function ordena_mat($mat,$col,$aod="ASC")
+  {
+    foreach($mat as $k =>$val){//recorre la matriz o array
+        if($k!=$col) //si la clave actual ($k) NO es la indicada para ordenar
+            $ord[$k]=$val; //guarda en un arreglo temporal asociativo el valor.
+        else
+            return $mat; //si lo es, regresa la matriz.
+    }
+ 
+    if($aod=="ASC") //si el ordenamiento es ASCENDENTE
+        arsort($ord); //ordena ascendentemente
+    else
+        asort($ord);//caso contrario, ordena de forma descendente.
+ 
+    foreach($ord as $k=>$nms)//recorre el arreglo temporal
+        $mat2[$k]=$mat[$k];//crea una segunda matriz matriz temporal con los valores de la primera, pero ya ordenados
+ 
+    foreach($mat2 as $k =>$val){//recorre la segunda matriz
+        if(is_array($val))//si contiene otra matriz o arreglo
+            $val=ordena_mat($val,$col,$aod);//vuelve a llamar a la función ordenar para dicho arreglo
+        $mat2[$k]=$val;//y guarda el resultado ordenado en la matriz temporal
+    }
+    return $mat2;//finalmente regresa la matriz temporal ya ordenada
+}
+//no creo que falte aclararlo, pero se manda a llamar así:
+
 
 }
 ?>

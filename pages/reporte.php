@@ -27,6 +27,8 @@ $date_periodo        = new USER();
 
 //Para guardar promedios
 $promedio_periodo  = new USER();
+$puesto_periodo  = new USER();
+$insertar_puesto = new USER();
 $nota_final_reg = new USER();
 
 
@@ -119,9 +121,8 @@ $fechaHoy = date('d/m/Y');*/
 **/
 
 
-
 /**
- *  NOTAS PROMEDIO PERIODO
+ *  NOTAS PROMEDIO Y PUESTO PERIODO
  */
 
 /*
@@ -305,6 +306,9 @@ $fechaHoy = date('d/m/Y');*/
 							
 			}
 
+
+
+
 		}
 
 		
@@ -320,27 +324,40 @@ $fechaHoy = date('d/m/Y');*/
 			$promedio = 0;
 		}
 
-		echo "<br>Ingresar<br>";
-		echo "IdAlumno:".$alumnos_sede['id_alumno']." ,IdPromedio:".$promedio_show." ,Promedio:".$promedio." ,Anio:".$id_anio_lectivo."<br>";
+		//echo "<br>Ingresar<br>";
+		//echo "IdAlumno:".$alumnos_sede['id_alumno']." ,IdPromedio:".$promedio_show." ,Promedio:".$promedio." ,Anio:".$id_anio_lectivo."<br>";
 
 
 		$promedio_periodo = $object->update_promedio_periodo($alumnos_sede['id_alumno'],$promedio_show,$promedio,$id_anio_lectivo);
 
-		if($promedio_periodo==true)
-	    {
-	    	echo "<br>GOOD<br>";
-	    	echo "IdAlumno: ".$alumnos_sede['id_alumno']."<br>";
-	    	echo $promedio_show.": ".$promedio."<br>";
-	    }
-	    else
-	    {
-	    	echo "Error: ".$alumnos_sede['id_alumno']." ".$promedio_show." ".$promedio."<br>";
-	    }
 
+		$puesto_periodo = $object->Read_promedio_grupo($informe_cabecera['id_grupo']);
 
+		$variable = '$puesto_show';
+
+		usort($puesto_periodo, function($a, $b) {
+		    return $b['promedio_p1'] <=> $a['promedio_p1'];
+		});
+
+		//print_r($puesto_periodo);
+
+		$puesto=1;
+		foreach ($puesto_periodo as $puesto_periodo)
+		{
+		    print $puesto." el grupo es ".$puesto_periodo['id_grupo']." , el alumno es ".$puesto_periodo['id_alumno'] ."y promedio p1 ".$puesto_periodo['promedio_p1']."<br />\n";
+		    $insertar_puesto = $object->update_puesto_periodo($puesto_periodo['id_alumno'],$puesto_show,$puesto_periodo['id_grupo'],$puesto,$puesto_periodo['id_anio_lectivo']);
+
+		    $puesto++;
+		}
+			
 	}
-
 */
+
+
+
+
+
+
 
 
 
