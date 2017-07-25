@@ -123,7 +123,12 @@ $fechaHoy = date('d/m/Y');*/
 /**
  *  NOTAS PROMEDIO PERIODO
  */
+
+/*
+
 	$id_anio_lectivo = "IE2017";
+	$id_periodo = "IE2017P1";
+	$id_sede = "IE";
 
 	$alumnos_sede = $object->Read_alumnos_sede($id_sede);
 
@@ -136,9 +141,6 @@ $fechaHoy = date('d/m/Y');*/
 	foreach ($alumnos_sede as $alumnos_sede)
 	{
 
-		$html_asignaturas    = "";
-		$logros_print        = "";
-		$observaciones_print = "";
 		$desempe ;
 		$faltas_print ;
 
@@ -147,12 +149,14 @@ $fechaHoy = date('d/m/Y');*/
 
 		$fechaHoy = date('d/m/Y');
 
-		/*
-		echo "ID Alumno: ".$id_alumno  ."<br>";
-		echo "ID Sede: ".$id_sede  ."<br>";
-		echo "ID Asignatura: ".$id_asignatura."<br>";
-		echo "ID periodo: ".$id_periodo."<br>";
-		*/
+
+		$informe_cabecera = $object->Read_cabecera_reporte($alumnos_sede['id_alumno'],$id_anio_lectivo);
+
+		//echo "Informe Cabecera<br>";
+		//print_r($informe_cabecera);
+
+
+		$id_informe = $id_periodo.'-'.$alumnos_sede['id_alumno'];
 
 
 		foreach ($informe_cabecera as $informe_cabecera) 
@@ -167,20 +171,6 @@ $fechaHoy = date('d/m/Y');*/
 			# code...
 		}
 
-		//echo "Informe Fecha Periodo<br>";
-		//print_r($date_periodo);
-
-		$director_grupo=$object->Read_director_grupo($informe_cabecera['id_grupo'],$id_anio_lectivo);
-
-		foreach ($director_grupo as $director_grupo) 
-		{
-			# code...
-		}
-
-		//WORKS
-		//echo "Informe director_grupo<br>";
-		//print_r($director_grupo);
-
 
 		$anio_str=substr($date_periodo['fecha_inicio_periodo'], 0,4);
 		$id_periodo_str=substr($id_periodo, -1);
@@ -188,15 +178,6 @@ $fechaHoy = date('d/m/Y');*/
 
 		$str_grupo=substr($informe_cabecera['descripcion_grupo'], -1);
 		$str_grado=substr($informe_cabecera['descripcion_grupo'], -4, -2);
-
-
-		//WORKS
-		/*echo "anio_str: ".$anio_str."<br>";
-		echo "periodo_str: ".$id_periodo_str."<br>";
-		echo "periodo_str2: ".$id_periodo_str2."<br>";
-
-		echo "str_grupo: ".$str_grupo."<br>";
-		echo "str_grado: ".$str_grado."<br>";*/
 
 
 
@@ -237,31 +218,7 @@ $fechaHoy = date('d/m/Y');*/
 
 
 		$asignaturas_grupo = $object->Read_asignaturas_grupo($informe_cabecera['id_grupo']);
-
-		//WORKS
-		//echo "Informe asignaturas_grupo<br>";
-		//print_r($asignaturas_grupo);
-
-
-		$desc_observacion = $object->Read_observaciones_periodo($alumnos_sede['id_alumno'],$id_anio_lectivo);
-
-
-		// Recorrer y leer logros de alumno
-		foreach ($desc_observacion as $desc_observacion)
-		{
-			$observacion_alumno = $object->Read_observaciones_reporte($desc_observacion['id_observacion']);
-
-			//print_r($observacion_alumno);
-
-			foreach ($observacion_alumno as $observacion_alumno)
-			{
-				$observaciones_print  = $observacion_alumno['descripcion']."<br>";
-			}
-
-		}
-
-
-
+		
 
 		foreach ($asignaturas_grupo as $asignaturas_grupo)
 		{
@@ -269,7 +226,10 @@ $fechaHoy = date('d/m/Y');*/
 
 			
 			$informe_asignaturas = $object->Read_asignatura_reporte($alumnos_sede['id_alumno'],$id_anio_lectivo,$asignaturas_grupo['id_asignatura']);
-			$nota_acomulada_asig = $object->Read_nota_definitiva($alumnos_sede['id_alumno'],$id_anio_lectivo,$asignaturas_grupo['id_asignatura']);		
+			$nota_acomulada_asig = $object->Read_nota_definitiva($alumnos_sede['id_alumno'],$id_anio_lectivo,$asignaturas_grupo['id_asignatura']);
+									
+			//print_r($desc_logro);
+			
 			
 
 			foreach ($nota_acomulada_asig as $nota_acomulada_asig)
@@ -277,6 +237,7 @@ $fechaHoy = date('d/m/Y');*/
 			
 			}
 
+			
 			foreach ($informe_asignaturas as $informe_asignaturas) 
 			{
 				// convertir la nota de string a numero
@@ -305,12 +266,48 @@ $fechaHoy = date('d/m/Y');*/
 
 				}
 
-				
+				//saber de la variable LOGRO_PRINT esta inicializado con ""
+				if ($logros_print !="")
+				{
+
+				}
+				else
+				{
+					$logros_print = "No hay logros para mostrar.";
+				}
+
+
+				//saber de la variable OBSERVACIONES_PRINT esta inicializado con ""
+				if ($observaciones_print !="")
+				{
+
+				}
+				else
+				{
+					$observaciones_print = "No hay Observaciones en este periodo.";
+				}
+
+
+				//saber de la variable LOGRO_PRINT esta inicializado con ""
+				if ($faltas_print !="")
+				{
+
+				}
+				else
+				{
+					$faltas_print = 0;
+				}
+
+
 				$acomu_notas [] = $informe_asignaturas[$nota_show];
 
 
+							
+			}
+
 		}
 
+		
 		
 		if (count($acomu_notas) != 0)
 		{
@@ -323,9 +320,27 @@ $fechaHoy = date('d/m/Y');*/
 			$promedio = 0;
 		}
 
+		echo "<br>Ingresar<br>";
+		echo "IdAlumno:".$alumnos_sede['id_alumno']." ,IdPromedio:".$promedio_show." ,Promedio:".$promedio." ,Anio:".$id_anio_lectivo."<br>";
+
+
 		$promedio_periodo = $object->update_promedio_periodo($alumnos_sede['id_alumno'],$promedio_show,$promedio,$id_anio_lectivo);
 
+		if($promedio_periodo==true)
+	    {
+	    	echo "<br>GOOD<br>";
+	    	echo "IdAlumno: ".$alumnos_sede['id_alumno']."<br>";
+	    	echo $promedio_show.": ".$promedio."<br>";
+	    }
+	    else
+	    {
+	    	echo "Error: ".$alumnos_sede['id_alumno']." ".$promedio_show." ".$promedio."<br>";
+	    }
+
+
 	}
+
+*/
 
 
 

@@ -1856,6 +1856,23 @@ class USER
     }
 
 
+    /**
+     * [Read_promedio_grupo description]
+     * @param [type] $id_grupo [description]
+     */
+    public function Read_promedio_grupo($id_grupo)
+    {
+        $query = $this->conn->prepare('SELECT * FROM grupo GRU inner join asig_alumno_grupo AAG inner join promedio_periodo PP ON GRU.id_grupo = AAG.id_grupo AND AAG.id_alumno = PP.id_alumno WHERE id_grupo = :id_grupo');
+        $query->bindParam(":id_grupo",$id_grupo);
+        $query->execute();
+        $data = array();
+        while ($row = $query->fetch(PDO::FETCH_ASSOC)) {
+            $data[] = $row;
+        }
+        return $data;
+    }
+
+
 
 
 
@@ -2203,24 +2220,23 @@ class USER
             {
                 if ($promedio_name == "promedio_p1") 
                 {
-                    $stmt=$this->conn->prepare("UPDATE promedio_periodo SET promedio_p1=:nota WHERE id_alumno=:id_alumno AND id_anio_lectivo=:anio");
+                    $stmt=$this->conn->prepare("UPDATE promedio_periodo SET promedio_p1=:nota WHERE id_alumno=:id_alumno");
                 }
                 elseif ($promedio_name == "promedio_p2") 
                 {
-                    $stmt=$this->conn->prepare("UPDATE promedio_periodo SET promedio_p2=:nota WHERE id_alumno=:id_alumno AND id_anio_lectivo=:anio");
+                    $stmt=$this->conn->prepare("UPDATE promedio_periodo SET promedio_p2=:nota WHERE id_alumno=:id_alumno");
                 }
                 elseif ($promedio_name == "promedio_p3") 
                 {
-                    $stmt=$this->conn->prepare("UPDATE promedio_periodo SET promedio_p3=:nota WHERE id_alumno=:id_alumno AND id_anio_lectivo=:anio");
+                    $stmt=$this->conn->prepare("UPDATE promedio_periodo SET promedio_p3=:nota WHERE id_alumno=:id_alumno");
                 }
                 elseif ($promedio_name == "promedio_p4") 
                 {
-                    $stmt=$this->conn->prepare("UPDATE promedio_periodo SET promedio_p4=:nota WHERE id_alumno=:id_alumno AND id_anio_lectivo=:anio");
+                    $stmt=$this->conn->prepare("UPDATE promedio_periodo SET promedio_p4=:nota WHERE id_alumno=:id_alumno");
                 }
 
                 $stmt->bindparam(":nota",$nota);
                 $stmt->bindparam(":id_alumno",$id_alumno);
-                $stmt->bindparam(":anio",$anio);
 
                 $stmt->execute();
 
@@ -2229,21 +2245,22 @@ class USER
                 if ($promedio_name == "promedio_p1") 
                 {
                     $stmt2 = $this->conn->prepare("INSERT INTO promedio_periodo(id_alumno,id_anio_lectivo,promedio_p1) 
-                                          VALUES(:id_alumno,:anio,:nota");
+                                          VALUES(:id_alumno,:anio,:nota)");
                 }
                 elseif ($promedio_name == "promedio_p2") 
                 {
-                    $stmt2 = $this->conn->prepare("INSERT INTO  promedio_periodo(id_alumno,id_anio_lectivo,promedio_p2) 
-                                          VALUES(:id_alumno,:anio,:nota");
+                    $stmt2 = $this->conn->prepare("INSERT INTO promedio_periodo(id_alumno,id_anio_lectivo,promedio_p2) 
+                                          VALUES(:id_alumno,:anio,:nota)");
                 }
                 elseif ($promedio_name == "promedio_p3") 
                 {
-                    $stmt2 = $this->conn->prepare("INSERT INTO  promedio_periodo(id_alumno,id_anio_lectivo,promedio_p3) 
-                                          VALUES(:id_alumno,:anio,:nota");
+                    $stmt2 = $this->conn->prepare("INSERT INTO promedio_periodo(id_alumno,id_anio_lectivo,promedio_p3) 
+                                          VALUES(:id_alumno,:anio,:nota)");
+                }
                 elseif ($promedio_name == "promedio_p4") 
                 {
-                    $stmt2 = $this->conn->prepare("INSERT INTO  promedio_periodo(id_alumno,id_anio_lectivo,promedio_p4) 
-                                          VALUES(:id_alumno,:anio,:nota");
+                    $stmt2 = $this->conn->prepare("INSERT INTO promedio_periodo(id_alumno,id_anio_lectivo,promedio_p4) 
+                                          VALUES(:id_alumno,:anio,:nota)");
                 }
 
                 $stmt2->bindparam(":nota",$nota);
@@ -2254,7 +2271,7 @@ class USER
 
             }
 
-                $res = "True";            
+            $res = "True";            
         }
 
         catch(PDOException $e)
